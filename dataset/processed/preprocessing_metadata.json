@@ -1,0 +1,95 @@
+{
+  "pipeline_name": "Dataset A Preprocessing & Windowing Pipeline",
+  "version": "1.0.0",
+  "config": {
+    "target_sampling_rate_hz": 50,
+    "sampling_interval_ms": 20,
+    "window_size_seconds": 5.0,
+    "window_size_samples": 250,
+    "window_stride_seconds": 2.5,
+    "window_stride_samples": 125,
+    "guard_band_seconds": 10.0,
+    "guard_band_samples": 500,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15,
+    "excluded_drivers": [
+      "Driver-2"
+    ],
+    "valid_drivers": [
+      "Driver-1",
+      "Driver-3",
+      "Driver-4",
+      "Driver-5",
+      "Driver-6",
+      "Driver-7"
+    ]
+  },
+  "driver_statistics": {
+    "Driver-1": {
+      "total_resampled_samples": 49399,
+      "duration_seconds": 987.96,
+      "total_windows": 383,
+      "train_windows": 275,
+      "val_windows": 58,
+      "test_windows": 50
+    },
+    "Driver-3": {
+      "total_resampled_samples": 53479,
+      "duration_seconds": 1069.56,
+      "total_windows": 416,
+      "train_windows": 298,
+      "val_windows": 63,
+      "test_windows": 55
+    },
+    "Driver-4": {
+      "total_resampled_samples": 88638,
+      "duration_seconds": 1772.74,
+      "total_windows": 697,
+      "train_windows": 495,
+      "val_windows": 105,
+      "test_windows": 97
+    },
+    "Driver-5": {
+      "total_resampled_samples": 46662,
+      "duration_seconds": 933.22,
+      "total_windows": 361,
+      "train_windows": 260,
+      "val_windows": 54,
+      "test_windows": 47
+    },
+    "Driver-6": {
+      "total_resampled_samples": 27409,
+      "duration_seconds": 548.16,
+      "total_windows": 206,
+      "train_windows": 152,
+      "val_windows": 31,
+      "test_windows": 23
+    },
+    "Driver-7": {
+      "total_resampled_samples": 51638,
+      "duration_seconds": 1032.74,
+      "total_windows": 400,
+      "train_windows": 288,
+      "val_windows": 60,
+      "test_windows": 52
+    }
+  },
+  "total_windows": 2463,
+  "feature_count": 90,
+  "split_distribution": {
+    "train": 1768,
+    "val": 371,
+    "test": 324
+  },
+  "driver_distribution": {
+    "Driver-4": 697,
+    "Driver-3": 416,
+    "Driver-7": 400,
+    "Driver-1": 383,
+    "Driver-5": 361,
+    "Driver-6": 206
+  },
+  "output_file": "dataset_a_features.csv",
+  "output_sha256": "e07a327bc25e63b501970a4f78a80cc00dd446165cf77a116531ca25347a5eac"
+}

@@ -1,0 +1,95 @@
+{
+  "model_version": "1.0.0",
+  "selected_best_model": "Support Vector Machine",
+  "model_artifact": "dataset_c_binary_model_v1.0.0.joblib",
+  "scaler_artifact": "dataset_c_scaler_v1.0.0.joblib",
+  "label_mapping": {
+    "0": "Normal Driving",
+    "1": "Aggressive Driving"
+  },
+  "feature_count": 47,
+  "feature_names": [
+    "Acc X",
+    "Acc Y",
+    "Acc Z",
+    "gyro_x",
+    "gyro_y",
+    "gyro_z",
+    "acc_mag",
+    "gyro_mag",
+    "acc_horiz",
+    "acc_jerk",
+    "gyro_jerk",
+    "acc_mag_mean_1s",
+    "acc_mag_std_1s",
+    "acc_mag_max_1s",
+    "acc_mag_min_1s",
+    "acc_mag_range_1s",
+    "gyro_mag_mean_1s",
+    "gyro_mag_std_1s",
+    "gyro_mag_max_1s",
+    "acc_horiz_mean_1s",
+    "acc_horiz_std_1s",
+    "gyro_z_std_1s",
+    "gyro_z_max_1s",
+    "acc_mag_mean_2s",
+    "acc_mag_std_2s",
+    "acc_mag_max_2s",
+    "acc_mag_min_2s",
+    "acc_mag_range_2s",
+    "gyro_mag_mean_2s",
+    "gyro_mag_std_2s",
+    "gyro_mag_max_2s",
+    "acc_horiz_mean_2s",
+    "acc_horiz_std_2s",
+    "gyro_z_std_2s",
+    "gyro_z_max_2s",
+    "acc_mag_mean_3s",
+    "acc_mag_std_3s",
+    "acc_mag_max_3s",
+    "acc_mag_min_3s",
+    "acc_mag_range_3s",
+    "gyro_mag_mean_3s",
+    "gyro_mag_std_3s",
+    "gyro_mag_max_3s",
+    "acc_horiz_mean_3s",
+    "acc_horiz_std_3s",
+    "gyro_z_std_3s",
+    "gyro_z_max_3s"
+  ],
+  "requires_scaler": true,
+  "hyperparameters": {
+    "Random Forest": {
+      "class_weight": "balanced_subsample",
+      "max_depth": "14",
+      "min_samples_leaf": "3",
+      "min_samples_split": "6",
+      "n_estimators": "200"
+    },
+    "Extra Trees": {
+      "class_weight": "balanced",
+      "max_depth": "14",
+      "min_samples_leaf": "3",
+      "min_samples_split": "6",
+      "n_estimators": "200"
+    },
+    "XGBoost": {
+      "colsample_bytree": "0.85",
+      "gamma": "None",
+      "learning_rate": "0.03",
+      "max_depth": "5",
+      "n_estimators": "200",
+      "subsample": "0.85"
+    },
+    "Support Vector Machine": {
+      "C": "2.0",
+      "class_weight": "balanced",
+      "gamma": "scale",
+      "kernel": "rbf"
+    },
+    "K-Nearest Neighbors": {
+      "n_neighbors": "25",
+      "weights": "distance"
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "train_rows": 9767,
+  "val_rows": 1935,
+  "test_rows": 2138,
+  "dropped_guard_band_rows": 400,
+  "dropped_duplicates": 9,
+  "total_source_rows": 14249,
+  "split_strategy": "Chronological per physical session (70/15/15) with 10s guard bands"
+}

@@ -1,0 +1,122 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# Distribution / packaging
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# Environment Variables, Secrets & Kaggle Auth (STRICTLY NEVER COMMIT)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*kaggle*.json
+access_token
+.kaggle/
+
+# Data & Model Artifacts
+# Note: Raw datasets in dataset/raw/ can be tracked for complete standalone portability
+# Ignore temporary zip archives, intermediate checkpoints, and large model binaries
+*.zip
+*.rar
+dataset/raw/**/__MACOSX/
+dataset/interim/
+!dataset/raw/
+!dataset/.gitkeep
+
+# Processed evaluation datasets and metadata required for tests
+!dataset/processed/
+!dataset/processed/*.json
+!dataset/processed/*.csv
+
+# Saved model artifacts and configs required for inference & tests
+!ml/saved_models/
+!ml/saved_models/.gitkeep
+!ml/saved_models/*.json
+!ml/saved_models/*.joblib
+*.h5
+*.pkl
+*.pt
+*.pth
+*.onnx
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+
+# Database
+*.sqlite
+*.sqlite3
+*.db
+
+# Logs & Diagnostics
+*.log
+logs/
+reports/*.pdf
+reports/*.html
+reports/*.png
+
+# Testing & Coverage
+.tox/
+.nox/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+
+# Node & Frontend
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnpm-debug.log*
+frontend/dist/
+frontend/build/
+.next/
+out/
+
+# IDE & OS Files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini

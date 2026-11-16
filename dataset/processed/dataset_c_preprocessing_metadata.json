@@ -1,0 +1,104 @@
+{
+  "pipeline_name": "Dataset C Binary Driving Classification Preprocessor",
+  "pipeline_version": "1.0.0",
+  "source_raw_file": "3_FinalDatasetCsv.csv",
+  "source_raw_sha256": "47f2065e43f02d7721b96efa1052cbdeeee098730f004423a153232523d7f8aa",
+  "label_mapping": {
+    "0": "Normal Driving",
+    "1": "Aggressive Driving"
+  },
+  "sampling_rate_hz": 10.0,
+  "guard_band_seconds": 10.0,
+  "guard_band_samples_per_split": 100,
+  "session_summary": {
+    "raw_total_rows": 14249,
+    "clean_total_rows": 14240,
+    "duplicates_removed_total": 9,
+    "session_1_raw_rows": 7603,
+    "session_1_clean_rows": 7599,
+    "session_1_duplicates": 4,
+    "session_2_raw_rows": 6646,
+    "session_2_clean_rows": 6641,
+    "session_2_duplicates": 5
+  },
+  "feature_count": 47,
+  "feature_names": [
+    "Acc X",
+    "Acc Y",
+    "Acc Z",
+    "gyro_x",
+    "gyro_y",
+    "gyro_z",
+    "acc_mag",
+    "gyro_mag",
+    "acc_horiz",
+    "acc_jerk",
+    "gyro_jerk",
+    "acc_mag_mean_1s",
+    "acc_mag_std_1s",
+    "acc_mag_max_1s",
+    "acc_mag_min_1s",
+    "acc_mag_range_1s",
+    "gyro_mag_mean_1s",
+    "gyro_mag_std_1s",
+    "gyro_mag_max_1s",
+    "acc_horiz_mean_1s",
+    "acc_horiz_std_1s",
+    "gyro_z_std_1s",
+    "gyro_z_max_1s",
+    "acc_mag_mean_2s",
+    "acc_mag_std_2s",
+    "acc_mag_max_2s",
+    "acc_mag_min_2s",
+    "acc_mag_range_2s",
+    "gyro_mag_mean_2s",
+    "gyro_mag_std_2s",
+    "gyro_mag_max_2s",
+    "acc_horiz_mean_2s",
+    "acc_horiz_std_2s",
+    "gyro_z_std_2s",
+    "gyro_z_max_2s",
+    "acc_mag_mean_3s",
+    "acc_mag_std_3s",
+    "acc_mag_max_3s",
+    "acc_mag_min_3s",
+    "acc_mag_range_3s",
+    "gyro_mag_mean_3s",
+    "gyro_mag_std_3s",
+    "gyro_mag_max_3s",
+    "acc_horiz_mean_3s",
+    "acc_horiz_std_3s",
+    "gyro_z_std_3s",
+    "gyro_z_max_3s"
+  ],
+  "split_counts": {
+    "train": 9767,
+    "validation": 1935,
+    "test": 2138,
+    "guard_band_dropped": 400,
+    "total_clean_rows": 14240
+  },
+  "class_distributions": {
+    "train": {
+      "1": 6025,
+      "0": 3742
+    },
+    "validation": {
+      "1": 1118,
+      "0": 817
+    },
+    "test": {
+      "0": 1141,
+      "1": 997
+    }
+  },
+  "output_files": {
+    "train_csv": "dataset_c_train.csv",
+    "val_csv": "dataset_c_val.csv",
+    "test_csv": "dataset_c_test.csv",
+    "full_csv": "dataset_c_processed_all.csv",
+    "train_sha256": "60285ef5c8a859059a96e4acc44545c5c67e82890847cae4ddcd5782552b58be",
+    "val_sha256": "355301def0ca35b589e8f34aac84d41767ed9020bece25ab4ecb5f070aa64343",
+    "test_sha256": "55eec9f2f63b679322a4a45a6def5dc1515788aa635adcf73d554edb04d2464e"
+  }
+}

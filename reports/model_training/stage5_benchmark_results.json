@@ -1,0 +1,229 @@
+{
+  "timestamp": "2026-11-16 21:56:57",
+  "hardware_environment": {
+    "os": "Windows",
+    "os_release": "10",
+    "os_version": "10.0.26300",
+    "architecture": "AMD64",
+    "processor": "Intel64 Family 6 Model 142 Stepping 12, GenuineIntel",
+    "python_version": "3.11.9 (tags/v3.11.9:de54cf5, Apr  2 2024, 10:12:12) [MSC v.1938 64 bit (AMD64)]",
+    "numpy_version": "2.4.6",
+    "pandas_version": "3.1.1",
+    "joblib_version": "1.6.0"
+  },
+  "artifact_integrity": {
+    "dataset_c_exp_model": {
+      "path": "models\\experiments\\dataset_c\\dataset_c_support_vector_machine_exp_v1.joblib",
+      "exists": true,
+      "size_bytes": 610779,
+      "sha256": "a00180bd01d5999b1338737549d5745adb986138f813f7f371d67589d0dbaefc"
+    },
+    "dataset_c_exp_scaler": {
+      "path": "models\\experiments\\dataset_c\\dataset_c_scaler_exp_v1.joblib",
+      "exists": true,
+      "size_bytes": 1695,
+      "sha256": "d67f9ab70eb667cc57e8aeb2f6768e62529f0cb803279cc33d17f6c76555c9f5"
+    },
+    "dataset_c_exp_summary": {
+      "path": "models\\experiments\\dataset_c\\dataset_c_experiment_summary.json",
+      "exists": true,
+      "size_bytes": 20279,
+      "sha256": "bdd0b5040cf3df9caa6effa2c065f4ff3ead72baa04cd5e8899097732cd04ceb"
+    },
+    "dataset_c_baseline_model": {
+      "path": "ml\\saved_models\\dataset_c_binary_model_v1.0.0.joblib",
+      "exists": true,
+      "size_bytes": 610779,
+      "sha256": "d442eb68f4a6ca8d352d2720a9e3b408e554a10eba1fcb60759529402e9fdc35"
+    },
+    "dataset_c_baseline_scaler": {
+      "path": "ml\\saved_models\\dataset_c_scaler_v1.0.0.joblib",
+      "exists": true,
+      "size_bytes": 2687,
+      "sha256": "6a45a250bb3ba0a8e858a41b6ecc5c8b8c8bd647d9f80bb339bac6f694276ec9"
+    },
+    "dataset_c_baseline_config": {
+      "path": "ml\\saved_models\\dataset_c_config_v1.0.0.json",
+      "exists": true,
+      "size_bytes": 2152,
+      "sha256": "ad3d62b04f7cd7a81d6d713d70a69015492df0b678c2051c70d23ffdf695f2bb"
+    },
+    "dataset_c_baseline_metrics": {
+      "path": "ml\\saved_models\\dataset_c_metrics_v1.0.0.json",
+      "exists": true,
+      "size_bytes": 5771,
+      "sha256": "4b25d4e308c66e49bd71cfd9e27ae4f5f5b34f1c068218e8d4ffe2b66bb16ff0"
+    },
+    "dataset_b_exp_model": {
+      "path": "models\\experiments\\dataset_b\\dataset_b_extra_trees_exp_v1.joblib",
+      "exists": true,
+      "size_bytes": 2832105,
+      "sha256": "552048535a3fd584e4874731b8be1438dab4051d8cfa6a98fb1a7b19d9202e90"
+    },
+    "dataset_b_exp_scaler": {
+      "path": "models\\experiments\\dataset_b\\dataset_b_scaler_exp_v1.joblib",
+      "exists": true,
+      "size_bytes": 1927,
+      "sha256": "d4b3d5e3e1b739c63a9e21fac51fcedf36716143c645abe0d0e3ff99127a7576"
+    },
+    "dataset_b_exp_summary": {
+      "path": "models\\experiments\\dataset_b\\dataset_b_experiment_summary.json",
+      "exists": true,
+      "size_bytes": 52830,
+      "sha256": "a817d6a15da25ad34f641e7b30cd1888ca4c068b8998fa28920e393fd76dfd31"
+    },
+    "dataset_b_lodo_summary": {
+      "path": "models\\experiments\\dataset_b\\dataset_b_lodo_summary.json",
+      "exists": true,
+      "size_bytes": 37901,
+      "sha256": "3d0b703de8925c00312594320adc9526a4e9331e40c652b7cebf19d1065b488f"
+    },
+    "dataset_b_svm_secondary": {
+      "path": "models\\experiments\\dataset_b\\dataset_b_support_vector_machine_exp_v1.joblib",
+      "exists": true,
+      "size_bytes": 269455,
+      "sha256": "79cd2c757e64615892a4dcff4d9833e920aecc854e3cfa84c86620e1b799f591"
+    }
+  },
+  "inference_validation": {
+    "dataset_c": {
+      "status": "PASSED",
+      "feature_count": 47,
+      "decision_threshold": 0.84,
+      "single_record_pred": 1,
+      "single_record_label": "Aggressive Driving",
+      "batch_shape": [
+        100
+      ],
+      "missing_feature_handling": true,
+      "nan_handling": true,
+      "infinite_handling": true,
+      "reproducible": true
+    },
+    "dataset_b": {
+      "status": "PASSED",
+      "feature_count": 56,
+      "single_record_pred": 1,
+      "single_record_label": "Sudden Acceleration",
+      "batch_shape": [
+        175
+      ],
+      "quarantined_feature_handling": true,
+      "missing_feature_handling": true,
+      "nan_handling": true,
+      "infinite_handling": true,
+      "reproducible": true
+    }
+  },
+  "latency_and_memory_benchmarks": {
+    "dataset_c_svm": {
+      "loading_benchmark": {
+        "mean_ms": 7.750910000049771,
+        "std_ms": 2.276695803689786,
+        "median_ms": 7.1444999998675485,
+        "min_ms": 5.494099999850732,
+        "max_ms": 11.975600000369013,
+        "peak_memory_mb": 0.8626592636108399
+      },
+      "single_record_benchmark": {
+        "repetitions": 1000,
+        "mean_ms": 4.753230399981476,
+        "median_ms": 4.49114999946687,
+        "p95_ms": 6.98432999961369,
+        "p99_ms": 8.510634999329339,
+        "min_ms": 2.934600000116916,
+        "max_ms": 47.43129999951634,
+        "std_ms": 1.8153456818115494,
+        "throughput_samples_per_sec": 210.3832374723298
+      },
+      "batch_benchmark": {
+        "batch_10": {
+          "batch_size": 10,
+          "mean_ms": 10.981752000006963,
+          "median_ms": 10.811999999987165,
+          "p95_ms": 14.610814999969078,
+          "per_sample_ms": 1.0981752000006963
+        },
+        "batch_50": {
+          "batch_size": 50,
+          "mean_ms": 22.740717999986373,
+          "median_ms": 21.843550000085088,
+          "p95_ms": 33.920605000048454,
+          "per_sample_ms": 0.45481435999972747
+        },
+        "batch_100": {
+          "batch_size": 100,
+          "mean_ms": 31.22537999997803,
+          "median_ms": 29.027899999618967,
+          "p95_ms": 43.92253000023629,
+          "per_sample_ms": 0.3122537999997803
+        },
+        "batch_500": {
+          "batch_size": 500,
+          "mean_ms": 131.3310459999957,
+          "median_ms": 126.58504999990328,
+          "p95_ms": 169.91915499961576,
+          "per_sample_ms": 0.2626620919999914
+        },
+        "batch_2138": {
+          "batch_size": 2138,
+          "mean_ms": 512.4172299999736,
+          "median_ms": 487.424600000395,
+          "p95_ms": 640.3267749999486,
+          "per_sample_ms": 0.23967129560335532
+        }
+      }
+    },
+    "dataset_b_extra_trees": {
+      "loading_benchmark": {
+        "mean_ms": 181.80751999989297,
+        "std_ms": 13.321753620953382,
+        "median_ms": 179.88449999984368,
+        "min_ms": 162.94010000001435,
+        "max_ms": 212.18139999928098,
+        "peak_memory_mb": 3.740329551696777
+      },
+      "single_record_benchmark": {
+        "repetitions": 1000,
+        "mean_ms": 91.4471794999945,
+        "median_ms": 73.42035000056057,
+        "p95_ms": 163.1675049999103,
+        "p99_ms": 206.96657099962067,
+        "min_ms": 48.44279999997525,
+        "max_ms": 252.7178999998796,
+        "std_ms": 37.86453084520476,
+        "throughput_samples_per_sec": 10.935274389737303
+      },
+      "batch_benchmark": {
+        "batch_10": {
+          "batch_size": 10,
+          "mean_ms": 157.2978819999662,
+          "median_ms": 150.5251500002487,
+          "p95_ms": 217.74138999971905,
+          "per_sample_ms": 15.72978819999662
+        },
+        "batch_50": {
+          "batch_size": 50,
+          "mean_ms": 170.26695200001996,
+          "median_ms": 159.72824999971635,
+          "p95_ms": 263.16581999985823,
+          "per_sample_ms": 3.405339040000399
+        },
+        "batch_100": {
+          "batch_size": 100,
+          "mean_ms": 171.8427939999492,
+          "median_ms": 162.24544999977297,
+          "p95_ms": 240.38855999956465,
+          "per_sample_ms": 1.7184279399994922
+        },
+        "batch_175": {
+          "batch_size": 175,
+          "mean_ms": 282.2518420000051,
+          "median_ms": 203.0030999999326,
+          "p95_ms": 602.0557700001061,
+          "per_sample_ms": 1.6128676685714578
+        }
+      }
+    }
+  }
+}

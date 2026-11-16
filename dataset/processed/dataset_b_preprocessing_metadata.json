@@ -1,0 +1,163 @@
+{
+  "pipeline_name": "Dataset B Preprocessing Pipeline",
+  "pipeline_version": "1.0.0",
+  "source_dataset": "Mendeley Data DOI 10.17632/jj3tw8kj6h.3 (Yuksel & Atmaca)",
+  "source_file": "sensor_raw.csv",
+  "source_sha256": "9b3a0667562e57eaf5cd7e0c656349518bebf7095dac4627f2353051858d1594",
+  "config": {
+    "pipeline_name": "Dataset B Preprocessing Pipeline",
+    "pipeline_version": "1.0.0",
+    "sampling_frequency_hz": 1.0,
+    "train_ratio": 0.7,
+    "val_ratio": 0.15,
+    "test_ratio": 0.15,
+    "rolling_windows_sec": [
+      3,
+      5
+    ],
+    "random_state": 42
+  },
+  "label_mapping": {
+    "1": "Sudden Acceleration",
+    "2": "Sudden Deceleration",
+    "3": "Sudden Right Turn",
+    "4": "Sudden Left Turn"
+  },
+  "label_abbreviations": {
+    "1": "SA",
+    "2": "SD",
+    "3": "SRT",
+    "4": "SLT"
+  },
+  "tag_metadata": {
+    "total_rows": 1114,
+    "total_events": 109,
+    "events_per_class": {
+      "1": 28,
+      "2": 24,
+      "3": 25,
+      "4": 32
+    },
+    "events_per_driver": {
+      "Driver-1": 35,
+      "Driver-2": 35,
+      "Driver-3": 39
+    },
+    "min_samples_per_event": 7,
+    "max_samples_per_event": 14,
+    "mean_samples_per_event": 10.944344703770197
+  },
+  "feature_names": [
+    "acc_x_ms2",
+    "acc_y_ms2",
+    "acc_z_ms2",
+    "gyro_x_rads",
+    "gyro_y_rads",
+    "gyro_z_rads",
+    "acc_mag_g",
+    "acc_mag_ms2",
+    "gyro_mag_degs",
+    "gyro_mag_rads",
+    "acc_horiz_g",
+    "acc_horiz_ms2",
+    "acc_jerk_ms2",
+    "gyro_jerk_rads",
+    "acc_mag_mean_3s",
+    "acc_mag_std_3s",
+    "acc_mag_min_3s",
+    "acc_mag_max_3s",
+    "acc_mag_range_3s",
+    "acc_mag_rms_3s",
+    "gyro_mag_mean_3s",
+    "gyro_mag_std_3s",
+    "gyro_mag_max_3s",
+    "gyro_mag_rms_3s",
+    "acc_horiz_mean_3s",
+    "acc_horiz_std_3s",
+    "gyro_z_mean_3s",
+    "gyro_z_std_3s",
+    "gyro_z_max_3s",
+    "gyro_z_min_3s",
+    "acc_x_mean_3s",
+    "acc_x_std_3s",
+    "acc_mag_mean_5s",
+    "acc_mag_std_5s",
+    "acc_mag_min_5s",
+    "acc_mag_max_5s",
+    "acc_mag_range_5s",
+    "acc_mag_rms_5s",
+    "gyro_mag_mean_5s",
+    "gyro_mag_std_5s",
+    "gyro_mag_max_5s",
+    "gyro_mag_rms_5s",
+    "acc_horiz_mean_5s",
+    "acc_horiz_std_5s",
+    "gyro_z_mean_5s",
+    "gyro_z_std_5s",
+    "gyro_z_max_5s",
+    "gyro_z_min_5s",
+    "acc_x_mean_5s",
+    "acc_x_std_5s"
+  ],
+  "feature_count": 50,
+  "split_metadata": {
+    "strategy": "Stratified Group Split on event_id",
+    "random_state": 42,
+    "train_events": 76,
+    "val_events": 16,
+    "test_events": 17,
+    "train_rows": 776,
+    "val_rows": 163,
+    "test_rows": 175,
+    "total_rows": 1114,
+    "class_distribution": {
+      "train": {
+        "3": 238,
+        "2": 204,
+        "1": 180,
+        "4": 154
+      },
+      "val": {
+        "3": 56,
+        "1": 36,
+        "2": 36,
+        "4": 35
+      },
+      "test": {
+        "3": 56,
+        "2": 48,
+        "1": 36,
+        "4": 35
+      }
+    },
+    "driver_distribution": {
+      "train": {
+        "Driver-1": 287,
+        "Driver-3": 261,
+        "Driver-2": 228
+      },
+      "val": {
+        "Driver-3": 70,
+        "Driver-2": 49,
+        "Driver-1": 44
+      },
+      "test": {
+        "Driver-2": 86,
+        "Driver-3": 52,
+        "Driver-1": 37
+      }
+    }
+  },
+  "artifacts": {
+    "processed_all": "dataset_b_processed_all.csv",
+    "processed_all_sha256": "5315550d5f3aa856ce46e87302c0734031d613ac5b4c870e49be3269db6170da",
+    "train_csv": "dataset_b_train.csv",
+    "train_sha256": "576fe65d5f1e3f9b576aacc566869c85e75a735f661d81ee7aa899856b2415e1",
+    "val_csv": "dataset_b_val.csv",
+    "val_sha256": "17afe24ae92b728046fe09cb9feffb01bd7bd0a043abb27631f2ded68c8325af",
+    "test_csv": "dataset_b_test.csv",
+    "test_sha256": "516e56bd77982ae431f3cb4a85f40bcf553ca3b8bafc9c15f1e7a4fda7f643cb",
+    "event_features_csv": "dataset_b_event_features.csv",
+    "event_features_sha256": "9b4c786b7df60a053de19e601eb99466576e5331962428a785e44f42c93a9d20"
+  }
+}

@@ -1,0 +1,676 @@
+{
+  "pipeline": "Pipeline A (Dataset C)",
+  "task": "Binary Driving Style Classification",
+  "timestamp": "2026-11-16 21:38:01",
+  "random_seed": 42,
+  "selected_best_model": "Support Vector Machine",
+  "feature_count": 47,
+  "feature_names": [
+    "Acc X",
+    "Acc Y",
+    "Acc Z",
+    "gyro_x",
+    "gyro_y",
+    "gyro_z",
+    "acc_mag",
+    "gyro_mag",
+    "acc_horiz",
+    "acc_jerk",
+    "gyro_jerk",
+    "acc_mag_mean_1s",
+    "acc_mag_std_1s",
+    "acc_mag_max_1s",
+    "acc_mag_min_1s",
+    "acc_mag_range_1s",
+    "gyro_mag_mean_1s",
+    "gyro_mag_std_1s",
+    "gyro_mag_max_1s",
+    "acc_horiz_mean_1s",
+    "acc_horiz_std_1s",
+    "gyro_z_std_1s",
+    "gyro_z_max_1s",
+    "acc_mag_mean_2s",
+    "acc_mag_std_2s",
+    "acc_mag_max_2s",
+    "acc_mag_min_2s",
+    "acc_mag_range_2s",
+    "gyro_mag_mean_2s",
+    "gyro_mag_std_2s",
+    "gyro_mag_max_2s",
+    "acc_horiz_mean_2s",
+    "acc_horiz_std_2s",
+    "gyro_z_std_2s",
+    "gyro_z_max_2s",
+    "acc_mag_mean_3s",
+    "acc_mag_std_3s",
+    "acc_mag_max_3s",
+    "acc_mag_min_3s",
+    "acc_mag_range_3s",
+    "gyro_mag_mean_3s",
+    "gyro_mag_std_3s",
+    "gyro_mag_max_3s",
+    "acc_horiz_mean_3s",
+    "acc_horiz_std_3s",
+    "gyro_z_std_3s",
+    "gyro_z_max_3s"
+  ],
+  "scaler_artifact": "models\\experiments\\dataset_c\\dataset_c_scaler_exp_v1.joblib",
+  "models_evaluated": [
+    "Dummy (Stratified)",
+    "Dummy (Most Frequent)",
+    "Logistic Regression",
+    "Random Forest",
+    "XGBoost",
+    "Support Vector Machine",
+    "Multi-Layer Perceptron"
+  ],
+  "results": {
+    "Dummy (Stratified)": {
+      "model_name": "Dummy (Stratified)",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_dummy_stratified_exp_v1.joblib",
+      "requires_scaling": false,
+      "fit_time_seconds": 0.008330106735229492,
+      "validation_metrics": {
+        "accuracy": 0.4842377260981912,
+        "balanced_accuracy": 0.4665050371904717,
+        "macro_f1": 0.4656388216178404,
+        "weighted_f1": 0.481146495436637,
+        "precision_normal": 0.380449141347424,
+        "recall_normal": 0.3525091799265606,
+        "f1_normal": 0.36594663278271916,
+        "precision_aggressive": 0.5509337860780985,
+        "recall_aggressive": 0.5805008944543828,
+        "f1_aggressive": 0.5653310104529616,
+        "confusion_matrix": [
+          [
+            288,
+            529
+          ],
+          [
+            469,
+            649
+          ]
+        ],
+        "tn": 288,
+        "fp": 529,
+        "fn": 469,
+        "tp": 649,
+        "fpr": 0.6474908200734394,
+        "fnr": 0.41949910554561715,
+        "roc_auc": 0.46650503719047165,
+        "pr_auc": 0.562194816585388,
+        "decision_threshold": 0.5
+      },
+      "test_metrics": {
+        "accuracy": 0.480355472404116,
+        "balanced_accuracy": 0.48770281044711694,
+        "macro_f1": 0.4773174019001095,
+        "weighted_f1": 0.4746334623137479,
+        "precision_normal": 0.5179856115107914,
+        "recall_normal": 0.37861524978089395,
+        "f1_normal": 0.43746835443037974,
+        "precision_aggressive": 0.4562883435582822,
+        "recall_aggressive": 0.59679037111334,
+        "f1_aggressive": 0.5171664493698392,
+        "confusion_matrix": [
+          [
+            432,
+            709
+          ],
+          [
+            402,
+            595
+          ]
+        ],
+        "tn": 432,
+        "fp": 709,
+        "fn": 402,
+        "tp": 595,
+        "fpr": 0.621384750219106,
+        "fnr": 0.40320962888665995,
+        "roc_auc": 0.48770281044711705,
+        "pr_auc": 0.46033468259029964,
+        "decision_threshold": 0.5
+      },
+      "hyperparameters": {
+        "constant": "None",
+        "random_state": "42",
+        "strategy": "stratified"
+      }
+    },
+    "Dummy (Most Frequent)": {
+      "model_name": "Dummy (Most Frequent)",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_dummy_most_frequent_exp_v1.joblib",
+      "requires_scaling": false,
+      "fit_time_seconds": 0.0,
+      "validation_metrics": {
+        "accuracy": 0.5777777777777777,
+        "balanced_accuracy": 0.5,
+        "macro_f1": 0.36619718309859156,
+        "weighted_f1": 0.42316118935837244,
+        "precision_normal": 0.0,
+        "recall_normal": 0.0,
+        "f1_normal": 0.0,
+        "precision_aggressive": 0.5777777777777777,
+        "recall_aggressive": 1.0,
+        "f1_aggressive": 0.7323943661971831,
+        "confusion_matrix": [
+          [
+            0,
+            817
+          ],
+          [
+            0,
+            1118
+          ]
+        ],
+        "tn": 0,
+        "fp": 817,
+        "fn": 0,
+        "tp": 1118,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "roc_auc": 0.5,
+        "pr_auc": 0.5777777777777777,
+        "decision_threshold": 0.5
+      },
+      "test_metrics": {
+        "accuracy": 0.46632366697848454,
+        "balanced_accuracy": 0.5,
+        "macro_f1": 0.3180223285486443,
+        "weighted_f1": 0.29660267685968045,
+        "precision_normal": 0.0,
+        "recall_normal": 0.0,
+        "f1_normal": 0.0,
+        "precision_aggressive": 0.46632366697848454,
+        "recall_aggressive": 1.0,
+        "f1_aggressive": 0.6360446570972886,
+        "confusion_matrix": [
+          [
+            0,
+            1141
+          ],
+          [
+            0,
+            997
+          ]
+        ],
+        "tn": 0,
+        "fp": 1141,
+        "fn": 0,
+        "tp": 997,
+        "fpr": 1.0,
+        "fnr": 0.0,
+        "roc_auc": 0.5,
+        "pr_auc": 0.46632366697848454,
+        "decision_threshold": 0.5
+      },
+      "hyperparameters": {
+        "constant": "None",
+        "random_state": "42",
+        "strategy": "most_frequent"
+      }
+    },
+    "Logistic Regression": {
+      "model_name": "Logistic Regression",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_logistic_regression_exp_v1.joblib",
+      "requires_scaling": true,
+      "fit_time_seconds": 0.15062236785888672,
+      "validation_metrics": {
+        "accuracy": 0.7069767441860465,
+        "balanced_accuracy": 0.6852932868844741,
+        "macro_f1": 0.6881027640904479,
+        "weighted_f1": 0.7000377809156059,
+        "precision_normal": 0.6947040498442367,
+        "recall_normal": 0.5458996328029376,
+        "f1_normal": 0.6113776559287183,
+        "precision_aggressive": 0.7130703789636504,
+        "recall_aggressive": 0.8246869409660107,
+        "f1_aggressive": 0.7648278722521775,
+        "confusion_matrix": [
+          [
+            446,
+            371
+          ],
+          [
+            196,
+            922
+          ]
+        ],
+        "tn": 446,
+        "fp": 371,
+        "fn": 196,
+        "tp": 922,
+        "fpr": 0.4541003671970624,
+        "fnr": 0.17531305903398928,
+        "roc_auc": 0.7449108063665006,
+        "pr_auc": 0.7956636621630766,
+        "decision_threshold": 0.5700000000000001
+      },
+      "test_metrics": {
+        "accuracy": 0.6538821328344246,
+        "balanced_accuracy": 0.6623683495710619,
+        "macro_f1": 0.6515743592273378,
+        "weighted_f1": 0.6496644776214727,
+        "precision_normal": 0.7436208991494532,
+        "recall_normal": 0.5363716038562665,
+        "f1_normal": 0.6232179226069247,
+        "precision_aggressive": 0.5977186311787073,
+        "recall_aggressive": 0.7883650952858575,
+        "f1_aggressive": 0.6799307958477508,
+        "confusion_matrix": [
+          [
+            612,
+            529
+          ],
+          [
+            211,
+            786
+          ]
+        ],
+        "tn": 612,
+        "fp": 529,
+        "fn": 211,
+        "tp": 786,
+        "fpr": 0.4636283961437336,
+        "fnr": 0.21163490471414242,
+        "roc_auc": 0.7364802558420221,
+        "pr_auc": 0.7267517369889767,
+        "decision_threshold": 0.5700000000000001
+      },
+      "hyperparameters": {
+        "C": "1.0",
+        "class_weight": "balanced",
+        "dual": "False",
+        "fit_intercept": "True",
+        "intercept_scaling": "1",
+        "l1_ratio": "0.0",
+        "max_iter": "1000",
+        "n_jobs": "None",
+        "penalty": "deprecated",
+        "random_state": "42",
+        "solver": "lbfgs",
+        "tol": "0.0001",
+        "verbose": "0",
+        "warm_start": "False"
+      }
+    },
+    "Random Forest": {
+      "model_name": "Random Forest",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_random_forest_exp_v1.joblib",
+      "requires_scaling": false,
+      "fit_time_seconds": 2.22145676612854,
+      "validation_metrics": {
+        "accuracy": 0.7291989664082688,
+        "balanced_accuracy": 0.6882120327652763,
+        "macro_f1": 0.6860999041526425,
+        "weighted_f1": 0.7041930948624661,
+        "precision_normal": 0.8653366583541147,
+        "recall_normal": 0.42472460220318237,
+        "f1_normal": 0.5697865353037767,
+        "precision_aggressive": 0.6936114732724902,
+        "recall_aggressive": 0.9516994633273703,
+        "f1_aggressive": 0.8024132730015083,
+        "confusion_matrix": [
+          [
+            347,
+            470
+          ],
+          [
+            54,
+            1064
+          ]
+        ],
+        "tn": 347,
+        "fp": 470,
+        "fn": 54,
+        "tp": 1064,
+        "fpr": 0.5752753977968176,
+        "fnr": 0.04830053667262969,
+        "roc_auc": 0.7434957729640488,
+        "pr_auc": 0.7567632908443354,
+        "decision_threshold": 0.65
+      },
+      "test_metrics": {
+        "accuracy": 0.6501403180542563,
+        "balanced_accuracy": 0.6644323856758707,
+        "macro_f1": 0.6400478968596945,
+        "weighted_f1": 0.6359883754853458,
+        "precision_normal": 0.8075117370892019,
+        "recall_normal": 0.45223488168273446,
+        "f1_normal": 0.5797752808988764,
+        "precision_aggressive": 0.5830553702468312,
+        "recall_aggressive": 0.876629889669007,
+        "f1_aggressive": 0.7003205128205128,
+        "confusion_matrix": [
+          [
+            516,
+            625
+          ],
+          [
+            123,
+            874
+          ]
+        ],
+        "tn": 516,
+        "fp": 625,
+        "fn": 123,
+        "tp": 874,
+        "fpr": 0.5477651183172656,
+        "fnr": 0.12337011033099297,
+        "roc_auc": 0.7742667089788208,
+        "pr_auc": 0.7681643022046991,
+        "decision_threshold": 0.65
+      },
+      "hyperparameters": {
+        "bootstrap": "True",
+        "ccp_alpha": "0.0",
+        "class_weight": "balanced",
+        "criterion": "gini",
+        "max_depth": "12",
+        "max_features": "sqrt",
+        "max_leaf_nodes": "None",
+        "max_samples": "None",
+        "min_impurity_decrease": "0.0",
+        "min_samples_leaf": "1",
+        "min_samples_split": "4",
+        "min_weight_fraction_leaf": "0.0",
+        "monotonic_cst": "None",
+        "n_estimators": "200",
+        "n_jobs": "-1",
+        "oob_score": "False",
+        "random_state": "42",
+        "verbose": "0",
+        "warm_start": "False"
+      }
+    },
+    "XGBoost": {
+      "model_name": "XGBoost",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_xgboost_exp_v1.joblib",
+      "requires_scaling": false,
+      "fit_time_seconds": 0.9839882850646973,
+      "validation_metrics": {
+        "accuracy": 0.7178294573643411,
+        "balanced_accuracy": 0.6823274644572074,
+        "macro_f1": 0.6823114875559897,
+        "weighted_f1": 0.6988353034946508,
+        "precision_normal": 0.7876857749469215,
+        "recall_normal": 0.4541003671970624,
+        "f1_normal": 0.5760869565217391,
+        "precision_aggressive": 0.6953551912568307,
+        "recall_aggressive": 0.9105545617173524,
+        "f1_aggressive": 0.7885360185902401,
+        "confusion_matrix": [
+          [
+            371,
+            446
+          ],
+          [
+            100,
+            1018
+          ]
+        ],
+        "tn": 371,
+        "fp": 446,
+        "fn": 100,
+        "tp": 1018,
+        "fpr": 0.5458996328029376,
+        "fnr": 0.08944543828264759,
+        "roc_auc": 0.7261902155229986,
+        "pr_auc": 0.7302244147354778,
+        "decision_threshold": 0.89
+      },
+      "test_metrics": {
+        "accuracy": 0.6627689429373246,
+        "balanced_accuracy": 0.674491924502693,
+        "macro_f1": 0.6570958124259385,
+        "weighted_f1": 0.6541251549945217,
+        "precision_normal": 0.7908587257617729,
+        "recall_normal": 0.5004382120946538,
+        "f1_normal": 0.6129898013955984,
+        "precision_aggressive": 0.597457627118644,
+        "recall_aggressive": 0.8485456369107321,
+        "f1_aggressive": 0.7012018234562785,
+        "confusion_matrix": [
+          [
+            571,
+            570
+          ],
+          [
+            151,
+            846
+          ]
+        ],
+        "tn": 571,
+        "fp": 570,
+        "fn": 151,
+        "tp": 846,
+        "fpr": 0.49956178790534617,
+        "fnr": 0.1514543630892678,
+        "roc_auc": 0.7497030970211247,
+        "pr_auc": 0.693626981232953,
+        "decision_threshold": 0.89
+      },
+      "hyperparameters": {
+        "objective": "binary:logistic",
+        "base_score": "None",
+        "booster": "None",
+        "callbacks": "None",
+        "colsample_bylevel": "None",
+        "colsample_bynode": "None",
+        "colsample_bytree": "0.85",
+        "device": "None",
+        "early_stopping_rounds": "None",
+        "enable_categorical": "False",
+        "eval_metric": "logloss",
+        "feature_types": "None",
+        "feature_weights": "None",
+        "gamma": "None",
+        "grow_policy": "None",
+        "importance_type": "None",
+        "interaction_constraints": "None",
+        "learning_rate": "0.08",
+        "max_bin": "None",
+        "max_cat_threshold": "None",
+        "max_cat_to_onehot": "None",
+        "max_delta_step": "None",
+        "max_depth": "5",
+        "max_leaves": "None",
+        "min_child_weight": "None",
+        "missing": "nan",
+        "monotone_constraints": "None",
+        "multi_strategy": "None",
+        "n_estimators": "200",
+        "n_jobs": "-1",
+        "num_parallel_tree": "None",
+        "random_state": "42",
+        "reg_alpha": "None",
+        "reg_lambda": "None",
+        "sampling_method": "None",
+        "scale_pos_weight": "0.6210788381742739",
+        "subsample": "0.85",
+        "tree_method": "None",
+        "validate_parameters": "None",
+        "verbosity": "None"
+      }
+    },
+    "Support Vector Machine": {
+      "model_name": "Support Vector Machine",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_support_vector_machine_exp_v1.joblib",
+      "requires_scaling": true,
+      "fit_time_seconds": 8.546392679214478,
+      "validation_metrics": {
+        "accuracy": 0.7343669250645994,
+        "balanced_accuracy": 0.7038885227379719,
+        "macro_f1": 0.707037877502545,
+        "weighted_f1": 0.7209567325214594,
+        "precision_normal": 0.7874762808349146,
+        "recall_normal": 0.5079559363525091,
+        "f1_normal": 0.6175595238095238,
+        "precision_aggressive": 0.7144886363636364,
+        "recall_aggressive": 0.8998211091234347,
+        "f1_aggressive": 0.7965162311955661,
+        "confusion_matrix": [
+          [
+            415,
+            402
+          ],
+          [
+            112,
+            1006
+          ]
+        ],
+        "tn": 415,
+        "fp": 402,
+        "fn": 112,
+        "tp": 1006,
+        "fpr": 0.4920440636474908,
+        "fnr": 0.1001788908765653,
+        "roc_auc": 0.7282643205759541,
+        "pr_auc": 0.7563474663931986,
+        "decision_threshold": 0.84
+      },
+      "test_metrics": {
+        "accuracy": 0.6992516370439663,
+        "balanced_accuracy": 0.7082927133723695,
+        "macro_f1": 0.6969828419427797,
+        "weighted_f1": 0.6952168608910453,
+        "precision_normal": 0.8066502463054187,
+        "recall_normal": 0.5740578439964943,
+        "f1_normal": 0.6707629288274449,
+        "precision_aggressive": 0.6334841628959276,
+        "recall_aggressive": 0.8425275827482447,
+        "f1_aggressive": 0.7232027550581145,
+        "confusion_matrix": [
+          [
+            655,
+            486
+          ],
+          [
+            157,
+            840
+          ]
+        ],
+        "tn": 655,
+        "fp": 486,
+        "fn": 157,
+        "tp": 840,
+        "fpr": 0.4259421560035057,
+        "fnr": 0.15747241725175526,
+        "roc_auc": 0.6959651962021033,
+        "pr_auc": 0.5627335551033417,
+        "decision_threshold": 0.84
+      },
+      "hyperparameters": {
+        "C": "2.0",
+        "break_ties": "False",
+        "cache_size": "200",
+        "class_weight": "balanced",
+        "coef0": "0.0",
+        "decision_function_shape": "ovr",
+        "degree": "3",
+        "gamma": "scale",
+        "kernel": "rbf",
+        "max_iter": "-1",
+        "probability": "True",
+        "random_state": "42",
+        "shrinking": "True",
+        "tol": "0.001",
+        "verbose": "False"
+      }
+    },
+    "Multi-Layer Perceptron": {
+      "model_name": "Multi-Layer Perceptron",
+      "artifact_path": "models\\experiments\\dataset_c\\dataset_c_multi-layer_perceptron_exp_v1.joblib",
+      "requires_scaling": true,
+      "fit_time_seconds": 10.09974980354309,
+      "validation_metrics": {
+        "accuracy": 0.717312661498708,
+        "balanced_accuracy": 0.6789144148385274,
+        "macro_f1": 0.6772148829816464,
+        "weighted_f1": 0.694911996374074,
+        "precision_normal": 0.8096330275229358,
+        "recall_normal": 0.4320685434516524,
+        "f1_normal": 0.5634477254588987,
+        "precision_aggressive": 0.6904603068712475,
+        "recall_aggressive": 0.9257602862254025,
+        "f1_aggressive": 0.7909820405043944,
+        "confusion_matrix": [
+          [
+            353,
+            464
+          ],
+          [
+            83,
+            1035
+          ]
+        ],
+        "tn": 353,
+        "fp": 464,
+        "fn": 83,
+        "tp": 1035,
+        "fpr": 0.5679314565483476,
+        "fnr": 0.0742397137745975,
+        "roc_auc": 0.7390530607418826,
+        "pr_auc": 0.7661337658713394,
+        "decision_threshold": 0.9
+      },
+      "test_metrics": {
+        "accuracy": 0.656688493919551,
+        "balanced_accuracy": 0.6693647990421747,
+        "macro_f1": 0.6495088229618565,
+        "weighted_f1": 0.6461301542758826,
+        "precision_normal": 0.7945007235890015,
+        "recall_normal": 0.48115687992988604,
+        "f1_normal": 0.5993449781659389,
+        "precision_aggressive": 0.5908776779543884,
+        "recall_aggressive": 0.8575727181544633,
+        "f1_aggressive": 0.6996726677577741,
+        "confusion_matrix": [
+          [
+            549,
+            592
+          ],
+          [
+            142,
+            855
+          ]
+        ],
+        "tn": 549,
+        "fp": 592,
+        "fn": 142,
+        "tp": 855,
+        "fpr": 0.5188431200701139,
+        "fnr": 0.1424272818455366,
+        "roc_auc": 0.7464088145242036,
+        "pr_auc": 0.7292968722416799,
+        "decision_threshold": 0.9
+      },
+      "hyperparameters": {
+        "activation": "relu",
+        "alpha": "0.001",
+        "batch_size": "auto",
+        "beta_1": "0.9",
+        "beta_2": "0.999",
+        "early_stopping": "True",
+        "epsilon": "1e-08",
+        "hidden_layer_sizes": "(128, 64)",
+        "learning_rate": "constant",
+        "learning_rate_init": "0.001",
+        "max_fun": "15000",
+        "max_iter": "300",
+        "momentum": "0.9",
+        "n_iter_no_change": "10",
+        "nesterovs_momentum": "True",
+        "power_t": "0.5",
+        "random_state": "42",
+        "shuffle": "True",
+        "solver": "adam",
+        "tol": "0.0001",
+        "validation_fraction": "0.15",
+        "verbose": "False",
+        "warm_start": "False"
+      }
+    }
+  }
+}

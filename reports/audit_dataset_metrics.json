@@ -1,0 +1,349 @@
+{
+  "A1_Drivers": {
+    "file_count": 21,
+    "total_size_bytes": 101123360,
+    "total_rows": 1826637,
+    "driver_breakdown": {
+      "Driver-1": {
+        "Accelerometer": 100199,
+        "Gyroscope": 100748,
+        "Pressure": 10133
+      },
+      "Driver-2": {
+        "Accelerometer": 1212,
+        "Gyroscope": 1224,
+        "Pressure": 124
+      },
+      "Driver-3": {
+        "Accelerometer": 106958,
+        "Gyroscope": 107551,
+        "Pressure": 107551
+      },
+      "Driver-4": {
+        "Accelerometer": 177277,
+        "Gyroscope": 178271,
+        "Pressure": 178271
+      },
+      "Driver-5": {
+        "Accelerometer": 93325,
+        "Gyroscope": 93857,
+        "Pressure": 93857
+      },
+      "Driver-6": {
+        "Accelerometer": 54819,
+        "Gyroscope": 55133,
+        "Pressure": 55133
+      },
+      "Driver-7": {
+        "Accelerometer": 103276,
+        "Gyroscope": 103859,
+        "Pressure": 103859
+      }
+    },
+    "sensor_types": [
+      "Accelerometer",
+      "Gyroscope",
+      "Pressure"
+    ],
+    "null_cells": 1076102,
+    "duplicate_rows": 1397926
+  },
+  "A2_Daywise": {
+    "total_csv_files": 56,
+    "non_empty_csv_files": 42,
+    "empty_csv_files": 14,
+    "xlsx_files": 6,
+    "total_rows": 2885476,
+    "null_cells": 13,
+    "duplicate_rows": 2653493,
+    "total_size_bytes": 164821747
+  },
+  "B_RaspberryPi": {
+    "raw_file": "sensor_raw.csv",
+    "raw_rows": 1114,
+    "raw_columns": [
+      "Class",
+      "DriverID",
+      "TaskID",
+      "Hour",
+      "Minute",
+      "Second",
+      "GyroX",
+      "GyroY",
+      "GyroZ",
+      "AccX",
+      "AccY",
+      "AccZ"
+    ],
+    "raw_nulls": 0,
+    "raw_duplicates": 0,
+    "classes": {
+      "3": 350,
+      "2": 288,
+      "1": 252,
+      "4": 224
+    },
+    "drivers": {
+      "Driver-3": 383,
+      "Driver-1": 368,
+      "Driver-2": 363
+    },
+    "task_ids_count": 33,
+    "feature_files_count": 17,
+    "feature_files_total_rows": 18734,
+    "total_rows": 19848,
+    "total_size_bytes": 20871114
+  },
+  "C_PhoneSensor": {
+    "files": {
+      "1_20210317_184512.csv": {
+        "rows": 6646,
+        "cols": [
+          "Longitude",
+          "Latitude",
+          "Speed",
+          "Distance",
+          "Time",
+          "Acc X",
+          "Acc Y",
+          "Acc Z",
+          "Heading",
+          "gyro_x",
+          "gyro_y",
+          "gyro_z"
+        ],
+        "nulls": 0,
+        "duplicates": 4,
+        "size_bytes": 901926
+      },
+      "2_20210317_171452.csv": {
+        "rows": 7603,
+        "cols": [
+          "Longitude",
+          "Latitude",
+          "Speed",
+          "Distance",
+          "Time",
+          "Acc X",
+          "Acc Y",
+          "Acc Z",
+          "Heading",
+          "gyro_x",
+          "gyro_y",
+          "gyro_z"
+        ],
+        "nulls": 0,
+        "duplicates": 3,
+        "size_bytes": 1033887
+      },
+      "3_FinalDatasetCsv.csv": {
+        "rows": 14249,
+        "cols": [
+          "Acc X",
+          "Acc Y",
+          "Acc Z",
+          "gyro_x",
+          "gyro_y",
+          "gyro_z",
+          "label"
+        ],
+        "nulls": 0,
+        "duplicates": 9,
+        "size_bytes": 1011526,
+        "label_distribution": {
+          "1": 8444,
+          "0": 5805
+        }
+      }
+    },
+    "total_rows": 28498,
+    "total_size_bytes": 2947339
+  },
+  "D_Eishkaran": {
+    "csv_files": 72,
+    "total_rows": 4173442,
+    "nulls": 13,
+    "total_size_bytes": 243358506
+  },
+  "E_Shashwatwork": {
+    "raw_rows": 1114,
+    "raw_columns": [
+      "Target(Class)",
+      "GyroX",
+      "GyroY",
+      "GyroZ",
+      "AccX",
+      "AccY",
+      "AccZ"
+    ],
+    "raw_nulls": 0,
+    "raw_duplicates": 0,
+    "class_distribution": {
+      "3": 350,
+      "2": 288,
+      "1": 252,
+      "4": 224
+    },
+    "feature_files": 17,
+    "total_rows": 19848,
+    "total_size_bytes": 20849232
+  },
+  "F_Yotamkatz": {
+    "files": {
+      "all_drivers.csv": {
+        "rows": 41019,
+        "columns": [
+          "driver",
+          "elapsed_s",
+          "Calculated load value (%)",
+          "Engine coolant temperature (\u00b0C)",
+          "Engine RPM (RPM)",
+          "Vehicle speed (km/h)",
+          "Intake air temperature (\u00b0C)",
+          "Mass air flow rate (g/s)",
+          "Absolute throttle position (%)",
+          "Control module voltage (V)",
+          "Latitude (deg)",
+          "Longitude (deg)",
+          "GPS Speed (km/h)",
+          "Horz Accuracy (m)",
+          "Accel X (m/s\u00b2)",
+          "Accel Y (m/s\u00b2)",
+          "Accel Z (m/s\u00b2)",
+          "Rotation Rate X (deg/s)",
+          "Rotation Rate Y (deg/s)",
+          "Rotation Rate Z (deg/s)",
+          "Adapter voltage (V)"
+        ],
+        "nulls": 0,
+        "size_bytes": 6133563
+      },
+      "driver_E.csv": {
+        "rows": 7442,
+        "columns": [
+          "driver",
+          "elapsed_s",
+          "Calculated load value (%)",
+          "Engine coolant temperature (\u00b0C)",
+          "Engine RPM (RPM)",
+          "Vehicle speed (km/h)",
+          "Intake air temperature (\u00b0C)",
+          "Mass air flow rate (g/s)",
+          "Absolute throttle position (%)",
+          "Control module voltage (V)",
+          "Latitude (deg)",
+          "Longitude (deg)",
+          "GPS Speed (km/h)",
+          "Horz Accuracy (m)",
+          "Accel X (m/s\u00b2)",
+          "Accel Y (m/s\u00b2)",
+          "Accel Z (m/s\u00b2)",
+          "Rotation Rate X (deg/s)",
+          "Rotation Rate Y (deg/s)",
+          "Rotation Rate Z (deg/s)",
+          "Adapter voltage (V)"
+        ],
+        "nulls": 0,
+        "size_bytes": 1107741
+      },
+      "driver_G.csv": {
+        "rows": 10892,
+        "columns": [
+          "driver",
+          "elapsed_s",
+          "Calculated load value (%)",
+          "Engine coolant temperature (\u00b0C)",
+          "Engine RPM (RPM)",
+          "Vehicle speed (km/h)",
+          "Intake air temperature (\u00b0C)",
+          "Mass air flow rate (g/s)",
+          "Absolute throttle position (%)",
+          "Control module voltage (V)",
+          "Latitude (deg)",
+          "Longitude (deg)",
+          "GPS Speed (km/h)",
+          "Horz Accuracy (m)",
+          "Accel X (m/s\u00b2)",
+          "Accel Y (m/s\u00b2)",
+          "Accel Z (m/s\u00b2)",
+          "Rotation Rate X (deg/s)",
+          "Rotation Rate Y (deg/s)",
+          "Rotation Rate Z (deg/s)",
+          "Adapter voltage (V)"
+        ],
+        "nulls": 0,
+        "size_bytes": 1627680
+      },
+      "driver_R.csv": {
+        "rows": 10103,
+        "columns": [
+          "driver",
+          "elapsed_s",
+          "Calculated load value (%)",
+          "Engine coolant temperature (\u00b0C)",
+          "Engine RPM (RPM)",
+          "Vehicle speed (km/h)",
+          "Intake air temperature (\u00b0C)",
+          "Mass air flow rate (g/s)",
+          "Absolute throttle position (%)",
+          "Control module voltage (V)",
+          "Latitude (deg)",
+          "Longitude (deg)",
+          "GPS Speed (km/h)",
+          "Horz Accuracy (m)",
+          "Accel X (m/s\u00b2)",
+          "Accel Y (m/s\u00b2)",
+          "Accel Z (m/s\u00b2)",
+          "Rotation Rate X (deg/s)",
+          "Rotation Rate Y (deg/s)",
+          "Rotation Rate Z (deg/s)",
+          "Adapter voltage (V)"
+        ],
+        "nulls": 0,
+        "size_bytes": 1514277
+      },
+      "driver_Y.csv": {
+        "rows": 12582,
+        "columns": [
+          "driver",
+          "elapsed_s",
+          "Calculated load value (%)",
+          "Engine coolant temperature (\u00b0C)",
+          "Engine RPM (RPM)",
+          "Vehicle speed (km/h)",
+          "Intake air temperature (\u00b0C)",
+          "Mass air flow rate (g/s)",
+          "Absolute throttle position (%)",
+          "Control module voltage (V)",
+          "Latitude (deg)",
+          "Longitude (deg)",
+          "GPS Speed (km/h)",
+          "Horz Accuracy (m)",
+          "Accel X (m/s\u00b2)",
+          "Accel Y (m/s\u00b2)",
+          "Accel Z (m/s\u00b2)",
+          "Rotation Rate X (deg/s)",
+          "Rotation Rate Y (deg/s)",
+          "Rotation Rate Z (deg/s)",
+          "Adapter voltage (V)"
+        ],
+        "nulls": 0,
+        "size_bytes": 1885161
+      }
+    },
+    "total_rows": 82038,
+    "total_size_bytes": 12268422
+  },
+  "G_VitorRF": {
+    "total_csv_files": 228,
+    "other_files": [
+      "DataInfo.rtf",
+      "readme.rtf",
+      "readme.rtf",
+      "DataInfo.rtf",
+      "readme.rtf",
+      "readme.rtf"
+    ],
+    "total_size_bytes": 2375666498
+  }
+}

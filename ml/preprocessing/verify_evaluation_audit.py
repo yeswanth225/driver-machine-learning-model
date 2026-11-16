@@ -1,5 +1,7 @@
 import os
+import sys
 import json
+from pathlib import Path
 import joblib
 import numpy as np
 import pandas as pd
@@ -8,7 +10,8 @@ from sklearn.metrics import (
     roc_auc_score, average_precision_score, confusion_matrix, classification_report
 )
 
-BASE_DIR = r"d:\driver ml model\driver-monitoring-agent"
+REPO_ROOT = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = str(REPO_ROOT)
 PROCESSED_DIR = os.path.join(BASE_DIR, "dataset", "processed")
 SAVED_MODELS_DIR = os.path.join(BASE_DIR, "ml", "saved_models")
 

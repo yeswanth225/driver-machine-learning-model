@@ -41,9 +41,11 @@ class SmoothedContext:
     recent_maneuver_count: int = 0  # Number of abrupt maneuvers in past 10s window
     recent_maneuver_history: List[Dict[str, Any]] = field(default_factory=list)
 
-    # Data Quality
+    # Data Quality & Pipeline Health
     is_valid: bool = True
     data_quality_status: str = "VALID"
+    pipeline_a_health: str = "HEALTHY"
+    pipeline_b_health: str = "HEALTHY"
 
 
 class TemporalSmoother:
@@ -125,7 +127,9 @@ class TemporalSmoother:
                 is_maneuver_active=False,
                 recent_maneuver_count=0,
                 is_valid=False,
-                data_quality_status=val_pred.data_quality_status
+                data_quality_status=val_pred.data_quality_status,
+                pipeline_a_health=val_pred.pipeline_a_health,
+                pipeline_b_health=val_pred.pipeline_b_health
             )
             self._last_context = ctx
             return ctx
@@ -246,7 +250,9 @@ class TemporalSmoother:
             recent_maneuver_count=recent_maneuver_count,
             recent_maneuver_history=recent_maneuver_history,
             is_valid=True,
-            data_quality_status=val_pred.data_quality_status
+            data_quality_status=val_pred.data_quality_status,
+            pipeline_a_health=val_pred.pipeline_a_health,
+            pipeline_b_health=val_pred.pipeline_b_health
         )
         self._last_context = ctx
         return ctx

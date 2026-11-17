@@ -7,11 +7,14 @@ Stage: Stage 6 - Intelligent Safety Monitoring Agent
 
 import time
 import math
+import logging
 from dataclasses import dataclass, field, asdict
 from typing import Dict, Any, List, Optional, Union, Tuple
 
 import pandas as pd
 import numpy as np
+
+logger = logging.getLogger(__name__)
 
 from ml.agent.config import (
     SafetyAgentConfig,
@@ -53,6 +56,8 @@ class SafetyAssessment:
     active_alerts: List[Dict[str, Any]]
     data_quality_status: str
     is_valid: bool
+    pipeline_a_health: str = "HEALTHY"
+    pipeline_b_health: str = "HEALTHY"
 
     def to_dict(self) -> Dict[str, Any]:
         """Convert assessment to clean dictionary format."""
@@ -285,7 +290,9 @@ class IntelligentSafetyAgent:
         style_confidence: Optional[float] = None,
         maneuver_prediction: Optional[int] = None,
         maneuver_confidence: Optional[float] = None,
-        current_time: Optional[float] = None
+        current_time: Optional[float] = None,
+        pipeline_a_health: Optional[str] = None,
+        pipeline_b_health: Optional[str] = None
     ) -> SafetyAssessment:
         """
         Process pre-computed predictions from Pipeline A and/or Pipeline B.
@@ -327,7 +334,9 @@ class IntelligentSafetyAgent:
             style_prediction=style_prediction,
             style_confidence=style_confidence,
             maneuver_prediction=maneuver_prediction,
-            maneuver_confidence=maneuver_confidence
+            maneuver_confidence=maneuver_confidence,
+            pipeline_a_health=pipeline_a_health,
+            pipeline_b_health=pipeline_b_health
         )
 
         # Step 1: Validate Predictions & Telemetry Integrity
@@ -355,7 +364,9 @@ class IntelligentSafetyAgent:
                 "title": a.title,
                 "triggering_condition": a.triggering_condition,
                 "explanation": a.explanation,
+                "message": a.explanation,
                 "advisory": a.safe_driving_advisory,
+                "safe_driving_advisory": a.safe_driving_advisory,
                 "related_predictions": a.related_predictions
             }
             for a in eval_result.active_alerts
@@ -380,7 +391,9 @@ class IntelligentSafetyAgent:
             explanation=eval_result.overall_explanation,
             active_alerts=alerts_list,
             data_quality_status=val_pred.data_quality_status,
-            is_valid=val_pred.is_valid
+            is_valid=val_pred.is_valid,
+            pipeline_a_health=val_pred.pipeline_a_health,
+            pipeline_b_health=val_pred.pipeline_b_health
         )
 
     def process_features(
@@ -396,8 +409,10 @@ class IntelligentSafetyAgent:
         """
         style_pred = None
         style_conf = None
+        pipeline_a_health = None
         maneuver_pred = None
         maneuver_conf = None
+        pipeline_b_health = None
 
         # Run Pipeline A (Style) if features provided
         if features_c is not None and self.classifier_c is not None:
@@ -412,9 +427,14 @@ class IntelligentSafetyAgent:
                 p_agg = float(probs_c[0, 1])
                 style_pred = 1 if p_agg >= thresh else 0
                 style_conf = p_agg if style_pred == 1 else float(probs_c[0, 0])
-            except Exception:
+                pipeline_a_health = "HEALTHY"
+            except Exception as e:
+                logger.warning(f"Pipeline A (Style) inference exception: {e}")
                 style_pred = None
                 style_conf = None
+                pipeline_a_health = "DEGRADED"
+        elif features_c is None:
+            pipeline_a_health = "MISSING"
 
         # Run Pipeline B (Maneuver) if features provided
         if features_b is not None and self.classifier_b is not None:
@@ -425,18 +445,25 @@ class IntelligentSafetyAgent:
                 if gate_result.status == GateStatus.VALID_QUIESCENT:
                     maneuver_pred = ManeuverClass.NONE.value
                     maneuver_conf = 1.0
+                    pipeline_b_health = "QUIESCENT_BYPASS"
                 elif gate_result.status == GateStatus.VALID_EXCITED:
                     preds_b = self.classifier_b.predict(features_b)
                     probs_b = self.classifier_b.predict_proba(features_b)
                     pred_cls = int(preds_b[0])
                     maneuver_pred = pred_cls
                     maneuver_conf = float(probs_b[0, pred_cls - 1])
+                    pipeline_b_health = "HEALTHY"
                 else:  # GateStatus.INVALID_OR_INSUFFICIENT
                     maneuver_pred = None
                     maneuver_conf = None
-            except Exception:
+                    pipeline_b_health = "INVALID"
+            except Exception as e:
+                logger.warning(f"Pipeline B (Maneuver) inference exception: {e}")
                 maneuver_pred = None
                 maneuver_conf = None
+                pipeline_b_health = "DEGRADED"
+        elif features_b is None:
+            pipeline_b_health = "MISSING"
 
         return self.process_predictions(
             timestamp=timestamp,
@@ -444,5 +471,7 @@ class IntelligentSafetyAgent:
             style_confidence=style_conf,
             maneuver_prediction=maneuver_pred,
             maneuver_confidence=maneuver_conf,
-            current_time=current_time
+            current_time=current_time,
+            pipeline_a_health=pipeline_a_health,
+            pipeline_b_health=pipeline_b_health
         )

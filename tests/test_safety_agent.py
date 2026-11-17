@@ -1447,3 +1447,336 @@ class TestStage6RemediationRegression:
         # Strictly above: 0.8401 -> 1
         assert DatasetCBinaryClassifier.predict(MockClassifier(0.8401, clf_c), dummy)[0] == 1
 
+
+# =============================================================================
+# Stage 6 Phase 1C: Comprehensive 20-Row D-13 Fail-Safe Health Matrix Tests
+# =============================================================================
+class TestD13FailSafeHealthMatrix:
+    """
+    Validates all 20 reachable rows of the authoritative D-13 Fail-Safe Truth Table.
+    Integrates P-05A (Healthy A + Impaired B clamps to CAUTION floor) and
+    Policy 1A-Clamped (Active maneuver during A outage clamped >= CAUTION,
+    cruising during A outage returns INSUFFICIENT_DATA).
+    Treats QUIESCENT_BYPASS as healthy-by-design.
+    """
+
+    def test_row01_healthy_a_healthy_b_allows_normal(self):
+        """Row 1: HEALTHY A + HEALTHY B allows NORMAL when driving is nominal."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            maneuver_prediction=0,
+            maneuver_confidence=0.90
+        )
+        assert assessment.pipeline_a_health == "HEALTHY"
+        assert assessment.pipeline_b_health == "HEALTHY"
+        assert assessment.safety_state == SafetyState.NORMAL
+        assert not any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row02_healthy_a_degraded_b_p05a_clamps_to_caution(self):
+        """Row 2 (P-05A): HEALTHY A + DEGRADED B clamps nominal style to CAUTION and raises DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            pipeline_b_health="DEGRADED"
+        )
+        assert assessment.pipeline_a_health == "HEALTHY"
+        assert assessment.pipeline_b_health == "DEGRADED"
+        assert assessment.safety_state == SafetyState.CAUTION
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row03_healthy_a_missing_b_p05a_clamps_to_caution(self):
+        """Row 3 (P-05A): HEALTHY A + MISSING B clamps nominal style to CAUTION and raises DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            maneuver_prediction=None,
+            maneuver_confidence=None
+        )
+        assert assessment.pipeline_a_health == "HEALTHY"
+        assert assessment.pipeline_b_health == "MISSING"
+        assert assessment.safety_state == SafetyState.CAUTION
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row04_healthy_a_invalid_b_p05a_clamps_to_caution(self):
+        """Row 4 (P-05A): HEALTHY A + INVALID B clamps nominal style to CAUTION and raises DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            maneuver_prediction=99,
+            maneuver_confidence=0.90
+        )
+        assert assessment.pipeline_a_health == "HEALTHY"
+        assert assessment.pipeline_b_health == "INVALID"
+        assert assessment.safety_state == SafetyState.CAUTION
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row05_healthy_a_quiescent_bypass_b_allows_normal(self):
+        """Row 5: HEALTHY A + QUIESCENT_BYPASS B is healthy-by-design; allows NORMAL with no DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert assessment.pipeline_a_health == "HEALTHY"
+        assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
+        assert assessment.safety_state == SafetyState.NORMAL
+        assert not any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row06_degraded_a_healthy_b_policy1a_clamped(self):
+        """Row 6 (Policy 1A-Clamped): DEGRADED A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+        agent = IntelligentSafetyAgent()
+        # Subcase A: Nominal Cruising (M=0)
+        ass_cruise = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            maneuver_prediction=0,
+            maneuver_confidence=0.90
+        )
+        assert ass_cruise.pipeline_a_health == "DEGRADED"
+        assert ass_cruise.pipeline_b_health == "HEALTHY"
+        assert ass_cruise.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_cruise.active_alerts)
+
+        # Subcase B: Active Maneuver (Harsh Braking M=2)
+        agent.reset()
+        ass_man = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert ass_man.pipeline_a_health == "DEGRADED"
+        assert ass_man.pipeline_b_health == "HEALTHY"
+        assert ass_man.safety_state == SafetyState.WARNING
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_man.active_alerts)
+
+    def test_row07_degraded_a_degraded_b_insufficient_data(self):
+        """Row 7: DEGRADED A + DEGRADED B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            pipeline_b_health="DEGRADED"
+        )
+        assert assessment.pipeline_a_health == "DEGRADED"
+        assert assessment.pipeline_b_health == "DEGRADED"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row08_degraded_a_missing_b_insufficient_data(self):
+        """Row 8: DEGRADED A + MISSING B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            pipeline_b_health="MISSING"
+        )
+        assert assessment.pipeline_a_health == "DEGRADED"
+        assert assessment.pipeline_b_health == "MISSING"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row09_degraded_a_invalid_b_insufficient_data(self):
+        """Row 9: DEGRADED A + INVALID B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            pipeline_b_health="INVALID"
+        )
+        assert assessment.pipeline_a_health == "DEGRADED"
+        assert assessment.pipeline_b_health == "INVALID"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row10_degraded_a_quiescent_bypass_b_insufficient_data(self):
+        """Row 10: DEGRADED A + QUIESCENT_BYPASS B returns INSUFFICIENT_DATA because style is uncertifiable."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="DEGRADED",
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert assessment.pipeline_a_health == "DEGRADED"
+        assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row11_missing_a_healthy_b_policy1a_clamped(self):
+        """Row 11 (Policy 1A-Clamped): MISSING A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+        agent = IntelligentSafetyAgent()
+        # Subcase A: Nominal Cruising (M=0)
+        ass_cruise = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            maneuver_prediction=0,
+            maneuver_confidence=0.90
+        )
+        assert ass_cruise.pipeline_a_health == "MISSING"
+        assert ass_cruise.pipeline_b_health == "HEALTHY"
+        assert ass_cruise.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_cruise.active_alerts)
+
+        # Subcase B: Active Maneuver (Sudden Acceleration M=1)
+        agent.reset()
+        ass_man = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            maneuver_prediction=ManeuverClass.SUDDEN_ACCELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert ass_man.pipeline_a_health == "MISSING"
+        assert ass_man.pipeline_b_health == "HEALTHY"
+        assert ass_man.safety_state == SafetyState.CAUTION
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_man.active_alerts)
+
+    def test_row12_missing_a_degraded_b_insufficient_data(self):
+        """Row 12: MISSING A + DEGRADED B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            pipeline_b_health="DEGRADED"
+        )
+        assert assessment.pipeline_a_health == "MISSING"
+        assert assessment.pipeline_b_health == "DEGRADED"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row13_missing_a_missing_b_insufficient_data(self):
+        """Row 13: MISSING A + MISSING B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            maneuver_prediction=None
+        )
+        assert assessment.pipeline_a_health == "MISSING"
+        assert assessment.pipeline_b_health == "MISSING"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row14_missing_a_invalid_b_insufficient_data(self):
+        """Row 14: MISSING A + INVALID B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            maneuver_prediction=99,
+            maneuver_confidence=0.90
+        )
+        assert assessment.pipeline_a_health == "MISSING"
+        assert assessment.pipeline_b_health == "INVALID"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row15_missing_a_quiescent_bypass_b_insufficient_data(self):
+        """Row 15: MISSING A + QUIESCENT_BYPASS B returns INSUFFICIENT_DATA because style is uncertifiable."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert assessment.pipeline_a_health == "MISSING"
+        assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row16_invalid_a_healthy_b_policy1a_clamped(self):
+        """Row 16 (Policy 1A-Clamped): INVALID A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+        agent = IntelligentSafetyAgent()
+        # Subcase A: Nominal Cruising (M=0)
+        ass_cruise = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            style_confidence=0.90,
+            maneuver_prediction=0,
+            maneuver_confidence=0.90
+        )
+        assert ass_cruise.pipeline_a_health == "INVALID"
+        assert ass_cruise.pipeline_b_health == "HEALTHY"
+        assert ass_cruise.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_cruise.active_alerts)
+
+        # Subcase B: Active Maneuver (Sudden Right Turn M=3)
+        agent.reset()
+        ass_man = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_RIGHT_TURN.value,
+            maneuver_confidence=0.90
+        )
+        assert ass_man.pipeline_a_health == "INVALID"
+        assert ass_man.pipeline_b_health == "HEALTHY"
+        assert ass_man.safety_state == SafetyState.CAUTION
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_man.active_alerts)
+
+    def test_row17_invalid_a_degraded_b_insufficient_data(self):
+        """Row 17: INVALID A + DEGRADED B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            pipeline_b_health="DEGRADED"
+        )
+        assert assessment.pipeline_a_health == "INVALID"
+        assert assessment.pipeline_b_health == "DEGRADED"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row18_invalid_a_missing_b_insufficient_data(self):
+        """Row 18: INVALID A + MISSING B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            maneuver_prediction=None
+        )
+        assert assessment.pipeline_a_health == "INVALID"
+        assert assessment.pipeline_b_health == "MISSING"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row19_invalid_a_invalid_b_insufficient_data(self):
+        """Row 19: INVALID A + INVALID B returns INSUFFICIENT_DATA and DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            maneuver_prediction=99
+        )
+        assert assessment.pipeline_a_health == "INVALID"
+        assert assessment.pipeline_b_health == "INVALID"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row20_invalid_a_quiescent_bypass_b_insufficient_data(self):
+        """Row 20: INVALID A + QUIESCENT_BYPASS B returns INSUFFICIENT_DATA because style is uncertifiable."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=99,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert assessment.pipeline_a_health == "INVALID"
+        assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+

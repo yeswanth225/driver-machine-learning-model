@@ -290,6 +290,38 @@ class IntelligentSafetyAgent:
         """
         Process pre-computed predictions from Pipeline A and/or Pipeline B.
         """
+        # Boundary type normalization (P-01): Coerce valid numeric scalar representations
+        # to standard Python int and float. Strictly guard against boolean coercion.
+        if timestamp is not None and not isinstance(timestamp, bool):
+            try:
+                timestamp = float(timestamp)
+            except (ValueError, TypeError):
+                pass
+
+        if style_prediction is not None and not isinstance(style_prediction, bool):
+            try:
+                style_prediction = int(style_prediction)
+            except (ValueError, TypeError):
+                pass
+
+        if style_confidence is not None and not isinstance(style_confidence, bool):
+            try:
+                style_confidence = float(style_confidence)
+            except (ValueError, TypeError):
+                pass
+
+        if maneuver_prediction is not None and not isinstance(maneuver_prediction, bool):
+            try:
+                maneuver_prediction = int(maneuver_prediction)
+            except (ValueError, TypeError):
+                pass
+
+        if maneuver_confidence is not None and not isinstance(maneuver_confidence, bool):
+            try:
+                maneuver_confidence = float(maneuver_confidence)
+            except (ValueError, TypeError):
+                pass
+
         raw_input = RawPredictionInput(
             timestamp=timestamp,
             style_prediction=style_prediction,

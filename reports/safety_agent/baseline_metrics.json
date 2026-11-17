@@ -1,0 +1,56 @@
+{
+  "timestamp": "2026-11-18T00:05:00+05:30",
+  "commit_checkpoint": "ca79729a65660ae31d9b4b986e74b3ea595d2cfa",
+  "parent_checkpoint": "eb54f7d1e03260482500f611b77d1065931e300b",
+  "branch": "stage6-phase1",
+  "pytest_baseline": {
+    "total_collected": 93,
+    "passed": 86,
+    "failed": 7,
+    "errors": 0,
+    "skipped": 0,
+    "runtime_seconds": 19.76,
+    "non_stage6_passed": 54,
+    "non_stage6_total": 54,
+    "stage6_passed": 32,
+    "stage6_failed": 7
+  },
+  "frozen_stage5_artifact_hashes": {
+    "models/experiments/dataset_b/dataset_b_extra_trees_exp_v1.joblib": "552048535a3fd584e4874731b8be1438dab4051d8cfa6a98fb1a7b19d9202e90",
+    "models/experiments/dataset_b/dataset_b_scaler_exp_v1.joblib": "d4b3d5e3e1b739c63a9e21fac51fcedf36716143c645abe0d0e3ff99127a7576",
+    "models/experiments/dataset_c/dataset_c_support_vector_machine_exp_v1.joblib": "a00180bd01d5999b1338737549d5745adb986138f813f7f371d67589d0dbaefc",
+    "models/experiments/dataset_c/dataset_c_scaler_exp_v1.joblib": "d67f9ab70eb667cc57e8aeb2f6768e62529f0cb803279cc33d17f6c76555c9f5"
+  },
+  "stage5_benchmarks": {
+    "dataset_c_support_vector_machine": {
+      "model_type": "Support Vector Machine (RBF, C=2.0)",
+      "feature_count": 47,
+      "decision_threshold": 0.84,
+      "test_accuracy": 0.6992516370439663,
+      "test_balanced_accuracy": 0.7082927133723695,
+      "test_macro_f1": 0.6969828419427797,
+      "test_precision_normal": 0.8066502463054187,
+      "test_recall_normal": 0.5740578439964943,
+      "test_recall_aggressive": 0.8425275827482447,
+      "test_f1_aggressive": 0.7232027550581145,
+      "single_record_mean_latency_ms": 4.753,
+      "single_record_median_latency_ms": 4.491,
+      "single_record_p95_latency_ms": 6.984,
+      "single_record_throughput_samples_per_sec": 210.38
+    },
+    "dataset_b_extra_trees": {
+      "model_type": "Extra Trees (n_estimators=200, max_depth=10)",
+      "feature_count": 56,
+      "test_sample_accuracy": 0.8057142857142857,
+      "test_sample_balanced_accuracy": 0.8219742063492064,
+      "test_sample_macro_f1": 0.8155052264808362,
+      "test_event_accuracy": 0.8823529411764706,
+      "test_event_balanced_accuracy": 0.875,
+      "test_event_macro_f1": 0.8785714285714286,
+      "single_record_mean_latency_ms": 91.447,
+      "single_record_median_latency_ms": 73.420,
+      "single_record_p95_latency_ms": 163.168,
+      "single_record_throughput_samples_per_sec": 10.94
+    }
+  }
+}

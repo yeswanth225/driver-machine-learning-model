@@ -6,6 +6,7 @@ Stage: Stage 6 - Intelligent Safety Monitoring Agent
 """
 
 import math
+import numbers
 from dataclasses import dataclass, field
 from typing import Dict, Any, Optional, List
 
@@ -69,9 +70,11 @@ class PredictionValidator:
 
         # 1. Timestamp Verification
         ts = raw_input.timestamp
-        if not isinstance(ts, (int, float)) or math.isnan(ts) or math.isinf(ts) or ts < 0.0:
+        if isinstance(ts, bool) or not isinstance(ts, numbers.Real) or not math.isfinite(ts) or ts < 0.0:
             errors.append(f"Invalid timestamp value: {ts}. Timestamp must be a finite non-negative number.")
             ts = 0.0
+        else:
+            ts = float(ts)
 
         # Temporal Checks
         # Future timestamp check relative to current_time
@@ -103,20 +106,24 @@ class PredictionValidator:
         style_conf = raw_input.style_confidence
 
         if style_pred is not None:
-            if not isinstance(style_pred, (int, np_int_type := int)):
+            if isinstance(style_pred, bool) or not isinstance(style_pred, numbers.Integral):
                 errors.append(f"Style prediction must be an integer, got: {type(style_pred)}")
                 style_pred = None
-            elif style_pred not in [DrivingStyle.NORMAL.value, DrivingStyle.AGGRESSIVE.value]:
-                errors.append(f"Style prediction {style_pred} outside valid domain {{0, 1}}.")
-                style_pred = None
+            else:
+                style_pred = int(style_pred)
+                if style_pred not in [DrivingStyle.NORMAL.value, DrivingStyle.AGGRESSIVE.value]:
+                    errors.append(f"Style prediction {style_pred} outside valid domain {{0, 1}}.")
+                    style_pred = None
 
         if style_conf is not None:
-            if not isinstance(style_conf, (int, float)) or math.isnan(style_conf) or math.isinf(style_conf):
+            if isinstance(style_conf, bool) or not isinstance(style_conf, numbers.Real) or not math.isfinite(style_conf):
                 errors.append(f"Style confidence {style_conf} must be a finite float.")
                 style_conf = 0.0
             elif not (0.0 <= style_conf <= 1.0):
                 errors.append(f"Style confidence {style_conf} outside [0.0, 1.0] range.")
                 style_conf = max(0.0, min(1.0, float(style_conf)))
+            else:
+                style_conf = float(style_conf)
         else:
             style_conf = 0.0
 
@@ -125,26 +132,30 @@ class PredictionValidator:
         maneuver_conf = raw_input.maneuver_confidence
 
         if maneuver_pred is not None:
-            if not isinstance(maneuver_pred, int):
+            if isinstance(maneuver_pred, bool) or not isinstance(maneuver_pred, numbers.Integral):
                 errors.append(f"Maneuver prediction must be an integer, got: {type(maneuver_pred)}")
                 maneuver_pred = None
-            elif maneuver_pred not in [
-                ManeuverClass.NONE.value,
-                ManeuverClass.SUDDEN_ACCELERATION.value,
-                ManeuverClass.SUDDEN_DECELERATION.value,
-                ManeuverClass.SUDDEN_RIGHT_TURN.value,
-                ManeuverClass.SUDDEN_LEFT_TURN.value
-            ]:
-                errors.append(f"Maneuver prediction {maneuver_pred} outside valid domain {{0, 1, 2, 3, 4}}.")
-                maneuver_pred = None
+            else:
+                maneuver_pred = int(maneuver_pred)
+                if maneuver_pred not in [
+                    ManeuverClass.NONE.value,
+                    ManeuverClass.SUDDEN_ACCELERATION.value,
+                    ManeuverClass.SUDDEN_DECELERATION.value,
+                    ManeuverClass.SUDDEN_RIGHT_TURN.value,
+                    ManeuverClass.SUDDEN_LEFT_TURN.value
+                ]:
+                    errors.append(f"Maneuver prediction {maneuver_pred} outside valid domain {{0, 1, 2, 3, 4}}.")
+                    maneuver_pred = None
 
         if maneuver_conf is not None:
-            if not isinstance(maneuver_conf, (int, float)) or math.isnan(maneuver_conf) or math.isinf(maneuver_conf):
+            if isinstance(maneuver_conf, bool) or not isinstance(maneuver_conf, numbers.Real) or not math.isfinite(maneuver_conf):
                 errors.append(f"Maneuver confidence {maneuver_conf} must be a finite float.")
                 maneuver_conf = 0.0
             elif not (0.0 <= maneuver_conf <= 1.0):
                 errors.append(f"Maneuver confidence {maneuver_conf} outside [0.0, 1.0] range.")
                 maneuver_conf = max(0.0, min(1.0, float(maneuver_conf)))
+            else:
+                maneuver_conf = float(maneuver_conf)
         else:
             maneuver_conf = 0.0
 

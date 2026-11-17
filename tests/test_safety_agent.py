@@ -126,6 +126,132 @@ class TestPredictionValidator:
         assert res.is_valid is False
         assert res.timestamp == 0.0
 
+    def test_p01_numpy_scalar_types_accepted(self, validator):
+        """P-01: Verify numpy integer and float scalar types are accepted and sanitized."""
+        raw = RawPredictionInput(
+            timestamp=np.float64(10.0),
+            style_prediction=np.int64(1),
+            style_confidence=np.float32(0.92),
+            maneuver_prediction=np.int32(2),
+            maneuver_confidence=np.float64(0.88)
+        )
+        res = validator.validate(raw, current_time=10.5)
+        assert res.is_valid is True
+        assert res.data_quality_status == "VALID"
+        assert len(res.validation_errors) == 0
+        assert type(res.style_prediction) is int
+        assert type(res.maneuver_prediction) is int
+        assert type(res.style_confidence) is float
+        assert type(res.maneuver_confidence) is float
+        assert res.style_prediction == 1
+        assert res.maneuver_prediction == 2
+        assert abs(res.style_confidence - 0.92) < 1e-4
+        assert abs(res.maneuver_confidence - 0.88) < 1e-4
+
+    def test_p01_boolean_inputs_strictly_rejected(self, validator):
+        """P-01: Verify bool inputs are strictly rejected (cannot bypass numeric checks)."""
+        # Boolean style prediction
+        res1 = validator.validate(RawPredictionInput(timestamp=10.0, style_prediction=True, style_confidence=0.9))
+        assert res1.is_valid is False
+        assert any("Style prediction must be an integer" in err for err in res1.validation_errors)
+
+        res2 = validator.validate(RawPredictionInput(timestamp=10.0, style_prediction=False, style_confidence=0.9))
+        assert res2.is_valid is False
+        assert any("Style prediction must be an integer" in err for err in res2.validation_errors)
+
+        # Boolean maneuver prediction
+        res3 = validator.validate(RawPredictionInput(timestamp=10.0, maneuver_prediction=True, maneuver_confidence=0.9))
+        assert res3.is_valid is False
+        assert any("Maneuver prediction must be an integer" in err for err in res3.validation_errors)
+
+        # Boolean confidence
+        res4 = validator.validate(RawPredictionInput(timestamp=10.0, style_prediction=1, style_confidence=True))
+        assert res4.is_valid is False
+        assert any("Style confidence" in err and "must be a finite float" in err for err in res4.validation_errors)
+
+        # Boolean timestamp
+        res5 = validator.validate(RawPredictionInput(timestamp=True, style_prediction=1, style_confidence=0.9))
+        assert res5.is_valid is False
+        assert any("Invalid timestamp value" in err for err in res5.validation_errors)
+
+    def test_p01_nan_and_infinite_confidences_rejected(self, validator):
+        """P-01: Verify NaN, +inf, and -inf confidence values are caught and flagged."""
+        res_nan = validator.validate(RawPredictionInput(
+            timestamp=10.0,
+            style_prediction=1,
+            style_confidence=float("nan"),
+            maneuver_prediction=1,
+            maneuver_confidence=np.nan
+        ))
+        assert res_nan.is_valid is False
+        assert any("Style confidence" in err for err in res_nan.validation_errors)
+        assert any("Maneuver confidence" in err for err in res_nan.validation_errors)
+
+        res_inf = validator.validate(RawPredictionInput(
+            timestamp=10.0,
+            style_prediction=1,
+            style_confidence=float("inf"),
+            maneuver_prediction=1,
+            maneuver_confidence=float("-inf")
+        ))
+        assert res_inf.is_valid is False
+        assert any("Style confidence" in err for err in res_inf.validation_errors)
+        assert any("Maneuver confidence" in err for err in res_inf.validation_errors)
+
+    def test_p01_process_predictions_boundary_coercion(self):
+        """P-01: Verify IntelligentSafetyAgent.process_predictions coerces numpy types and rejects bool."""
+        agent = IntelligentSafetyAgent()
+
+        # Valid numpy types coerced at boundary
+        ass_valid = agent.process_predictions(
+            timestamp=np.float64(1.0),
+            style_prediction=np.int64(0),
+            style_confidence=np.float32(0.95),
+            maneuver_prediction=np.int32(0),
+            maneuver_confidence=np.float64(0.90)
+        )
+        assert ass_valid.is_valid is True
+        assert ass_valid.safety_state == SafetyState.NORMAL
+
+        # Boolean input rejected without silent int coercion
+        ass_bool = agent.process_predictions(
+            timestamp=2.0,
+            style_prediction=True,
+            style_confidence=0.95
+        )
+        assert ass_bool.is_valid is False
+
+    def test_p01_numpy_float32_boundary_thresholds_040_060(self, validator):
+        """P-01: Verify numpy float32 boundary values at 0.40 and 0.60 are accepted and sanitized."""
+        for conf_val in [np.float32(0.40), np.float32(0.60)]:
+            raw = RawPredictionInput(
+                timestamp=10.0,
+                style_prediction=np.int64(1),
+                style_confidence=conf_val,
+                maneuver_prediction=np.int32(1),
+                maneuver_confidence=conf_val
+            )
+            res = validator.validate(raw)
+            assert res.is_valid is True
+            assert res.data_quality_status == "VALID"
+            assert len(res.validation_errors) == 0
+            assert type(res.style_confidence) is float
+            assert type(res.maneuver_confidence) is float
+            assert abs(res.style_confidence - float(conf_val)) < 1e-6
+            assert abs(res.maneuver_confidence - float(conf_val)) < 1e-6
+
+        # Test at process_predictions boundary as well
+        agent = IntelligentSafetyAgent()
+        for conf_val in [np.float32(0.40), np.float32(0.60)]:
+            ass = agent.process_predictions(
+                timestamp=1.0,
+                style_prediction=np.int64(0),
+                style_confidence=conf_val,
+                maneuver_prediction=np.int32(0),
+                maneuver_confidence=conf_val
+            )
+            assert ass.is_valid is True
+
 
 class TestTemporalSmoother:
     """Tests for causal multi-rate temporal smoothing and persistence."""

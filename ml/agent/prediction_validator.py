@@ -35,13 +35,13 @@ class RawPredictionInput:
 class ValidatedPrediction:
     """Validated, sanitized prediction ready for temporal smoothing and risk scoring."""
     timestamp: float
-    style_prediction: Optional[int]
-    style_confidence: float
-    maneuver_prediction: Optional[int]
-    maneuver_confidence: float
-    is_valid: bool
-    is_stale: bool
-    data_quality_status: str  # "VALID", "STALE", "MISSING", "INVALID"
+    style_prediction: Optional[int] = None
+    style_confidence: float = 0.0
+    maneuver_prediction: Optional[int] = None
+    maneuver_confidence: float = 0.0
+    is_valid: bool = True
+    is_stale: bool = False
+    data_quality_status: str = "VALID"  # "VALID", "STALE", "MISSING", "INVALID"
     validation_errors: List[str] = field(default_factory=list)
 
 
@@ -73,19 +73,30 @@ class PredictionValidator:
             errors.append(f"Invalid timestamp value: {ts}. Timestamp must be a finite non-negative number.")
             ts = 0.0
 
-        # Staleness Check (relative to provided current_time or last valid timestamp)
-        eval_time = current_time if current_time is not None else ts
-        if eval_time is not None and (eval_time - ts) > self.config.stale_threshold_seconds:
-            is_stale = True
+        # Temporal Checks
+        # Future timestamp check relative to current_time
+        if current_time is not None and (ts - current_time) > getattr(self.config, "future_timestamp_threshold_seconds", 1.0):
             errors.append(
-                f"Stale telemetry detected: timestamp {ts:.2f} is {(eval_time - ts):.2f}s behind current time {eval_time:.2f}s (Threshold: {self.config.stale_threshold_seconds}s)."
+                f"Future timestamp detected: timestamp {ts:.2f}s is ahead of current time {current_time:.2f}s."
             )
 
-        # Monotonicity check (warning only)
-        if self._last_valid_timestamp is not None and ts < self._last_valid_timestamp:
+        # Staleness check relative to current_time
+        if current_time is not None and (current_time - ts) > self.config.stale_threshold_seconds:
+            is_stale = True
             errors.append(
-                f"Temporal anomaly: timestamp {ts:.2f} decreased from previous timestamp {self._last_valid_timestamp:.2f}."
+                f"Stale telemetry detected: timestamp {ts:.2f} is {(current_time - ts):.2f}s behind current time {current_time:.2f}s (Threshold: {self.config.stale_threshold_seconds}s)."
             )
+
+        # Monotonicity and forward leap check relative to last valid timestamp
+        if self._last_valid_timestamp is not None:
+            if ts < self._last_valid_timestamp:
+                errors.append(
+                    f"Temporal anomaly: timestamp {ts:.2f} decreased from previous timestamp {self._last_valid_timestamp:.2f}."
+                )
+            elif (ts - self._last_valid_timestamp) > getattr(self.config, "max_forward_leap_seconds", 10.0):
+                errors.append(
+                    f"Excessive forward timestamp leap: timestamp {ts:.2f} increased by {(ts - self._last_valid_timestamp):.2f}s from {self._last_valid_timestamp:.2f}s."
+                )
 
         # 2. Driving Style Prediction Verification (Pipeline A)
         style_pred = raw_input.style_prediction

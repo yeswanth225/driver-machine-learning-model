@@ -5,6 +5,7 @@ Project: Intelligent Driver Activity Monitoring & Safety Agent
 Stage: Stage 6 - Intelligent Safety Monitoring Agent
 """
 
+import math
 import uuid
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional, Tuple
@@ -68,6 +69,66 @@ class DeterministicRiskEngine:
         self._last_alert_timestamps.clear()
         self._last_alert_severities.clear()
         self._alert_counter = 0
+
+    @staticmethod
+    def calculate_residual_risk(
+        initial_weight: float,
+        elapsed_seconds: float,
+        plateau_seconds: float = 1.00,
+        half_life_seconds: float = 0.75,
+        retirement_threshold: float = 2.50
+    ) -> float:
+        """
+        Calculate continuous exponential residual-risk decay following a plateau.
+        
+        Specification:
+            R(dt) = W * 2^(-(dt - plateau_seconds) / half_life_seconds)
+            
+        Analytical Retirement Boundary:
+            t_retire = plateau_seconds + half_life_seconds * log2(initial_weight / retirement_threshold)
+            
+        Retirement Policy (strictly analytical without tolerance/epsilon):
+            - dt <= plateau_seconds: Full initial weight W is retained.
+            - plateau_seconds < dt < t_retire: Positive residual R(dt) is retained.
+            - dt == t_retire: Exactly retirement_threshold (2.50) is retained.
+            - dt > t_retire: Retired strictly to 0.00 pts.
+            
+        Parameter Validation:
+            - plateau_seconds, half_life_seconds, retirement_threshold must be finite and > 0.0.
+            - initial_weight must be finite and > 0.0. If initial_weight < retirement_threshold, returns 0.0.
+            - elapsed_seconds must be finite. Negative elapsed_seconds safely returns initial_weight (within plateau).
+            - Invalid, non-finite, or boolean parameters safely return 0.0.
+        """
+        params = (initial_weight, elapsed_seconds, plateau_seconds, half_life_seconds, retirement_threshold)
+        if not all(isinstance(p, (int, float)) and not isinstance(p, bool) for p in params):
+            return 0.0
+        if not all(math.isfinite(p) for p in params):
+            return 0.0
+        if plateau_seconds <= 0.0 or half_life_seconds <= 0.0 or retirement_threshold <= 0.0:
+            return 0.0
+        if initial_weight <= 0.0 or initial_weight < retirement_threshold:
+            return 0.0
+
+        # Plateau: retain full initial weight for elapsed time <= plateau_seconds (including negative dt)
+        if elapsed_seconds <= plateau_seconds:
+            return float(initial_weight)
+
+        # Analytical retirement boundary
+        t_retire = float(plateau_seconds) + float(half_life_seconds) * math.log2(
+            float(initial_weight) / float(retirement_threshold)
+        )
+
+        # Strict boundary evaluation
+        if elapsed_seconds > t_retire:
+            return 0.0
+        if elapsed_seconds == t_retire:
+            return float(retirement_threshold)
+
+        # Elapsed time is strictly below analytical boundary: compute exponential decay
+        decay_time = float(elapsed_seconds) - float(plateau_seconds)
+        decay_factor = 2.0 ** (-decay_time / float(half_life_seconds))
+        residual = float(initial_weight) * decay_factor
+        return float(residual)
 
     def _should_suppress_alert(
         self,

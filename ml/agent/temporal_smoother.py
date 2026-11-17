@@ -7,6 +7,7 @@ Stage: Stage 6 - Intelligent Safety Monitoring Agent
 
 from collections import deque
 from dataclasses import dataclass, field
+import math
 from typing import Dict, Any, List, Optional, Tuple
 
 from ml.agent.config import (
@@ -25,19 +26,19 @@ class SmoothedContext:
     """Smoothed, multi-rate aligned context used by the Deterministic Risk Engine."""
     timestamp: float
     # Style Dynamics (10 Hz Pipeline A)
-    style_ema: float  # Exponential moving average of aggressive probability [0.0, 1.0]
-    style_aggressive_ratio: float  # Fraction of aggressive predictions in recent window
-    is_sustained_aggressive: bool
-    is_transient_aggressive: bool
-    current_style: int  # 0: Normal, 1: Aggressive
-    current_style_confidence: float
+    style_ema: float = 0.0  # Exponential moving average of aggressive probability [0.0, 1.0]
+    style_aggressive_ratio: float = 0.0  # Fraction of aggressive predictions in recent window
+    is_sustained_aggressive: bool = False
+    is_transient_aggressive: bool = False
+    current_style: Optional[int] = None  # 0: Normal, 1: Aggressive, None if missing
+    current_style_confidence: Optional[float] = 0.0
 
     # Maneuver Dynamics (~1.55 Hz Pipeline B)
-    active_maneuver: int  # 0: None, 1: SA, 2: SD, 3: SRT, 4: SLT
-    active_maneuver_confidence: float
-    active_maneuver_age_seconds: float
-    is_maneuver_active: bool
-    recent_maneuver_count: int  # Number of abrupt maneuvers in past 10s window
+    active_maneuver: int = 0  # 0: None, 1: SA, 2: SD, 3: SRT, 4: SLT
+    active_maneuver_confidence: float = 0.0
+    active_maneuver_age_seconds: float = 0.0
+    is_maneuver_active: bool = False
+    recent_maneuver_count: int = 0  # Number of abrupt maneuvers in past 10s window
     recent_maneuver_history: List[Dict[str, Any]] = field(default_factory=list)
 
     # Data Quality
@@ -63,9 +64,11 @@ class TemporalSmoother:
         self._active_maneuver: int = ManeuverClass.NONE.value
         self._active_maneuver_conf: float = 0.0
         self._active_maneuver_timestamp: Optional[float] = None
+        self._last_maneuver_onset_time: Optional[float] = None
 
         # Maneuver event log: list of (timestamp, maneuver_id, confidence)
         self._maneuver_events: deque = deque()
+        self._last_context: Optional[SmoothedContext] = None
 
     def reset(self):
         """Reset all smoother histories and internal state."""
@@ -75,7 +78,30 @@ class TemporalSmoother:
         self._active_maneuver = ManeuverClass.NONE.value
         self._active_maneuver_conf = 0.0
         self._active_maneuver_timestamp = None
+        self._last_maneuver_onset_time = None
         self._maneuver_events.clear()
+        self._last_context = None
+
+    def get_context(self, ts: Optional[float] = None) -> SmoothedContext:
+        """Return the current or most recent SmoothedContext."""
+        if self._last_context is not None:
+            return self._last_context
+        return SmoothedContext(
+            timestamp=ts or 0.0,
+            style_ema=float(self._style_ema),
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=None,
+            current_style_confidence=0.0,
+            active_maneuver=self._active_maneuver,
+            active_maneuver_confidence=float(self._active_maneuver_conf),
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=self._active_maneuver != ManeuverClass.NONE.value,
+            recent_maneuver_count=len(self._maneuver_events),
+            is_valid=True,
+            data_quality_status="VALID"
+        )
 
     def update(self, val_pred: ValidatedPrediction) -> SmoothedContext:
         """
@@ -85,14 +111,14 @@ class TemporalSmoother:
         ts = val_pred.timestamp
 
         if not val_pred.is_valid:
-            return SmoothedContext(
+            ctx = SmoothedContext(
                 timestamp=ts,
                 style_ema=self._style_ema,
                 style_aggressive_ratio=0.0,
                 is_sustained_aggressive=False,
                 is_transient_aggressive=False,
-                current_style=val_pred.style_prediction if val_pred.style_prediction is not None else 0,
-                current_style_confidence=val_pred.style_confidence,
+                current_style=val_pred.style_prediction,
+                current_style_confidence=val_pred.style_confidence if val_pred.style_confidence is not None else 0.0,
                 active_maneuver=ManeuverClass.NONE.value,
                 active_maneuver_confidence=0.0,
                 active_maneuver_age_seconds=0.0,
@@ -101,6 +127,8 @@ class TemporalSmoother:
                 is_valid=False,
                 data_quality_status=val_pred.data_quality_status
             )
+            self._last_context = ctx
+            return ctx
 
         # Append to bounded sliding window
         self._history.append((ts, val_pred))
@@ -116,17 +144,24 @@ class TemporalSmoother:
         # -------------------------------------------------------------
         # 1. Smooth Pipeline A: Driving Style (10.0 Hz Stream)
         # -------------------------------------------------------------
-        current_style = val_pred.style_prediction if val_pred.style_prediction is not None else 0
-        current_style_conf = val_pred.style_confidence
+        current_style = val_pred.style_prediction
+        current_style_conf = val_pred.style_confidence if val_pred.style_confidence is not None else 0.0
 
         if val_pred.style_prediction is not None:
             # Target probability for aggressive driving
             raw_target = float(val_pred.style_prediction) * current_style_conf
-            alpha = self.config.style_ema_alpha
             if self._last_style_timestamp is None:
                 self._style_ema = raw_target
             else:
-                self._style_ema = alpha * raw_target + (1.0 - alpha) * self._style_ema
+                dt = ts - self._last_style_timestamp
+                if dt < 0:
+                    dt = 0.0
+                if dt > 5.0:  # Telemetry gap reset (> 5.0s)
+                    self._style_ema = raw_target
+                else:
+                    tau = getattr(self.config, "style_ema_tau", 1.50)
+                    alpha = 1.0 - math.exp(-dt / tau)
+                    self._style_ema = alpha * raw_target + (1.0 - alpha) * self._style_ema
             self._last_style_timestamp = ts
 
         # Windowed Aggressive Ratio (past style_smoothing_window_seconds = 3.0s)
@@ -157,11 +192,20 @@ class TemporalSmoother:
         m_conf = val_pred.maneuver_confidence
 
         if m_pred is not None and m_pred != ManeuverClass.NONE.value:
-            # Register new active maneuver
+            # Check if this frame is an intra-event continuation of an ongoing maneuver of the same class
+            is_continuation = (
+                self._active_maneuver == m_pred
+                and self._active_maneuver_timestamp is not None
+                and (ts - self._active_maneuver_timestamp) <= self.config.maneuver_persistence_seconds
+            )
             self._active_maneuver = m_pred
-            self._active_maneuver_conf = m_conf
+            self._active_maneuver_conf = max(self._active_maneuver_conf, m_conf) if is_continuation else m_conf
             self._active_maneuver_timestamp = ts
-            self._maneuver_events.append((ts, m_pred, m_conf))
+
+            if not is_continuation:
+                # Genuine new maneuver onset
+                self._last_maneuver_onset_time = ts
+                self._maneuver_events.append((ts, m_pred, m_conf))
 
         # Check maneuver persistence
         is_maneuver_active = False
@@ -187,7 +231,7 @@ class TemporalSmoother:
             for t, mid, conf in list(self._maneuver_events)
         ]
 
-        return SmoothedContext(
+        ctx = SmoothedContext(
             timestamp=ts,
             style_ema=float(self._style_ema),
             style_aggressive_ratio=float(style_aggressive_ratio),
@@ -204,3 +248,5 @@ class TemporalSmoother:
             is_valid=True,
             data_quality_status=val_pred.data_quality_status
         )
+        self._last_context = ctx
+        return ctx

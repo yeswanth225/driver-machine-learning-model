@@ -51,6 +51,16 @@ class AlertCategory(str, Enum):
     DATA_QUALITY = "DATA_QUALITY"
 
 
+class GateStatus(str, Enum):
+    """Kinematic Event Gate Evaluation Status."""
+    VALID_QUIESCENT = "VALID_QUIESCENT"
+    VALID_EXCITED = "VALID_EXCITED"
+    INVALID_OR_INSUFFICIENT = "INVALID_OR_INSUFFICIENT"
+
+
+EventGateStatus = GateStatus
+
+
 STYLE_LABEL_NAMES: Dict[int, str] = {
     0: "Normal Driving",
     1: "Aggressive Driving"
@@ -77,8 +87,13 @@ MANEUVER_ABBREVIATIONS: Dict[int, str] = {
 class SafetyAgentConfig:
     """Centralized, immutable configuration parameters for the Safety Monitoring Agent."""
 
+    # 0. Baseline Score
+    baseline_risk_score: float = 0.0
+
     # 1. Temporal & Staleness Thresholds (Seconds)
     stale_threshold_seconds: float = 3.0
+    future_timestamp_threshold_seconds: float = 1.0
+    max_forward_leap_seconds: float = 10.0
     history_window_seconds: float = 10.0
     style_smoothing_window_seconds: float = 3.0
     maneuver_persistence_seconds: float = 2.0
@@ -86,6 +101,7 @@ class SafetyAgentConfig:
 
     # 2. Smoothing Weights
     style_ema_alpha: float = 0.20
+    style_ema_tau: float = 1.50
     style_aggressive_ratio_threshold: float = 0.50
 
     # 3. Confidence Thresholds
@@ -97,12 +113,16 @@ class SafetyAgentConfig:
     weight_sustained_aggressive: float = 35.0
     weight_transient_aggressive: float = 20.0
     weight_sudden_acceleration: float = 25.0
-    weight_sudden_deceleration: float = 35.0
-    weight_sudden_turn: float = 30.0
+    weight_sudden_deceleration: float = 50.0
+    weight_sudden_turn: float = 35.0
+    weight_compound_high_risk: float = 25.0
     weight_compound_hazard_bonus: float = 25.0
     weight_repeated_maneuver_bonus: float = 15.0
 
     # 5. Risk Score to State Boundaries
+    threshold_caution: float = 25.0
+    threshold_warning: float = 50.0
+    threshold_high_risk: float = 75.0
     score_threshold_caution: float = 25.0
     score_threshold_warning: float = 50.0
     score_threshold_high_risk: float = 75.0
@@ -112,6 +132,13 @@ class SafetyAgentConfig:
     alert_cooldown_maneuver: float = 3.0
     alert_cooldown_compound: float = 2.0
     alert_cooldown_data_quality: float = 5.0
+
+    # 7. Kinematic Event Gate Thresholds (Pipeline B)
+    gate_enabled: bool = True
+    gate_acc_horiz_std_threshold: float = 0.30
+    gate_gyro_z_std_threshold: float = 0.05
+    gate_acc_mag_dev_threshold: float = 1.47  # m/s^2 deviation from 1g (~0.15g)
+    gate_gyro_mag_threshold: float = 0.25     # rad/s (~14.3 deg/s)
 
 
 DEFAULT_CONFIG = SafetyAgentConfig()

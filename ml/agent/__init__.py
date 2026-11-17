@@ -11,6 +11,8 @@ from ml.agent.config import (
     ManeuverClass,
     AlertSeverity,
     AlertCategory,
+    GateStatus,
+    EventGateStatus,
     SafetyAgentConfig,
     DEFAULT_CONFIG,
     STYLE_LABEL_NAMES,
@@ -31,6 +33,8 @@ from ml.agent.risk_engine import (
     DeterministicRiskEngine
 )
 from ml.agent.safety_agent import (
+    GateResult,
+    KinematicEventGate,
     SafetyAssessment,
     IntelligentSafetyAgent
 )
@@ -41,6 +45,8 @@ __all__ = [
     "ManeuverClass",
     "AlertSeverity",
     "AlertCategory",
+    "GateStatus",
+    "EventGateStatus",
     "SafetyAgentConfig",
     "DEFAULT_CONFIG",
     "STYLE_LABEL_NAMES",
@@ -53,6 +59,8 @@ __all__ = [
     "SafetyAlert",
     "RuleEvaluationResult",
     "DeterministicRiskEngine",
+    "GateResult",
+    "KinematicEventGate",
     "SafetyAssessment",
     "IntelligentSafetyAgent"
 ]

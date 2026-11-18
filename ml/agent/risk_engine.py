@@ -66,8 +66,8 @@ class DeterministicRiskEngine:
 
     def __init__(self, config: SafetyAgentConfig = DEFAULT_CONFIG):
         self.config = config
-        self._last_alert_timestamps: Dict[AlertCategory, float] = {}
-        self._last_alert_severities: Dict[AlertCategory, AlertSeverity] = {}
+        self._last_alert_timestamps: Dict[Tuple[AlertCategory, Optional[int]], float] = {}
+        self._last_alert_severities: Dict[Tuple[AlertCategory, Optional[int]], AlertSeverity] = {}
         self._alert_counter: int = 0
 
     def reset(self):
@@ -165,22 +165,38 @@ class DeterministicRiskEngine:
             return float(c / 0.60)
         return 1.0
 
+    @staticmethod
+    def _get_cooldown_key(
+        category: AlertCategory, maneuver_class: Optional[int] = None
+    ) -> Tuple[AlertCategory, Optional[int]]:
+        """
+        D-09: Build cooldown tracking key.
+        - Non-maneuver categories (STYLE, COMPOUND, DATA_QUALITY): (category, None)
+        - Maneuver category (MANEUVER): (AlertCategory.MANEUVER, maneuver_class)
+        """
+        m_cls = maneuver_class if category == AlertCategory.MANEUVER else None
+        return (category, m_cls)
+
     def _should_suppress_alert(
         self,
         category: AlertCategory,
         severity: AlertSeverity,
         timestamp: float,
-        cooldown_seconds: float
+        cooldown_seconds: float,
+        maneuver_class: Optional[int] = None
     ) -> bool:
         """
         Check if an alert should be suppressed by cooldown.
         Bypasses cooldown if severity escalates to HIGH or CRITICAL.
+        Maneuver alerts are partitioned by maneuver_class.
+        Non-maneuver categories use (category, None).
         """
-        if category not in self._last_alert_timestamps:
+        key = self._get_cooldown_key(category, maneuver_class)
+        if key not in self._last_alert_timestamps:
             return False
 
-        last_ts = self._last_alert_timestamps[category]
-        last_sev = self._last_alert_severities.get(category, AlertSeverity.INFO)
+        last_ts = self._last_alert_timestamps[key]
+        last_sev = self._last_alert_severities.get(key, AlertSeverity.INFO)
         elapsed = timestamp - last_ts
 
         # Severity escalation bypass: never suppress escalation to HIGH or CRITICAL
@@ -196,10 +212,14 @@ class DeterministicRiskEngine:
 
         return elapsed < cooldown_seconds
 
-    def _record_alert(self, alert: SafetyAlert):
+    def _record_alert(self, alert: SafetyAlert, maneuver_class: Optional[int] = None):
         """Record alert emission for cooldown tracking."""
-        self._last_alert_timestamps[alert.category] = alert.timestamp
-        self._last_alert_severities[alert.category] = alert.severity
+        m_cls = maneuver_class
+        if m_cls is None and alert.category == AlertCategory.MANEUVER:
+            m_cls = alert.related_predictions.get("maneuver_class")
+        key = self._get_cooldown_key(alert.category, m_cls)
+        self._last_alert_timestamps[key] = alert.timestamp
+        self._last_alert_severities[key] = alert.severity
 
     def evaluate(self, ctx: SmoothedContext) -> RuleEvaluationResult:
         """
@@ -415,7 +435,8 @@ class DeterministicRiskEngine:
                     AlertCategory.MANEUVER,
                     AlertSeverity.MEDIUM,
                     ts,
-                    self.config.alert_cooldown_maneuver
+                    self.config.alert_cooldown_maneuver,
+                    maneuver_class=ctx.active_maneuver
                 ):
                     self._alert_counter += 1
                     alert = SafetyAlert(
@@ -428,12 +449,13 @@ class DeterministicRiskEngine:
                         explanation=expl,
                         related_predictions={
                             "maneuver": "Sudden Acceleration",
+                            "maneuver_class": ctx.active_maneuver,
                             "confidence": ctx.active_maneuver_confidence
                         },
                         safe_driving_advisory="Ease off the throttle to prevent abrupt forward weight transfer."
                     )
                     alerts.append(alert)
-                    self._record_alert(alert)
+                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
 
             # Rule 5: SUDDEN_DECELERATION_MANEUVER (Harsh Braking)
             elif ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_DECELERATION.value and phi_maneuver > 0.0:
@@ -449,7 +471,8 @@ class DeterministicRiskEngine:
                     AlertCategory.MANEUVER,
                     AlertSeverity.HIGH,
                     ts,
-                    self.config.alert_cooldown_maneuver
+                    self.config.alert_cooldown_maneuver,
+                    maneuver_class=ctx.active_maneuver
                 ):
                     self._alert_counter += 1
                     alert = SafetyAlert(
@@ -462,12 +485,13 @@ class DeterministicRiskEngine:
                         explanation=expl,
                         related_predictions={
                             "maneuver": "Sudden Deceleration",
+                            "maneuver_class": ctx.active_maneuver,
                             "confidence": ctx.active_maneuver_confidence
                         },
                         safe_driving_advisory="Increase following distance to allow progressive, controlled braking."
                     )
                     alerts.append(alert)
-                    self._record_alert(alert)
+                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
 
             # Rule 6: SUDDEN_TURN_MANEUVER (Left or Right)
             elif ctx.is_maneuver_active and ctx.active_maneuver in [
@@ -487,7 +511,8 @@ class DeterministicRiskEngine:
                     AlertCategory.MANEUVER,
                     AlertSeverity.HIGH,
                     ts,
-                    self.config.alert_cooldown_maneuver
+                    self.config.alert_cooldown_maneuver,
+                    maneuver_class=ctx.active_maneuver
                 ):
                     self._alert_counter += 1
                     alert = SafetyAlert(
@@ -500,12 +525,13 @@ class DeterministicRiskEngine:
                         explanation=expl,
                         related_predictions={
                             "maneuver": m_name,
+                            "maneuver_class": ctx.active_maneuver,
                             "confidence": ctx.active_maneuver_confidence
                         },
                         safe_driving_advisory="Smooth out steering inputs before cornering to maintain tire traction."
                     )
                     alerts.append(alert)
-                    self._record_alert(alert)
+                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
 
             # Rule 8: REPEATED_ERRATIC_MANEUVERS
             if ctx.recent_maneuver_count >= 2:

@@ -1235,6 +1235,206 @@ class TestStage6RemediationRegression:
         )
         assert any("Turn" in a.message for a in res2.active_alerts)
 
+    def test_t09_d09_braking_then_left_turn_within_3s_raises_both_alerts(self):
+        """
+        D-09: Sudden Deceleration followed by Sudden Left Turn within 3.0s cooldown window
+        must raise both alerts because cooldown is keyed by (AlertCategory.MANEUVER, maneuver_class).
+        """
+        engine = DeterministicRiskEngine()
+
+        # Step 1: Sudden Deceleration at t = 1.0s
+        ctx1 = SmoothedContext(
+            timestamp=1.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res1 = engine.evaluate(ctx1)
+        assert len(res1.active_alerts) == 1
+        assert res1.active_alerts[0].category == AlertCategory.MANEUVER
+        assert "Harsh Braking" in res1.active_alerts[0].title or "Deceleration" in res1.active_alerts[0].title
+
+        # Step 2: Sudden Left Turn at t = 2.0s (1.0s elapsed < 3.0s cooldown)
+        ctx2 = SmoothedContext(
+            timestamp=2.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.SUDDEN_LEFT_TURN.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=2
+        )
+        res2 = engine.evaluate(ctx2)
+        assert len(res2.active_alerts) == 1, (
+            f"Expected Left Turn alert at t=2.0s to dispatch, got {len(res2.active_alerts)} alerts"
+        )
+        assert res2.active_alerts[0].category == AlertCategory.MANEUVER
+        assert "Left Turn" in res2.active_alerts[0].title or "Left Turn" in res2.active_alerts[0].message
+
+    def test_t09_d09_identical_braking_alerts_within_3s_suppressed(self):
+        """
+        D-09: Two identical braking maneuvers within 3.0s must have the second alert suppressed
+        under class-level cooldown (AlertCategory.MANEUVER, SUDDEN_DECELERATION).
+        A subsequent braking maneuver after 3.0s must dispatch cleanly.
+        """
+        engine = DeterministicRiskEngine()
+
+        # Alert 1: Sudden Deceleration at t = 1.0s
+        ctx1 = SmoothedContext(
+            timestamp=1.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res1 = engine.evaluate(ctx1)
+        assert len(res1.active_alerts) == 1
+
+        # Alert 2: Identical Sudden Deceleration at t = 2.5s (1.5s elapsed < 3.0s cooldown)
+        ctx2 = SmoothedContext(
+            timestamp=2.5,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res2 = engine.evaluate(ctx2)
+        assert len(res2.active_alerts) == 0, (
+            "Expected second identical braking alert at t=2.5s to be suppressed by cooldown!"
+        )
+
+        # Alert 3: Sudden Deceleration at t = 5.0s (4.0s elapsed >= 3.0s cooldown)
+        ctx3 = SmoothedContext(
+            timestamp=5.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res3 = engine.evaluate(ctx3)
+        assert len(res3.active_alerts) == 1, (
+            "Expected braking alert at t=5.0s to dispatch after cooldown expired!"
+        )
+
+    def test_t09_d09_non_maneuver_categories_cooldown_preserved(self):
+        """
+        D-09: Non-maneuver categories (STYLE, DATA_QUALITY, COMPOUND) must be keyed as
+        (category, None) and retain category-wide throttling semantics.
+        """
+        engine = DeterministicRiskEngine()
+
+        # 1. Style cooldown (alert_cooldown_style = 10.0s)
+        ctx_sty1 = SmoothedContext(
+            timestamp=1.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.NONE.value,
+            active_maneuver_confidence=1.0,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=False,
+            recent_maneuver_count=0
+        )
+        res_sty1 = engine.evaluate(ctx_sty1)
+        assert len(res_sty1.active_alerts) == 1
+        assert res_sty1.active_alerts[0].category == AlertCategory.STYLE
+
+        # Second style alert at t = 3.0s (2.0s elapsed < 10.0s cooldown)
+        ctx_sty2 = SmoothedContext(
+            timestamp=3.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=0.95,
+            active_maneuver=ManeuverClass.NONE.value,
+            active_maneuver_confidence=1.0,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=False,
+            recent_maneuver_count=0
+        )
+        res_sty2 = engine.evaluate(ctx_sty2)
+        assert len(res_sty2.active_alerts) == 0, "Style alert within cooldown must be suppressed!"
+
+        # 2. Data Quality cooldown (alert_cooldown_data_quality = 5.0s)
+        ctx_dq1 = SmoothedContext(
+            timestamp=10.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.0,
+            active_maneuver=0,
+            active_maneuver_confidence=0.0,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=False,
+            recent_maneuver_count=0,
+            is_valid=False,
+            data_quality_status="INVALID"
+        )
+        res_dq1 = engine.evaluate(ctx_dq1)
+        assert len(res_dq1.active_alerts) == 1
+        assert res_dq1.active_alerts[0].category == AlertCategory.DATA_QUALITY
+
+        # Second data quality alert at t = 12.0s (2.0s elapsed < 5.0s cooldown)
+        ctx_dq2 = SmoothedContext(
+            timestamp=12.0,
+            style_ema=0.0,
+            style_aggressive_ratio=0.0,
+            is_sustained_aggressive=False,
+            is_transient_aggressive=False,
+            current_style=0,
+            current_style_confidence=0.0,
+            active_maneuver=0,
+            active_maneuver_confidence=0.0,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=False,
+            recent_maneuver_count=0,
+            is_valid=False,
+            data_quality_status="INVALID"
+        )
+        res_dq2 = engine.evaluate(ctx_dq2)
+        assert len(res_dq2.active_alerts) == 0, "DATA_QUALITY alert within cooldown must be suppressed!"
+
     # -------------------------------------------------------------------------
     # T-10 (Defect D-10): Unified Three-Tier Confidence Scaling
     # -------------------------------------------------------------------------

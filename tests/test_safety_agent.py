@@ -470,8 +470,8 @@ class TestDeterministicRiskEngine:
         )
         res = engine.evaluate(ctx)
         assert "SUDDEN_DECELERATION_MANEUVER" in res.triggered_rules
-        assert res.risk_score == 35.0
-        assert res.safety_state == SafetyState.CAUTION
+        assert res.risk_score == 50.0
+        assert res.safety_state == SafetyState.WARNING
 
     def test_compound_high_risk_hazard(self, engine):
         # Maneuver (Sudden Turn: 30) + Sustained Aggressive (35) + Compound Bonus (25) = 90 -> HIGH_RISK
@@ -498,7 +498,7 @@ class TestDeterministicRiskEngine:
         assert any(a.severity == AlertSeverity.CRITICAL for a in res.active_alerts)
 
     def test_low_confidence_discount(self, engine):
-        # Harsh braking (35), but confidence is 0.45 (< 0.50 threshold) -> 35 * 0.70 = 24.5
+        # Harsh braking (50), confidence 0.45 (0.40 <= c < 0.60 tier) -> phi = 0.45/0.60 = 0.75 -> 50 * 0.75 = 37.5
         ctx = SmoothedContext(
             timestamp=1.0,
             style_ema=0.0,
@@ -514,9 +514,10 @@ class TestDeterministicRiskEngine:
             recent_maneuver_count=1
         )
         res = engine.evaluate(ctx)
-        assert "LOW_CONFIDENCE_DISCOUNT" in res.triggered_rules
-        assert res.risk_score == pytest.approx(24.5, abs=0.1)
-        assert res.safety_state == SafetyState.NORMAL
+        assert "SUDDEN_DECELERATION_MANEUVER" in res.triggered_rules
+        assert "LOW_CONFIDENCE_DISCOUNT" not in res.triggered_rules
+        assert res.risk_score == pytest.approx(37.5, abs=0.1)
+        assert res.safety_state == SafetyState.CAUTION
 
     def test_score_clamping(self, engine):
         # Artificially stack every rule
@@ -534,10 +535,11 @@ class TestDeterministicRiskEngine:
             is_maneuver_active=True,
             recent_maneuver_count=5  # repeated bonus (15)
         )
-        # raw score = 35 (sustained) + 35 (SD) + 25 (compound) + 15 (repeated) = 110
+        # raw score = 35 (sustained) + 50 (SD) + 25 (compound) + 15 (repeated) = 125
         res = engine.evaluate(ctx)
-        assert res.raw_score == 110.0
+        assert res.raw_score == 125.0
         assert res.risk_score == 100.0  # clamped to 100
+        assert res.safety_state == SafetyState.HIGH_RISK
 
     def test_scoring_determinism(self, engine):
         ctx = SmoothedContext(
@@ -653,12 +655,20 @@ class TestIntelligentSafetyAgentIntegration:
         return IntelligentSafetyAgent()
 
     def test_full_state_transition_sequence(self, agent):
-        # 1. Start with Nominal Driving
-        ass1 = agent.process_predictions(timestamp=1.0, style_prediction=0, style_confidence=0.95)
+        # 1. Start with Nominal Driving (valid nominal telemetry satisfies mutual certification)
+        ass1 = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.95,
+            maneuver_prediction=ManeuverClass.NONE.value,
+            maneuver_confidence=1.0
+        )
+        assert ass1.pipeline_a_health == "HEALTHY"
+        assert ass1.pipeline_b_health == "HEALTHY"
         assert ass1.safety_state == SafetyState.NORMAL
         assert ass1.risk_score == 0.0
 
-        # 2. Abrupt braking maneuver occurs at t=2.0
+        # 2. Abrupt braking maneuver occurs at t=2.0 (D-14 W=50.0 produces WARNING)
         ass2 = agent.process_predictions(
             timestamp=2.0,
             style_prediction=0,
@@ -666,8 +676,8 @@ class TestIntelligentSafetyAgentIntegration:
             maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
             maneuver_confidence=0.92
         )
-        assert ass2.safety_state == SafetyState.CAUTION
-        assert ass2.risk_score >= 35.0
+        assert ass2.safety_state == SafetyState.WARNING
+        assert ass2.risk_score == 50.0
 
         # 3. Compound Aggression + Turning at t=2.5
         ass3 = agent.process_predictions(

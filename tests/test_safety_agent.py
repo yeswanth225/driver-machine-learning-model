@@ -1267,6 +1267,215 @@ class TestStage6RemediationRegression:
             f"D-10 Failure: Low-confidence maneuver (C=0.35) contributed risk! Score: {res.risk_score}"
         )
 
+    def test_t10_d10_piecewise_confidence_boundaries(self):
+        """
+        D-10: Strict boundary tests for calculate_confidence_scaling with exact floats
+        and np.float32 inputs at 0.39, 0.40, 0.599, and 0.60.
+        Explicit assertions verify that float32 representation artifacts do NOT cross tier boundaries.
+        """
+        # Tier 1 Boundary: 0.39 (Deadband -> phi = 0.0)
+        # Exact Python float
+        phi_039 = DeterministicRiskEngine.calculate_confidence_scaling(0.39)
+        assert phi_039 == 0.0, f"Expected 0.0 for float 0.39, got {phi_039}"
+
+        # NumPy float32 at 0.39
+        f32_039 = np.float32(0.39)
+        assert float(f32_039) < 0.40, "Sanity check: np.float32(0.39) must be strictly < 0.40"
+        phi_f32_039 = DeterministicRiskEngine.calculate_confidence_scaling(f32_039)
+        assert phi_f32_039 == 0.0, f"Expected 0.0 for np.float32(0.39), got {phi_f32_039}"
+
+        # Tier 2 Boundary: 0.40 (Linear scaling start -> phi = C / 0.60)
+        # Exact Python float
+        phi_040 = DeterministicRiskEngine.calculate_confidence_scaling(0.40)
+        expected_040 = 0.40 / 0.60
+        assert math.isclose(phi_040, expected_040, rel_tol=1e-9), f"Expected {expected_040}, got {phi_040}"
+        assert 0.0 < phi_040 < 1.0, "Tier 2 float 0.40 must be strictly between 0 and 1"
+
+        # NumPy float32 at 0.40 (verify no downward roundoff into deadband)
+        f32_040 = np.float32(0.40)
+        assert float(f32_040) >= 0.40, "Sanity check: np.float32(0.40) must be >= 0.40"
+        assert float(f32_040) < 0.60, "Sanity check: np.float32(0.40) must be < 0.60"
+        phi_f32_040 = DeterministicRiskEngine.calculate_confidence_scaling(f32_040)
+        expected_f32_040 = float(f32_040) / 0.60
+        assert math.isclose(phi_f32_040, expected_f32_040, rel_tol=1e-7), f"Expected {expected_f32_040}, got {phi_f32_040}"
+        assert 0.0 < phi_f32_040 < 1.0, "np.float32(0.40) must NOT silently drop into Tier 1 (phi=0.0)"
+
+        # Tier 2 Boundary: 0.599 (Linear scaling near upper edge -> phi = C / 0.60)
+        # Exact Python float
+        phi_0599 = DeterministicRiskEngine.calculate_confidence_scaling(0.599)
+        expected_0599 = 0.599 / 0.60
+        assert math.isclose(phi_0599, expected_0599, rel_tol=1e-9), f"Expected {expected_0599}, got {phi_0599}"
+        assert phi_0599 < 1.0, "Tier 2 float 0.599 must be strictly < 1.0"
+
+        # NumPy float32 at 0.599 (verify no upward roundoff into saturation)
+        f32_0599 = np.float32(0.599)
+        assert float(f32_0599) >= 0.40, "Sanity check: np.float32(0.599) must be >= 0.40"
+        assert float(f32_0599) < 0.60, "Sanity check: np.float32(0.599) must be < 0.60"
+        phi_f32_0599 = DeterministicRiskEngine.calculate_confidence_scaling(f32_0599)
+        expected_f32_0599 = float(f32_0599) / 0.60
+        assert math.isclose(phi_f32_0599, expected_f32_0599, rel_tol=1e-7), f"Expected {expected_f32_0599}, got {phi_f32_0599}"
+        assert phi_f32_0599 < 1.0, "np.float32(0.599) must NOT silently round up into Tier 3 (phi=1.0)"
+
+        # Tier 3 Boundary: 0.60 (Full saturation -> phi = 1.0)
+        # Exact Python float
+        phi_060 = DeterministicRiskEngine.calculate_confidence_scaling(0.60)
+        assert phi_060 == 1.0, f"Expected 1.0 for float 0.60, got {phi_060}"
+
+        # NumPy float32 at 0.60
+        f32_060 = np.float32(0.60)
+        assert float(f32_060) >= 0.60, "Sanity check: np.float32(0.60) must be >= 0.60"
+        phi_f32_060 = DeterministicRiskEngine.calculate_confidence_scaling(f32_060)
+        assert phi_f32_060 == 1.0, f"Expected 1.0 for np.float32(0.60), got {phi_f32_060}"
+
+        # Missing, Boolean, Non-finite, and Out-of-bounds Defense-in-depth
+        assert DeterministicRiskEngine.calculate_confidence_scaling(None) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(True) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(False) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(float("nan")) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(float("inf")) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(float("-inf")) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(np.float32(float("nan"))) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(-0.2) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling(1.5) == 0.0
+        assert DeterministicRiskEngine.calculate_confidence_scaling("invalid") == 0.0
+
+    def test_t10_d10_boundary_scoring_and_state_transitions(self):
+        """
+        D-10: Test full evaluate() pipeline across boundaries for exact float and np.float32.
+        Sudden Deceleration (W=50.0):
+          - C = 0.39   -> R = 0.0   -> NORMAL
+          - C = 0.40   -> R = 33.33 -> CAUTION (25 <= score < 50)
+          - C = 0.599  -> R = 49.92 -> CAUTION (< 50.0, not WARNING)
+          - C = 0.60   -> R = 50.0  -> WARNING (>= 50.0)
+        """
+        engine = DeterministicRiskEngine()
+
+        for c_input, expected_score, expected_state in [
+            (0.39, 0.0, SafetyState.NORMAL),
+            (np.float32(0.39), 0.0, SafetyState.NORMAL),
+            (0.40, 50.0 * (0.40 / 0.60), SafetyState.CAUTION),
+            (np.float32(0.40), 50.0 * (float(np.float32(0.40)) / 0.60), SafetyState.CAUTION),
+            (0.599, 50.0 * (0.599 / 0.60), SafetyState.CAUTION),
+            (np.float32(0.599), 50.0 * (float(np.float32(0.599)) / 0.60), SafetyState.CAUTION),
+            (0.60, 50.0, SafetyState.WARNING),
+            (np.float32(0.60), 50.0, SafetyState.WARNING),
+        ]:
+            ctx = SmoothedContext(
+                timestamp=1.0,
+                style_ema=0.0,
+                style_aggressive_ratio=0.0,
+                is_sustained_aggressive=False,
+                is_transient_aggressive=False,
+                current_style=0,
+                current_style_confidence=0.95,
+                active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+                active_maneuver_confidence=c_input,
+                active_maneuver_age_seconds=0.0,
+                is_maneuver_active=True,
+                recent_maneuver_count=1
+            )
+            res = engine.evaluate(ctx)
+            assert math.isclose(res.risk_score, expected_score, rel_tol=1e-5), (
+                f"Mismatch for C={c_input}: expected score {expected_score}, got {res.risk_score}"
+            )
+            assert res.safety_state == expected_state, (
+                f"Mismatch for C={c_input}: expected state {expected_state}, got {res.safety_state}"
+            )
+
+    def test_t10_d10_compound_bonus_gating_behavior(self):
+        """
+        D-10 Authoritative Requirement: Compound Hazard Bonus (+25.0) applies if and only if
+        BOTH phi(C_style) > 0.0 AND phi(C_maneuver) > 0.0.
+        """
+        engine = DeterministicRiskEngine()
+
+        # Case 1: Style below deadband (C_S = 0.35 -> phi_S = 0.0), Maneuver high (C_M = 0.90 -> phi_M = 1.0)
+        # Compound bonus MUST BE GATED OUT.
+        ctx1 = SmoothedContext(
+            timestamp=1.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=0.35,  # Deadband: phi_S = 0.0
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,  # phi_M = 1.0
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res1 = engine.evaluate(ctx1)
+        assert "COMPOUND_HIGH_RISK_HAZARD" not in res1.triggered_rules
+        assert math.isclose(res1.risk_score, 50.0, rel_tol=1e-5), (
+            f"Expected score 50.0 (50*1.0 + 0 bonus), got {res1.risk_score}"
+        )
+
+        # Case 2: Style high (C_S = 0.90 -> phi_S = 1.0), Maneuver below deadband (C_M = 0.35 -> phi_M = 0.0)
+        # Compound bonus MUST BE GATED OUT.
+        ctx2 = SmoothedContext(
+            timestamp=2.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=0.90,  # phi_S = 1.0
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.35,  # Deadband: phi_M = 0.0
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res2 = engine.evaluate(ctx2)
+        assert "COMPOUND_HIGH_RISK_HAZARD" not in res2.triggered_rules
+        assert math.isclose(res2.risk_score, 35.0, rel_tol=1e-5), (
+            f"Expected score 35.0 (35*1.0 + 0 bonus), got {res2.risk_score}"
+        )
+
+        # Case 3: Both confidences in linear tier (C_S = 0.50 -> phi_S = 5/6, C_M = 0.50 -> phi_M = 5/6)
+        # Both strictly positive -> Compound bonus (+25.0) MUST APPLY.
+        ctx3 = SmoothedContext(
+            timestamp=3.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=0.50,
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.50,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res3 = engine.evaluate(ctx3)
+        assert "COMPOUND_HIGH_RISK_HAZARD" in res3.triggered_rules
+        expected_raw3 = 35.0 * (0.50 / 0.60) + 50.0 * (0.50 / 0.60) + 25.0
+        assert math.isclose(res3.risk_score, expected_raw3, rel_tol=1e-5), (
+            f"Expected compound score {expected_raw3}, got {res3.risk_score}"
+        )
+
+        # Case 4: Missing style confidence (C_S = None), Maneuver high (C_M = 0.90)
+        # Compound bonus MUST BE GATED OUT.
+        ctx4 = SmoothedContext(
+            timestamp=4.0,
+            style_ema=0.8,
+            style_aggressive_ratio=0.8,
+            is_sustained_aggressive=True,
+            is_transient_aggressive=False,
+            current_style=1,
+            current_style_confidence=None,  # Missing
+            active_maneuver=ManeuverClass.SUDDEN_DECELERATION.value,
+            active_maneuver_confidence=0.90,
+            active_maneuver_age_seconds=0.0,
+            is_maneuver_active=True,
+            recent_maneuver_count=1
+        )
+        res4 = engine.evaluate(ctx4)
+        assert "COMPOUND_HIGH_RISK_HAZARD" not in res4.triggered_rules
+        assert math.isclose(res4.risk_score, 50.0, rel_tol=1e-5)
+
     # -------------------------------------------------------------------------
     # T-11 (Defect D-11): Inference Exceptions Logged and Flagged Degraded
     # -------------------------------------------------------------------------

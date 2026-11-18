@@ -6,6 +6,7 @@ Stage: Stage 6 - Intelligent Safety Monitoring Agent
 """
 
 import math
+import numbers
 import uuid
 from dataclasses import dataclass, field
 from typing import Dict, Any, List, Optional, Tuple
@@ -134,6 +135,35 @@ class DeterministicRiskEngine:
         decay_factor = 2.0 ** (-decay_time / float(half_life_seconds))
         residual = float(initial_weight) * decay_factor
         return float(residual)
+
+    @staticmethod
+    def calculate_confidence_scaling(confidence: Optional[float]) -> float:
+        """
+        D-10 Authoritative Modality Confidence Scaling Operator.
+        
+        Specification:
+            phi(C) = 0.0          for C < 0.40
+            phi(C) = C / 0.60     for 0.40 <= C < 0.60
+            phi(C) = 1.0          for C >= 0.60
+            
+        Defense-in-depth:
+            - None or boolean returns 0.0.
+            - Non-numeric or non-finite (NaN, +/-inf) returns 0.0.
+            - Out-of-bounds (C < 0.0 or C > 1.0) returns 0.0.
+            - Supports Python float/int and NumPy numeric types (np.floating, np.integer).
+        """
+        if confidence is None or isinstance(confidence, bool):
+            return 0.0
+        if not isinstance(confidence, numbers.Real) or not math.isfinite(confidence):
+            return 0.0
+        c = float(confidence)
+        if c < 0.0 or c > 1.0:
+            return 0.0
+        if c < 0.40:
+            return 0.0
+        if c < 0.60:
+            return float(c / 0.60)
+        return 1.0
 
     def _should_suppress_alert(
         self,
@@ -317,19 +347,21 @@ class DeterministicRiskEngine:
         triggered_rules: List[str] = []
         rule_explanations: List[str] = []
 
-        # Confidence tracking
-        confs = []
-        if h_a == "HEALTHY" and ctx.current_style == DrivingStyle.AGGRESSIVE.value:
-            confs.append(ctx.current_style_confidence)
-        if h_b in ("HEALTHY", "QUIESCENT_BYPASS") and ctx.is_maneuver_active:
-            confs.append(ctx.active_maneuver_confidence)
-        avg_concern_conf = float(sum(confs) / len(confs)) if confs else 1.0
+        # D-10: Independent Modality Confidence Scaling
+        phi_style = (
+            self.calculate_confidence_scaling(ctx.current_style_confidence)
+            if h_a == "HEALTHY" else 0.0
+        )
+        phi_maneuver = (
+            self.calculate_confidence_scaling(ctx.active_maneuver_confidence)
+            if h_b in ("HEALTHY", "QUIESCENT_BYPASS") else 0.0
+        )
 
         # Style Rules (only if Pipeline A is HEALTHY)
         if h_a == "HEALTHY":
             # Rule 2: SUSTAINED_AGGRESSIVE_STYLE
-            if ctx.is_sustained_aggressive:
-                raw_score += self.config.weight_sustained_aggressive
+            if ctx.is_sustained_aggressive and phi_style > 0.0:
+                raw_score += self.config.weight_sustained_aggressive * phi_style
                 triggered_rules.append("SUSTAINED_AGGRESSIVE_STYLE")
                 expl = (
                     f"Sustained aggressive driving style detected over recent window "
@@ -363,8 +395,8 @@ class DeterministicRiskEngine:
                     self._record_alert(alert)
 
             # Rule 3: TRANSIENT_AGGRESSIVE_STYLE
-            elif ctx.is_transient_aggressive:
-                raw_score += self.config.weight_transient_aggressive
+            elif ctx.is_transient_aggressive and phi_style > 0.0:
+                raw_score += self.config.weight_transient_aggressive * phi_style
                 triggered_rules.append("TRANSIENT_AGGRESSIVE_STYLE")
                 rule_explanations.append(
                     f"Transient aggressive driving spike observed (Confidence: {ctx.current_style_confidence:.0%})."
@@ -373,8 +405,8 @@ class DeterministicRiskEngine:
         # Maneuver Rules (only if Pipeline B is HEALTHY or QUIESCENT_BYPASS)
         if h_b in ("HEALTHY", "QUIESCENT_BYPASS"):
             # Rule 4: SUDDEN_ACCELERATION_MANEUVER
-            if ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_ACCELERATION.value:
-                raw_score += self.config.weight_sudden_acceleration
+            if ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_ACCELERATION.value and phi_maneuver > 0.0:
+                raw_score += self.config.weight_sudden_acceleration * phi_maneuver
                 triggered_rules.append("SUDDEN_ACCELERATION_MANEUVER")
                 expl = f"Sudden acceleration maneuver detected (Confidence: {ctx.active_maneuver_confidence:.0%})."
                 rule_explanations.append(expl)
@@ -404,8 +436,8 @@ class DeterministicRiskEngine:
                     self._record_alert(alert)
 
             # Rule 5: SUDDEN_DECELERATION_MANEUVER (Harsh Braking)
-            elif ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_DECELERATION.value:
-                raw_score += self.config.weight_sudden_deceleration
+            elif ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_DECELERATION.value and phi_maneuver > 0.0:
+                raw_score += self.config.weight_sudden_deceleration * phi_maneuver
                 triggered_rules.append("SUDDEN_DECELERATION_MANEUVER")
                 expl = (
                     f"Sudden deceleration / harsh braking detected (Confidence: {ctx.active_maneuver_confidence:.0%}), "
@@ -441,8 +473,8 @@ class DeterministicRiskEngine:
             elif ctx.is_maneuver_active and ctx.active_maneuver in [
                 ManeuverClass.SUDDEN_RIGHT_TURN.value,
                 ManeuverClass.SUDDEN_LEFT_TURN.value
-            ]:
-                raw_score += self.config.weight_sudden_turn
+            ] and phi_maneuver > 0.0:
+                raw_score += self.config.weight_sudden_turn * phi_maneuver
                 m_name = MANEUVER_LABEL_NAMES.get(ctx.active_maneuver, "Sudden Turn")
                 triggered_rules.append("SUDDEN_TURN_MANEUVER")
                 expl = (
@@ -483,11 +515,15 @@ class DeterministicRiskEngine:
                 rule_explanations.append(expl)
 
         # Rule 7: COMPOUND_HIGH_RISK_HAZARD (Simultaneous Aggressive Style + Maneuver)
+        # Gated Compound Bonus (D-10 Authoritative Requirement):
+        # Applies if and only if both modality scaling factors are strictly positive.
         if (
             h_a == "HEALTHY" and
             h_b in ("HEALTHY", "QUIESCENT_BYPASS") and
             ctx.is_maneuver_active and
-            (ctx.is_sustained_aggressive or ctx.is_transient_aggressive)
+            (ctx.is_sustained_aggressive or ctx.is_transient_aggressive) and
+            phi_style > 0.0 and
+            phi_maneuver > 0.0
         ):
             raw_score += self.config.weight_compound_hazard_bonus
             triggered_rules.append("COMPOUND_HIGH_RISK_HAZARD")
@@ -510,7 +546,7 @@ class DeterministicRiskEngine:
                     severity=AlertSeverity.CRITICAL,
                     category=AlertCategory.COMPOUND,
                     title="CRITICAL: Compound Risk Maneuver",
-                    triggering_condition="is_maneuver_active and (is_sustained_aggressive or is_transient_aggressive)",
+                    triggering_condition="is_maneuver_active and (is_sustained_aggressive or is_transient_aggressive) and phi_style > 0 and phi_maneuver > 0",
                     explanation=expl,
                     related_predictions={
                         "style": "Aggressive Driving",
@@ -522,18 +558,9 @@ class DeterministicRiskEngine:
                 alerts.append(alert)
                 self._record_alert(alert)
 
-        # Rule 9: LOW_CONFIDENCE_DISCOUNT
+        # Final Risk Score Calculation (Modality-specific scaling replaces legacy Rule 9 discount)
         confidence_factor = 1.0
-        if raw_score > 0 and avg_concern_conf < self.config.min_confidence_threshold:
-            confidence_factor = self.config.low_confidence_discount
-            triggered_rules.append("LOW_CONFIDENCE_DISCOUNT")
-            rule_explanations.append(
-                f"Risk score discounted by {(1.0 - confidence_factor):.0%} due to low model confidence ({avg_concern_conf:.0%})."
-            )
-
-        # Final Risk Score Calculation
-        final_score = raw_score * confidence_factor
-        final_score = min(100.0, max(0.0, float(final_score)))
+        final_score = min(100.0, max(0.0, float(raw_score)))
 
         # Behavioral State Mapping
         if final_score >= self.config.score_threshold_high_risk:

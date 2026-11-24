@@ -1,0 +1,7 @@
+Pipeline,Model Architecture,Validation Strategy,Primary Metric,Secondary Metric,Inference Latency,Deployment Role
+Pipeline A,RBF SVM (Production Baseline),Chronological Split (70/15/15),69.93% Accuracy,0.6970 Macro F1,~0.15 ms,Production Baseline
+Pipeline A,ExtraTrees (Candidate 1),Forward Cross-Session (S1 -> S2),91.43% Accuracy,0.9079 Macro F1,~0.25 ms,Research Candidate
+Pipeline A,ExtraTrees (Candidate 1),Reverse Cross-Session (S2 -> S1),74.71% Accuracy,0.7280 Macro F1,~0.25 ms,Research Candidate
+Pipeline A,ExtraTrees (Candidate 1),Cross-Session Mean / Pooled,83.07% Mean / 82.49% Pooled,0.8179 Macro F1,~0.25 ms,Benchmark Reference
+Pipeline B,ExtraTrees (Production),Test Split (Discrete Events),88.24% Event Accuracy,0.8786 Macro F1,~0.18 ms,Production
+Pipeline B,ExtraTrees (Production),3-Fold LODO (Across 3 Drivers),93.06% Mean LODO,0.9272 Macro F1,~0.18 ms,Production

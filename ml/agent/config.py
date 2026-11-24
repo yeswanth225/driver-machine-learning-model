@@ -81,6 +81,7 @@ MANEUVER_ABBREVIATIONS: Dict[int, str] = {
     3: "SRT",
     4: "SLT"
 }
+MANEUVER_CLASS_SHORT_NAMES = MANEUVER_ABBREVIATIONS
 
 
 @dataclass(frozen=True)
@@ -100,14 +101,14 @@ class SafetyAgentConfig:
     maneuver_history_window_seconds: float = 10.0
 
     # 2. Smoothing Weights
-    style_ema_alpha: float = 0.20
+    style_ema_alpha: float = 0.20  # Deprecated / Unused: Replaced by continuous dynamic alpha via style_ema_tau in temporal smoother
     style_ema_tau: float = 1.50
     style_aggressive_ratio_threshold: float = 0.50
 
     # 3. Confidence Thresholds
     min_confidence_threshold: float = 0.50
     high_confidence_threshold: float = 0.75
-    low_confidence_discount: float = 0.70  # 30% reduction for low confidence
+    low_confidence_discount: float = 0.70  # Deprecated / Unused: Replaced by continuous piecewise linear scaling calculate_confidence_scaling()
 
     # 4. Deterministic Risk Score Weights (0 to 100 scale)
     weight_sustained_aggressive: float = 35.0
@@ -115,17 +116,19 @@ class SafetyAgentConfig:
     weight_sudden_acceleration: float = 25.0
     weight_sudden_deceleration: float = 50.0
     weight_sudden_turn: float = 35.0
-    weight_compound_high_risk: float = 25.0
+    weight_compound_high_risk: float = 25.0  # Backward-compatibility alias for weight_compound_hazard_bonus
     weight_compound_hazard_bonus: float = 25.0
     weight_repeated_maneuver_bonus: float = 15.0
 
     # 5. Risk Score to State Boundaries
-    threshold_caution: float = 25.0
-    threshold_warning: float = 50.0
-    threshold_high_risk: float = 75.0
+    threshold_caution: float = 25.0    # Backward-compatibility alias for score_threshold_caution
+    threshold_warning: float = 50.0    # Backward-compatibility alias for score_threshold_warning
+    threshold_high_risk: float = 75.0  # Backward-compatibility alias for score_threshold_high_risk
     score_threshold_caution: float = 25.0
     score_threshold_warning: float = 50.0
     score_threshold_high_risk: float = 75.0
+    high_risk_enter_threshold: float = 75.0
+    high_risk_exit_threshold: float = 75.0
 
     # 6. Alert Deduplication Cooldown Timers (Seconds)
     alert_cooldown_style: float = 5.0
@@ -139,6 +142,12 @@ class SafetyAgentConfig:
     gate_gyro_z_std_threshold: float = 0.05
     gate_acc_mag_dev_threshold: float = 1.47  # m/s^2 deviation from 1g (~0.15g)
     gate_gyro_mag_threshold: float = 0.25     # rad/s (~14.3 deg/s)
+
+    # 8. Residual Risk Decay & Incident Lifecycle (D-02 & D-06)
+    residual_plateau_seconds: float = 1.00
+    residual_half_life_seconds: float = 0.75
+    residual_retirement_threshold: float = 2.50
+    maneuver_rearm_seconds: float = 2.50
 
 
 DEFAULT_CONFIG = SafetyAgentConfig()

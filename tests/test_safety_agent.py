@@ -1868,15 +1868,15 @@ class TestStage6RemediationRegression:
 
 
 # =============================================================================
-# Stage 6 Phase 1C: Comprehensive 20-Row D-13 Fail-Safe Health Matrix Tests
+# Stage 6 Phase 1C: Comprehensive 25-Combination 5x5 D-13 Fail-Safe Health Matrix Tests
 # =============================================================================
 class TestD13FailSafeHealthMatrix:
     """
-    Validates all 20 reachable rows of the authoritative D-13 Fail-Safe Truth Table.
-    Integrates P-05A (Healthy A + Impaired B clamps to CAUTION floor) and
-    Policy 1A-Clamped (Active maneuver during A outage clamped >= CAUTION,
-    cruising during A outage returns INSUFFICIENT_DATA).
-    Treats QUIESCENT_BYPASS as healthy-by-design.
+    Validates all 25 combinations of the canonical 5x5 D-13 Fail-Safe Health Matrix.
+    Integrates P-05A (Healthy A + Impaired B clamps nominal driving to CAUTION floor),
+    Option 1A-Pure (Active maneuver during A outage preserves ordinary behavioral state),
+    and Option 2A (Cruising during A outage returns INSUFFICIENT_DATA).
+    Treats QUIESCENT_BYPASS as healthy-by-design across both pipelines.
     """
 
     def test_row01_healthy_a_healthy_b_allows_normal(self):
@@ -1952,9 +1952,9 @@ class TestD13FailSafeHealthMatrix:
         assert assessment.safety_state == SafetyState.NORMAL
         assert not any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
 
-    def test_row06_degraded_a_healthy_b_policy1a_clamped(self):
-        """Row 6 (Policy 1A-Clamped): DEGRADED A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
-        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+    def test_row06_degraded_a_healthy_b_option_1a_pure(self):
+        """Row 6 (Option 1A-Pure & Option 2A): DEGRADED A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates ordinary behavioral risk without artificial CAUTION floor if active maneuver."""
         agent = IntelligentSafetyAgent()
         # Subcase A: Nominal Cruising (M=0)
         ass_cruise = agent.process_predictions(
@@ -2033,9 +2033,9 @@ class TestD13FailSafeHealthMatrix:
         assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
         assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
 
-    def test_row11_missing_a_healthy_b_policy1a_clamped(self):
-        """Row 11 (Policy 1A-Clamped): MISSING A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
-        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+    def test_row11_missing_a_healthy_b_option_1a_pure(self):
+        """Row 11 (Option 1A-Pure & Option 2A): MISSING A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates ordinary behavioral risk without artificial CAUTION floor if active maneuver."""
         agent = IntelligentSafetyAgent()
         # Subcase A: Nominal Cruising (M=0)
         ass_cruise = agent.process_predictions(
@@ -2061,6 +2061,20 @@ class TestD13FailSafeHealthMatrix:
         assert ass_man.pipeline_b_health == "HEALTHY"
         assert ass_man.safety_state == SafetyState.CAUTION
         assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_man.active_alerts)
+
+        # Subcase C: Active Maneuver with Low Score < 25.0 (Option 1A-Pure preserves NORMAL without artificial CAUTION floor)
+        agent.reset()
+        ass_low = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=None,
+            maneuver_prediction=ManeuverClass.SUDDEN_RIGHT_TURN.value,
+            maneuver_confidence=0.42  # phi(0.42) = 0.42/0.60 = 0.70 -> 35.0 * 0.70 = 24.5 < 25.0 -> NORMAL
+        )
+        assert ass_low.pipeline_a_health == "MISSING"
+        assert ass_low.pipeline_b_health == "HEALTHY"
+        assert ass_low.risk_score == pytest.approx(24.5, abs=0.1)
+        assert ass_low.safety_state == SafetyState.NORMAL
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_low.active_alerts)
 
     def test_row12_missing_a_degraded_b_insufficient_data(self):
         """Row 12: MISSING A + DEGRADED B returns INSUFFICIENT_DATA and DQ alert."""
@@ -2115,9 +2129,9 @@ class TestD13FailSafeHealthMatrix:
         assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
         assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
 
-    def test_row16_invalid_a_healthy_b_policy1a_clamped(self):
-        """Row 16 (Policy 1A-Clamped): INVALID A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
-        or calculates behavioral risk clamped >= CAUTION if active maneuver."""
+    def test_row16_invalid_a_healthy_b_option_1a_pure(self):
+        """Row 16 (Option 1A-Pure & Option 2A): INVALID A + HEALTHY B returns INSUFFICIENT_DATA if cruising,
+        or calculates ordinary behavioral risk without artificial CAUTION floor if active maneuver."""
         agent = IntelligentSafetyAgent()
         # Subcase A: Nominal Cruising (M=0)
         ass_cruise = agent.process_predictions(
@@ -2197,5 +2211,392 @@ class TestD13FailSafeHealthMatrix:
         assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
         assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
         assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row21_quiescent_bypass_a_healthy_b_allows_normal(self):
+        """Row 21: QUIESCENT_BYPASS A + HEALTHY B is healthy-by-design; allows NORMAL when nominal."""
+        agent = IntelligentSafetyAgent()
+        # Subcase A: Nominal Cruising (M=0)
+        ass_cruise = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            maneuver_prediction=0,
+            maneuver_confidence=0.90
+        )
+        assert ass_cruise.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert ass_cruise.pipeline_b_health == "HEALTHY"
+        assert ass_cruise.safety_state == SafetyState.NORMAL
+        assert not any(a["category"] == AlertCategory.DATA_QUALITY.value for a in ass_cruise.active_alerts)
+
+        # Subcase B: Active Maneuver (Sudden Deceleration M=2)
+        agent.reset()
+        ass_man = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert ass_man.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert ass_man.pipeline_b_health == "HEALTHY"
+        assert ass_man.safety_state == SafetyState.WARNING
+        assert ass_man.risk_score == 50.0
+
+    def test_row22_quiescent_bypass_a_degraded_b_insufficient_data(self):
+        """Row 22: QUIESCENT_BYPASS A + DEGRADED B returns INSUFFICIENT_DATA (P-05A applies strictly to HEALTHY A only)."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            pipeline_b_health="DEGRADED"
+        )
+        assert assessment.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert assessment.pipeline_b_health == "DEGRADED"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row23_quiescent_bypass_a_missing_b_insufficient_data(self):
+        """Row 23: QUIESCENT_BYPASS A + MISSING B returns INSUFFICIENT_DATA (P-05A applies strictly to HEALTHY A only)."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            maneuver_prediction=None,
+            maneuver_confidence=None
+        )
+        assert assessment.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert assessment.pipeline_b_health == "MISSING"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row24_quiescent_bypass_a_invalid_b_insufficient_data(self):
+        """Row 24: QUIESCENT_BYPASS A + INVALID B returns INSUFFICIENT_DATA (P-05A applies strictly to HEALTHY A only)."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            maneuver_prediction=99,
+            maneuver_confidence=0.90
+        )
+        assert assessment.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert assessment.pipeline_b_health == "INVALID"
+        assert assessment.safety_state == SafetyState.INSUFFICIENT_DATA
+        assert any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+    def test_row25_quiescent_bypass_a_quiescent_bypass_b_allows_normal(self):
+        """Row 25: QUIESCENT_BYPASS A + QUIESCENT_BYPASS B is fully healthy-by-design; allows NORMAL with no DQ alert."""
+        agent = IntelligentSafetyAgent()
+        assessment = agent.process_predictions(
+            timestamp=1.0,
+            pipeline_a_health="QUIESCENT_BYPASS",
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert assessment.pipeline_a_health == "QUIESCENT_BYPASS"
+        assert assessment.pipeline_b_health == "QUIESCENT_BYPASS"
+        assert assessment.safety_state == SafetyState.NORMAL
+        assert assessment.risk_score == 0.0
+        assert not any(a["category"] == AlertCategory.DATA_QUALITY.value for a in assessment.active_alerts)
+
+
+class TestResidualRiskLifecycleMatrix:
+    """
+    10 Authoritative Lifecycle Regression Tests (LT-01 through LT-10)
+    Fulfilling Stage 6 Phase 2 specifications for D-02 & D-06.
+    """
+
+    def test_lt01_single_decel_full_lifecycle(self):
+        """LT-01: Verify continuous half-life decay from plateau to analytical retirement."""
+        agent = IntelligentSafetyAgent()
+        # Excitation frame at t=1.0s (ends at 1.8s)
+        ass1 = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert ass1.risk_score == 50.0
+        assert ass1.safety_state == SafetyState.WARNING
+
+        ass_end = agent.process_predictions(
+            timestamp=1.8,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert ass_end.risk_score == 50.0
+
+        # Plateau: t=2.5s (0.7s post-excitation <= 1.0s plateau) -> R=50.0
+        ass_plat = agent.process_predictions(
+            timestamp=2.5,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert ass_plat.risk_score == pytest.approx(50.0, abs=0.1)
+
+        # Half-life: t=3.55s (1.75s post-excitation: 1.0s plateau + 0.75s half-life) -> R=25.0
+        ass_half = agent.process_predictions(
+            timestamp=3.55,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert ass_half.risk_score == pytest.approx(25.0, abs=0.1)
+        assert ass_half.safety_state == SafetyState.CAUTION
+
+        # Analytical boundary: t = 1.8 + 4.241446 = 6.041446s -> exactly 2.50
+        ass_bound = agent.process_predictions(
+            timestamp=6.041446,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert ass_bound.risk_score == pytest.approx(2.50, abs=0.1)
+
+        # Retired: t = 6.050s (> t_retire) -> strictly 0.00
+        ass_retire = agent.process_predictions(
+            timestamp=6.050,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert ass_retire.risk_score == 0.0
+        assert ass_retire.safety_state == SafetyState.NORMAL
+
+    def test_lt02_continuation_frame_invariance(self):
+        """LT-02: 4 frames during excitation do not advance decay timer; decay starts only after excitation ends."""
+        agent = IntelligentSafetyAgent()
+        timestamps = [1.0, 1.4, 1.8, 2.2]
+        for ts in timestamps:
+            ass = agent.process_predictions(
+                timestamp=ts,
+                style_prediction=0,
+                style_confidence=0.90,
+                maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+                maneuver_confidence=0.90
+            )
+            assert ass.risk_score == 50.0
+
+        ctx = agent.smoother.get_context(2.2)
+        decel_contrib = ctx.active_contributions.get(ManeuverClass.SUDDEN_DECELERATION.value)
+        assert decel_contrib is not None
+        assert decel_contrib.onset_timestamp == 1.0  # t0 preserved
+        assert decel_contrib.is_excited is True
+
+        # Now excitation ends at t=2.2; next quiet frame at t=2.8 is within plateau (0.6s post-excitation)
+        ass_quiet = agent.process_predictions(
+            timestamp=2.8,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        assert ass_quiet.risk_score == 50.0
+
+    def test_lt03_dual_orthogonal_maneuver_decay(self):
+        """LT-03: Decel (50.0) and Turn (35.0) sum orthogonally and decay independently on separate clocks."""
+        agent = IntelligentSafetyAgent()
+        # SD at t=1.0 (ends at 1.8)
+        agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        agent.process_predictions(
+            timestamp=1.8,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        # SRT at t=2.0 (excited)
+        ass_turn = agent.process_predictions(
+            timestamp=2.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_RIGHT_TURN.value,
+            maneuver_confidence=0.90
+        )
+        # SD in plateau (dt=0.2s <= 1.0s -> 50.0) + SRT excited (35.0) + Repeated bonus (15.0) = 100.0 -> HIGH_RISK
+        assert ass_turn.risk_score == pytest.approx(100.0, abs=0.1)
+        assert ass_turn.safety_state == SafetyState.HIGH_RISK
+
+    def test_lt04_dissimilar_maneuver_alerting_d09(self):
+        """LT-04: Turn alert emits immediately during ongoing Decel residual decay without category suppression."""
+        agent = IntelligentSafetyAgent()
+        ass1 = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        assert any(a["category"] == AlertCategory.MANEUVER.value and "Braking" in a["title"] for a in ass1.active_alerts)
+
+        ass2 = agent.process_predictions(
+            timestamp=2.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_RIGHT_TURN.value,
+            maneuver_confidence=0.90
+        )
+        assert any(a["category"] == AlertCategory.MANEUVER.value and "Turn" in a["title"] for a in ass2.active_alerts)
+
+    def test_lt05_modality_uncertainty_scaling_d10(self):
+        """LT-05: Low-confidence maneuver (C=0.35) produces 0.0 residual even with high style confidence (0.95)."""
+        agent = IntelligentSafetyAgent()
+        ass = agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=DrivingStyle.AGGRESSIVE.value,
+            style_confidence=0.50,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.35  # phi(0.35) = 0.0
+        )
+        # Style contributes 35.0 * (0.50/0.60) = 29.17 (sustained by ratio), Maneuver contributes 0.0, Compound bonus gated out
+        assert ass.risk_score == pytest.approx(29.17, abs=0.1)
+
+    def test_lt06_quiet_hysteresis_rearming_2_5s(self):
+        """LT-06: Re-excitation at dt_quiet=1.5s retains event_id; re-excitation at dt_quiet=3.0s creates new event_id."""
+        agent = IntelligentSafetyAgent()
+        agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        ctx1 = agent.smoother.get_context(1.0)
+        id1 = ctx1.active_contributions[ManeuverClass.SUDDEN_DECELERATION.value].event_id
+
+        # Ends at t=1.0; quiet frame at t=2.5 (1.5s quiet < 2.50s)
+        agent.process_predictions(
+            timestamp=2.5,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        # Re-excitation at t=2.6 (1.6s quiet < 2.50s hysteresis)
+        agent.process_predictions(
+            timestamp=2.6,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        ctx2 = agent.smoother.get_context(2.6)
+        id2 = ctx2.active_contributions[ManeuverClass.SUDDEN_DECELERATION.value].event_id
+        assert id1 == id2  # Intra-incident re-excitation retains event_id!
+        assert ctx2.recent_maneuver_count == 1
+
+        # Ends at t=2.6; quiet until t=5.5 (2.9s quiet >= 2.50s hysteresis)
+        agent.process_predictions(
+            timestamp=5.5,
+            style_prediction=0,
+            style_confidence=0.90,
+            pipeline_b_health="QUIESCENT_BYPASS"
+        )
+        # Re-excitation at t=5.6 (3.0s quiet >= 2.50s) -> distinct new incident!
+        agent.process_predictions(
+            timestamp=5.6,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        ctx3 = agent.smoother.get_context(5.6)
+        id3 = ctx3.active_contributions[ManeuverClass.SUDDEN_DECELERATION.value].event_id
+        assert id3 != id1  # New distinct incident identity generated!
+        assert ctx3.recent_maneuver_count == 2
+
+    def test_lt07_buffer_rollover_independence(self):
+        """LT-07: Telemetry advancing past 10.0s circular buffer horizon does not crash or corrupt decay."""
+        agent = IntelligentSafetyAgent()
+        agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        # Stream 11 quiet frames at 1 Hz to t=12.0s (> 10.0s history window without stale skips)
+        for t in range(2, 13):
+            ass = agent.process_predictions(
+                timestamp=float(t),
+                style_prediction=0,
+                style_confidence=0.90,
+                pipeline_b_health="QUIESCENT_BYPASS"
+            )
+        assert ass.risk_score == 0.0
+        assert ass.safety_state == SafetyState.NORMAL
+
+    def test_lt08_same_class_double_counting_cap(self):
+        """LT-08: Consecutive brake pulses within decay window cap at initial weight (50.0) without double-counting."""
+        agent = IntelligentSafetyAgent()
+        agent.process_predictions(
+            timestamp=1.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        # Brake tap 2 at t=2.0
+        ass = agent.process_predictions(
+            timestamp=2.0,
+            style_prediction=0,
+            style_confidence=0.90,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.90
+        )
+        # Base decel risk capped at 50.0
+        assert ass.risk_score == 50.0
+
+    def test_lt09_continuous_cruising_invariant(self):
+        """LT-09: 10 frames of quiet cruising maintain strictly zero residual risk and NORMAL state."""
+        agent = IntelligentSafetyAgent()
+        for i in range(10):
+            ass = agent.process_predictions(
+                timestamp=1.0 + i * 0.1,
+                style_prediction=0,
+                style_confidence=0.90,
+                pipeline_b_health="QUIESCENT_BYPASS"
+            )
+            assert ass.risk_score == 0.0
+            assert ass.safety_state == SafetyState.NORMAL
+
+    def test_lt10_non_linear_bonus_stacking(self):
+        """LT-10: Sustained Aggressive (35.0) + Decel (50.0) + Turn (35.0) + Compound (25.0) = 145 -> clamped to 100.0."""
+        agent = IntelligentSafetyAgent()
+        # Feed sustained aggressive style
+        for i in range(10):
+            agent.process_predictions(
+                timestamp=1.0 + i * 0.2,
+                style_prediction=DrivingStyle.AGGRESSIVE.value,
+                style_confidence=0.95,
+                pipeline_b_health="QUIESCENT_BYPASS"
+            )
+        # Decel at t=3.0 (ends at 3.0) -> triggers Compound Hazard
+        ass_decel = agent.process_predictions(
+            timestamp=3.0,
+            style_prediction=DrivingStyle.AGGRESSIVE.value,
+            style_confidence=0.95,
+            maneuver_prediction=ManeuverClass.SUDDEN_DECELERATION.value,
+            maneuver_confidence=0.95
+        )
+        assert ass_decel.risk_score >= 75.0
+        assert any(a["severity"] == AlertSeverity.CRITICAL.value for a in ass_decel.active_alerts)
+
+        # Turn at t=3.2 (both Decel in plateau and Turn excited)
+        ass_turn = agent.process_predictions(
+            timestamp=3.2,
+            style_prediction=DrivingStyle.AGGRESSIVE.value,
+            style_confidence=0.95,
+            maneuver_prediction=ManeuverClass.SUDDEN_RIGHT_TURN.value,
+            maneuver_confidence=0.95
+        )
+        # 35 (style) + 50 (decel) + 35 (turn) + 25 (compound) = 145 -> 100.0
+        assert ass_turn.risk_score == 100.0
+        assert ass_turn.safety_state == SafetyState.HIGH_RISK
+
 
 

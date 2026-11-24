@@ -1,11 +1,13 @@
 # Stage 6 Architecture Design: Continuous Residual Risk Integration
 
+> **Canonical Specification Notice:** This historical design investigation is governed by [DESIGN.md](../../DESIGN.md) as the authoritative canonical specification. The architectural design proposed in this document was subsequently implemented in `ml/agent/lifecycle_tracker.py` and `ml/agent/risk_engine.py`.
+
 **Project:** Intelligent Driver Activity Monitoring & Safety Agent  
 **Module:** `ml/agent` Production Architecture  
 **Stage:** Stage 6 — Intelligent Safety Monitoring Agent (Controlled Remediation)  
-**Document Type:** Architectural Investigation & Integration Design (READ-ONLY)  
+**Document Type:** Architectural Investigation & Integration Design (Historical Record)  
 **Date:** November 2026  
-**Status:** PROPOSED ARCHITECTURAL DESIGN — READ-ONLY INVESTIGATION — AWAITING IMPLEMENTATION AUTHORIZATION  
+**Status:** IMPLEMENTED & VALIDATED IN PRODUCTION PIPELINE  
 
 ---
 

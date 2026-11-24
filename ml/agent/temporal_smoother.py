@@ -19,6 +19,7 @@ from ml.agent.config import (
     MANEUVER_LABEL_NAMES
 )
 from ml.agent.prediction_validator import ValidatedPrediction
+from ml.agent.lifecycle_tracker import ManeuverContribution, IncidentLifecycleManager
 
 
 @dataclass
@@ -32,6 +33,9 @@ class SmoothedContext:
     is_transient_aggressive: bool = False
     current_style: Optional[int] = None  # 0: Normal, 1: Aggressive, None if missing
     current_style_confidence: Optional[float] = 0.0
+
+    # Multi-channel Active/Decaying Maneuver Contributions (D-02 & D-06)
+    active_contributions: Dict[int, ManeuverContribution] = field(default_factory=dict)
 
     # Maneuver Dynamics (~1.55 Hz Pipeline B)
     active_maneuver: int = 0  # 0: None, 1: SA, 2: SD, 3: SRT, 4: SLT
@@ -71,6 +75,7 @@ class TemporalSmoother:
         # Maneuver event log: list of (timestamp, maneuver_id, confidence)
         self._maneuver_events: deque = deque()
         self._last_context: Optional[SmoothedContext] = None
+        self.lifecycle_manager = IncidentLifecycleManager(config)
 
     def reset(self):
         """Reset all smoother histories and internal state."""
@@ -83,11 +88,13 @@ class TemporalSmoother:
         self._last_maneuver_onset_time = None
         self._maneuver_events.clear()
         self._last_context = None
+        self.lifecycle_manager.reset()
 
     def get_context(self, ts: Optional[float] = None) -> SmoothedContext:
         """Return the current or most recent SmoothedContext."""
         if self._last_context is not None:
             return self._last_context
+        active_contribs = self.lifecycle_manager.active_contributions
         return SmoothedContext(
             timestamp=ts or 0.0,
             style_ema=float(self._style_ema),
@@ -96,6 +103,7 @@ class TemporalSmoother:
             is_transient_aggressive=False,
             current_style=None,
             current_style_confidence=0.0,
+            active_contributions=active_contribs,
             active_maneuver=self._active_maneuver,
             active_maneuver_confidence=float(self._active_maneuver_conf),
             active_maneuver_age_seconds=0.0,
@@ -190,50 +198,58 @@ class TemporalSmoother:
         )
 
         # -------------------------------------------------------------
-        # 2. Smooth Pipeline B: Maneuver Detection (~1.55 Hz Stream)
+        # 2. Smooth Pipeline B: Maneuver Detection & Lifecycle (~1.55 Hz Stream)
         # -------------------------------------------------------------
         m_pred = val_pred.maneuver_prediction
         m_conf = val_pred.maneuver_confidence
+        is_quiescent = (val_pred.pipeline_b_health == "QUIESCENT_BYPASS")
 
-        if m_pred is not None and m_pred != ManeuverClass.NONE.value:
-            # Check if this frame is an intra-event continuation of an ongoing maneuver of the same class
-            is_continuation = (
-                self._active_maneuver == m_pred
-                and self._active_maneuver_timestamp is not None
-                and (ts - self._active_maneuver_timestamp) <= self.config.maneuver_persistence_seconds
-            )
-            self._active_maneuver = m_pred
-            self._active_maneuver_conf = max(self._active_maneuver_conf, m_conf) if is_continuation else m_conf
-            self._active_maneuver_timestamp = ts
+        active_contributions, recent_maneuver_count, recent_maneuver_history = self.lifecycle_manager.update(
+            ts=ts,
+            maneuver_prediction=m_pred,
+            maneuver_confidence=m_conf,
+            is_quiescent_bypass=is_quiescent
+        )
 
-            if not is_continuation:
-                # Genuine new maneuver onset
-                self._last_maneuver_onset_time = ts
-                self._maneuver_events.append((ts, m_pred, m_conf))
+        # Legacy buffer synchronization for test backward compatibility
+        self._maneuver_events = deque([
+            (h["timestamp"], h["maneuver_id"], h["confidence"])
+            for h in recent_maneuver_history
+        ])
 
-        # Check maneuver persistence
-        is_maneuver_active = False
-        maneuver_age = 0.0
-        if self._active_maneuver != ManeuverClass.NONE.value and self._active_maneuver_timestamp is not None:
-            maneuver_age = ts - self._active_maneuver_timestamp
-            if 0.0 <= maneuver_age <= self.config.maneuver_persistence_seconds:
+        if active_contributions:
+            active_excited = [
+                c for c in active_contributions.values()
+                if c.is_excited or (ts - (c.excitation_end_timestamp or c.last_active_timestamp)) <= self.config.maneuver_persistence_seconds
+            ]
+            if active_excited:
+                primary_contrib = max(
+                    active_excited,
+                    key=lambda c: (c.initial_weight, c.confidence)
+                )
                 is_maneuver_active = True
+                active_maneuver = primary_contrib.maneuver_class
+                active_maneuver_conf = primary_contrib.confidence
+                active_maneuver_age = ts - primary_contrib.onset_timestamp
+                self._active_maneuver = active_maneuver
+                self._active_maneuver_conf = active_maneuver_conf
+                self._active_maneuver_timestamp = primary_contrib.last_active_timestamp
             else:
-                # Expired
+                is_maneuver_active = False
+                active_maneuver = ManeuverClass.NONE.value
+                active_maneuver_conf = 0.0
+                active_maneuver_age = 0.0
                 self._active_maneuver = ManeuverClass.NONE.value
                 self._active_maneuver_conf = 0.0
-                is_maneuver_active = False
-
-        recent_maneuver_count = len(self._maneuver_events)
-        recent_maneuver_history = [
-            {
-                "timestamp": t,
-                "maneuver_id": mid,
-                "maneuver_name": MANEUVER_LABEL_NAMES.get(mid, "Unknown"),
-                "confidence": conf
-            }
-            for t, mid, conf in list(self._maneuver_events)
-        ]
+                self._active_maneuver_timestamp = None
+        else:
+            is_maneuver_active = False
+            active_maneuver = ManeuverClass.NONE.value
+            active_maneuver_conf = 0.0
+            active_maneuver_age = 0.0
+            self._active_maneuver = ManeuverClass.NONE.value
+            self._active_maneuver_conf = 0.0
+            self._active_maneuver_timestamp = None
 
         ctx = SmoothedContext(
             timestamp=ts,
@@ -243,9 +259,10 @@ class TemporalSmoother:
             is_transient_aggressive=is_transient_aggressive,
             current_style=current_style,
             current_style_confidence=current_style_conf,
-            active_maneuver=self._active_maneuver if is_maneuver_active else ManeuverClass.NONE.value,
-            active_maneuver_confidence=float(self._active_maneuver_conf) if is_maneuver_active else 0.0,
-            active_maneuver_age_seconds=float(maneuver_age),
+            active_contributions=active_contributions,
+            active_maneuver=active_maneuver,
+            active_maneuver_confidence=float(active_maneuver_conf),
+            active_maneuver_age_seconds=float(active_maneuver_age),
             is_maneuver_active=is_maneuver_active,
             recent_maneuver_count=recent_maneuver_count,
             recent_maneuver_history=recent_maneuver_history,

@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Driver Sensor Logger — 20Hz Physical Telemetry</title>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#0F172A">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background: #0F172A; color: #F8FAFC; padding: 16px; min-height: 100vh; }
+    .header { text-align: center; margin-bottom: 16px; }
+    .header h1 { font-size: 1.25rem; color: #38BDF8; font-weight: 700; }
+    .header p { font-size: 0.8rem; color: #94A3B8; margin-top: 2px; }
+    .card { background: #1E293B; border: 1px solid #334155; border-radius: 12px; padding: 14px; margin-bottom: 12px; }
+    .status-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; }
+    .status-standby { background: #334155; color: #94A3B8; }
+    .status-active { background: #166534; color: #4ADE80; animation: pulse 2s infinite; }
+    @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.6; } 100% { opacity: 1; } }
+    .metric-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 10px; }
+    .metric-box { background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 10px; text-align: center; }
+    .metric-label { font-size: 0.7rem; color: #94A3B8; text-transform: uppercase; letter-spacing: 0.5px; }
+    .metric-val { font-size: 1.1rem; font-weight: 700; color: #38BDF8; margin-top: 2px; font-variant-numeric: tabular-nums; }
+    .form-group { margin-bottom: 12px; }
+    label { display: block; font-size: 0.75rem; color: #94A3B8; margin-bottom: 4px; }
+    select, input { width: 100%; background: #0F172A; border: 1px solid #334155; border-radius: 8px; padding: 10px; color: #F8FAFC; font-size: 0.9rem; }
+    button { width: 100%; padding: 14px; border-radius: 8px; border: none; font-size: 0.95rem; font-weight: 700; cursor: pointer; margin-bottom: 8px; transition: opacity 0.2s; }
+    button:active { opacity: 0.8; }
+    .btn-start { background: #22C55E; color: #FFFFFF; }
+    .btn-stop { background: #EF4444; color: #FFFFFF; }
+    .btn-upload { background: #3B82F6; color: #FFFFFF; }
+    .btn-export { background: #64748B; color: #FFFFFF; }
+    .btn-disabled { opacity: 0.4; cursor: not-allowed; }
+    .sensor-readings { font-family: monospace; font-size: 0.75rem; line-height: 1.5; color: #CBD5E1; }
+    .log-box { max-height: 120px; overflow-y: auto; background: #0F172A; border: 1px solid #334155; border-radius: 6px; padding: 8px; font-family: monospace; font-size: 0.7rem; color: #94A3B8; }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>DRIVER SENSOR LOGGER</h1>
+    <p>Supplementary Web Demonstration Logger (20 Hz Telemetry)</p>
+    <div style="margin-top: 6px; padding: 6px 10px; background: rgba(234, 179, 8, 0.15); border: 1px solid rgba(234, 179, 8, 0.4); border-radius: 6px; font-size: 0.72rem; color: #FDE047; text-align: left;">
+      <strong>Notice:</strong> Mobile browsers throttle background timers when screen sleeps or tabs switch. Keep screen ON. For uninterrupted 8-driver scientific collection, use the <strong>Native Android Application</strong> (<code>mobile/android/</code>).
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="status-row">
+      <span style="font-size: 0.85rem; font-weight: 600;">System Status</span>
+      <span id="statusBadge" class="status-badge status-standby">STANDBY</span>
+    </div>
+    <div class="metric-grid">
+      <div class="metric-box">
+        <div class="metric-label">Actual Frequency</div>
+        <div id="freqVal" class="metric-val">0.0 Hz</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Duration</div>
+        <div id="durationVal" class="metric-val">00:00</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">Samples Logged</div>
+        <div id="samplesVal" class="metric-val">0</div>
+      </div>
+      <div class="metric-box">
+        <div class="metric-label">GPS Speed</div>
+        <div id="speedVal" class="metric-val">0.0 km/h</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="form-group">
+      <label for="driverSelect">Assigned Driver Token:</label>
+      <select id="driverSelect">
+        <option value="DRV_001">DRV_001 (Development)</option>
+        <option value="DRV_002">DRV_002 (Development)</option>
+        <option value="DRV_003">DRV_003 (Development)</option>
+        <option value="DRV_004">DRV_004 (Development)</option>
+        <option value="DRV_005">DRV_005 (Development)</option>
+        <option value="DRV_006">DRV_006 (Development)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="segmentSelect">Active Driving Regime (S0–S6):</label>
+      <select id="segmentSelect">
+        <option value="S0">S0 - Pre-Drive 30s Static Calibration</option>
+        <option value="S1" selected>S1 - Urban Calm Cruising (< 45 km/h)</option>
+        <option value="S2">S2 - Arterial Road & Turns (40-60 km/h)</option>
+        <option value="S3">S3 - Highway Cruising (70-100 km/h)</option>
+        <option value="S4">S4 - Rough Road / Bumps (25-40 km/h)</option>
+        <option value="S5">S5 - Closed-Course Aggressive Battery</option>
+        <option value="S6">S6 - Post-Drive 30s Static Calibration</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label for="backendUrl">Backend Ingest URL:</label>
+      <input type="text" id="backendUrl" value="http://localhost:8000">
+    </div>
+
+    <button id="btnStart" class="btn-start">START 20Hz RECORDING</button>
+    <button id="btnStop" class="btn-stop btn-disabled" disabled>STOP RECORDING</button>
+    <button id="btnUpload" class="btn-upload btn-disabled" disabled>UPLOAD TO BACKEND</button>
+    <button id="btnExport" class="btn-export btn-disabled" disabled>DOWNLOAD CSV</button>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 0.75rem; color: #94A3B8; margin-bottom: 6px; font-weight: 600;">LIVE SENSOR CHANNELS</div>
+    <div id="liveSensors" class="sensor-readings">
+      Acc (X,Y,Z): [ 0.00, 0.00, 0.00 ] g<br>
+      Gyro (X,Y,Z): [ 0.00, 0.00, 0.00 ] rad/s<br>
+      GPS: Fix 0D, Acc: ±0m, HDOP: 1.0
+    </div>
+  </div>
+
+  <div class="card">
+    <div style="font-size: 0.75rem; color: #94A3B8; margin-bottom: 6px; font-weight: 600;">OPERATOR LOG</div>
+    <div id="logBox" class="log-box">Ready. Attach rigid mount before starting.</div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

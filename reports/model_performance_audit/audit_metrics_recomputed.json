@@ -1,0 +1,914 @@
+{
+  "pipeline_a": {
+    "val_default_tau_050": {
+      "accuracy": 0.7343669250645994,
+      "balanced_accuracy": 0.6940024479804161,
+      "precision_macro": 0.784939925646732,
+      "recall_macro": 0.6940024479804161,
+      "macro_f1": 0.6929049397536793,
+      "weighted_f1": 0.7104577633522545,
+      "precision_normal": 0.8722358722358723,
+      "recall_normal": 0.43451652386780903,
+      "f1_normal": 0.5800653594771242,
+      "precision_aggressive": 0.6976439790575916,
+      "recall_aggressive": 0.9534883720930233,
+      "f1_aggressive": 0.8057445200302343,
+      "confusion_matrix": [
+        [
+          355,
+          462
+        ],
+        [
+          52,
+          1066
+        ]
+      ],
+      "tn": 355,
+      "fp": 462,
+      "fn": 52,
+      "tp": 1066,
+      "fpr": 0.565483476132191,
+      "fnr": 0.046511627906976744,
+      "specificity": 0.43451652386780903,
+      "roc_auc": 0.7282643205759541,
+      "pr_auc": 0.7563474663931986,
+      "brier_score": 0.23756343817011402
+    },
+    "val_tuned_tau_084": {
+      "accuracy": 0.7343669250645994,
+      "balanced_accuracy": 0.7038885227379719,
+      "precision_macro": 0.7509824585992755,
+      "recall_macro": 0.7038885227379719,
+      "macro_f1": 0.707037877502545,
+      "weighted_f1": 0.7209567325214594,
+      "precision_normal": 0.7874762808349146,
+      "recall_normal": 0.5079559363525091,
+      "f1_normal": 0.6175595238095238,
+      "precision_aggressive": 0.7144886363636364,
+      "recall_aggressive": 0.8998211091234347,
+      "f1_aggressive": 0.7965162311955661,
+      "confusion_matrix": [
+        [
+          415,
+          402
+        ],
+        [
+          112,
+          1006
+        ]
+      ],
+      "tn": 415,
+      "fp": 402,
+      "fn": 112,
+      "tp": 1006,
+      "fpr": 0.4920440636474908,
+      "fnr": 0.1001788908765653,
+      "specificity": 0.5079559363525091,
+      "roc_auc": 0.7282643205759541,
+      "pr_auc": 0.7563474663931986,
+      "brier_score": 0.23756343817011402
+    },
+    "test_default_tau_050": {
+      "accuracy": 0.6674462114125351,
+      "balanced_accuracy": 0.6808361104347223,
+      "precision_macro": 0.7091534832648745,
+      "recall_macro": 0.6808361104347223,
+      "macro_f1": 0.6594805465360996,
+      "weighted_f1": 0.6559727308106967,
+      "precision_normal": 0.8208955223880597,
+      "recall_normal": 0.4820333041191937,
+      "f1_normal": 0.6073992269464384,
+      "precision_aggressive": 0.5974114441416893,
+      "recall_aggressive": 0.8796389167502507,
+      "f1_aggressive": 0.7115618661257607,
+      "confusion_matrix": [
+        [
+          550,
+          591
+        ],
+        [
+          120,
+          877
+        ]
+      ],
+      "tn": 550,
+      "fp": 591,
+      "fn": 120,
+      "tp": 877,
+      "fpr": 0.5179666958808063,
+      "fnr": 0.12036108324974924,
+      "specificity": 0.4820333041191937,
+      "roc_auc": 0.6959651962021033,
+      "pr_auc": 0.5627335551033417,
+      "brier_score": 0.2978525082657654
+    },
+    "test_tuned_tau_084": {
+      "accuracy": 0.6992516370439663,
+      "balanced_accuracy": 0.7082927133723695,
+      "precision_macro": 0.7200672046006731,
+      "recall_macro": 0.7082927133723695,
+      "macro_f1": 0.6969828419427797,
+      "weighted_f1": 0.6952168608910453,
+      "precision_normal": 0.8066502463054187,
+      "recall_normal": 0.5740578439964943,
+      "f1_normal": 0.6707629288274449,
+      "precision_aggressive": 0.6334841628959276,
+      "recall_aggressive": 0.8425275827482447,
+      "f1_aggressive": 0.7232027550581145,
+      "confusion_matrix": [
+        [
+          655,
+          486
+        ],
+        [
+          157,
+          840
+        ]
+      ],
+      "tn": 655,
+      "fp": 486,
+      "fn": 157,
+      "tp": 840,
+      "fpr": 0.4259421560035057,
+      "fnr": 0.15747241725175526,
+      "specificity": 0.5740578439964943,
+      "roc_auc": 0.6959651962021033,
+      "pr_auc": 0.5627335551033417,
+      "brier_score": 0.2978525082657654
+    },
+    "top_features_fp_vs_tn": [
+      {
+        "feature": "gyro_mag_max_3s",
+        "tn_mean": 0.166539574376646,
+        "tn_std": 0.0816025990683861,
+        "fp_mean": 0.3266262575777932,
+        "fp_std": 0.10474679437758762,
+        "tp_mean": 0.4638187728523894,
+        "cohens_d": 1.7368465367217312,
+        "abs_cohens_d": 1.7368465367217312
+      },
+      {
+        "feature": "gyro_mag_max_2s",
+        "tn_mean": 0.1385859277561654,
+        "tn_std": 0.07874752059474556,
+        "fp_mean": 0.2959271942387868,
+        "fp_std": 0.10488531223578365,
+        "tp_mean": 0.4146329422150267,
+        "cohens_d": 1.732799014023771,
+        "abs_cohens_d": 1.732799014023771
+      },
+      {
+        "feature": "acc_mag_std_3s",
+        "tn_mean": 0.5113245924776139,
+        "tn_std": 0.17895715349816105,
+        "fp_mean": 0.8285389263442732,
+        "fp_std": 0.23512429487317008,
+        "tp_mean": 1.2647066356958883,
+        "cohens_d": 1.5491555051086425,
+        "abs_cohens_d": 1.5491555051086425
+      },
+      {
+        "feature": "acc_mag_std_2s",
+        "tn_mean": 0.46813329017117183,
+        "tn_std": 0.1868421882922856,
+        "fp_mean": 0.8128248989424484,
+        "fp_std": 0.27626280981951,
+        "tp_mean": 1.1925250907349114,
+        "cohens_d": 1.5037365679961385,
+        "abs_cohens_d": 1.5037365679961385
+      },
+      {
+        "feature": "gyro_mag_max_1s",
+        "tn_mean": 0.10865417679372054,
+        "tn_std": 0.0737800814863714,
+        "fp_mean": 0.24549349692764372,
+        "fp_std": 0.11018020919092437,
+        "tp_mean": 0.3432693970895585,
+        "cohens_d": 1.5024761164584892,
+        "abs_cohens_d": 1.5024761164584892
+      },
+      {
+        "feature": "gyro_mag_std_2s",
+        "tn_mean": 0.032708762313935984,
+        "tn_std": 0.018441967931695908,
+        "fp_mean": 0.06822620868844027,
+        "fp_std": 0.029420000461931134,
+        "tp_mean": 0.0952305862173355,
+        "cohens_d": 1.4957654758003427,
+        "abs_cohens_d": 1.4957654758003427
+      }
+    ],
+    "confusion_score_summary": {
+      "tn": {
+        "count": 655,
+        "mean_score": -0.7352550661691393,
+        "median_score": -0.7702937763429711,
+        "mean_prob": 0.2710391607445991
+      },
+      "fp": {
+        "count": 486,
+        "mean_score": 1.9234124628533014,
+        "median_score": 1.671819190635798,
+        "mean_prob": 0.9717668885432164
+      },
+      "tp": {
+        "count": 840,
+        "mean_score": 1.6560370939322107,
+        "median_score": 1.5992177617815015,
+        "mean_prob": 0.9756619789208566
+      },
+      "fn": {
+        "count": 157,
+        "mean_score": -0.6567875616339839,
+        "median_score": -0.696645502386732,
+        "mean_prob": 0.3155434564888372
+      }
+    }
+  },
+  "pipeline_b": {
+    "val_sample_metrics": {
+      "accuracy": 0.7975460122699386,
+      "balanced_accuracy": 0.8127976190476192,
+      "macro_f1": 0.8102219340386276,
+      "weighted_f1": 0.7975360604950316,
+      "confusion_matrix": [
+        [
+          30,
+          1,
+          5,
+          0
+        ],
+        [
+          0,
+          27,
+          9,
+          0
+        ],
+        [
+          10,
+          7,
+          39,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          34
+        ]
+      ],
+      "per_class": {
+        "SA": {
+          "class_id": 1,
+          "precision": 0.7317073170731707,
+          "recall": 0.8333333333333334,
+          "f1": 0.7792207792207793,
+          "support": 36
+        },
+        "SD": {
+          "class_id": 2,
+          "precision": 0.7714285714285715,
+          "recall": 0.75,
+          "f1": 0.7605633802816901,
+          "support": 36
+        },
+        "SRT": {
+          "class_id": 3,
+          "precision": 0.7358490566037735,
+          "recall": 0.6964285714285714,
+          "f1": 0.7155963302752294,
+          "support": 56
+        },
+        "SLT": {
+          "class_id": 4,
+          "precision": 1.0,
+          "recall": 0.9714285714285714,
+          "f1": 0.9855072463768116,
+          "support": 35
+        }
+      }
+    },
+    "val_event_metrics": {
+      "accuracy": 1.0,
+      "balanced_accuracy": 1.0,
+      "macro_f1": 1.0,
+      "weighted_f1": 1.0,
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          3,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          4,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          5
+        ]
+      ],
+      "per_class": {
+        "SA": {
+          "class_id": 1,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 4
+        },
+        "SD": {
+          "class_id": 2,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3
+        },
+        "SRT": {
+          "class_id": 3,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 4
+        },
+        "SLT": {
+          "class_id": 4,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 5
+        }
+      }
+    },
+    "test_sample_metrics": {
+      "accuracy": 0.8057142857142857,
+      "balanced_accuracy": 0.8219742063492064,
+      "macro_f1": 0.8155052264808362,
+      "weighted_f1": 0.8142903600464576,
+      "confusion_matrix": [
+        [
+          31,
+          0,
+          4,
+          1
+        ],
+        [
+          13,
+          33,
+          2,
+          0
+        ],
+        [
+          12,
+          1,
+          43,
+          0
+        ],
+        [
+          1,
+          0,
+          0,
+          34
+        ]
+      ],
+      "per_class": {
+        "SA": {
+          "class_id": 1,
+          "precision": 0.543859649122807,
+          "recall": 0.8611111111111112,
+          "f1": 0.6666666666666666,
+          "support": 36
+        },
+        "SD": {
+          "class_id": 2,
+          "precision": 0.9705882352941176,
+          "recall": 0.6875,
+          "f1": 0.8048780487804879,
+          "support": 48
+        },
+        "SRT": {
+          "class_id": 3,
+          "precision": 0.8775510204081632,
+          "recall": 0.7678571428571429,
+          "f1": 0.819047619047619,
+          "support": 56
+        },
+        "SLT": {
+          "class_id": 4,
+          "precision": 0.9714285714285714,
+          "recall": 0.9714285714285714,
+          "f1": 0.9714285714285714,
+          "support": 35
+        }
+      }
+    },
+    "test_event_metrics": {
+      "accuracy": 0.8823529411764706,
+      "balanced_accuracy": 0.875,
+      "macro_f1": 0.8785714285714286,
+      "weighted_f1": 0.8857142857142857,
+      "confusion_matrix": [
+        [
+          4,
+          0,
+          0,
+          0
+        ],
+        [
+          1,
+          3,
+          0,
+          0
+        ],
+        [
+          1,
+          0,
+          3,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          5
+        ]
+      ],
+      "per_class": {
+        "SA": {
+          "class_id": 1,
+          "precision": 0.6666666666666666,
+          "recall": 1.0,
+          "f1": 0.8,
+          "support": 4
+        },
+        "SD": {
+          "class_id": 2,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "support": 4
+        },
+        "SRT": {
+          "class_id": 3,
+          "precision": 1.0,
+          "recall": 0.75,
+          "f1": 0.8571428571428571,
+          "support": 4
+        },
+        "SLT": {
+          "class_id": 4,
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 5
+        }
+      }
+    },
+    "lodo_summary": {
+      "folds": {
+        "Holdout_Driver-1": {
+          "holdout_driver": "Driver-1",
+          "train_rows": 746,
+          "train_events": 74,
+          "test_rows": 368,
+          "test_events": 35,
+          "sample_metrics": {
+            "accuracy": 0.845108695652174,
+            "balanced_accuracy": 0.8623263888888889,
+            "macro_f1": 0.8583614606624345,
+            "weighted_f1": 0.8463053181218759,
+            "confusion_matrix": [
+              [
+                77,
+                1,
+                9,
+                3
+              ],
+              [
+                10,
+                81,
+                5,
+                0
+              ],
+              [
+                19,
+                8,
+                99,
+                0
+              ],
+              [
+                1,
+                0,
+                1,
+                54
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 0.719626168224299,
+                "recall": 0.8555555555555555,
+                "f1": 0.7817258883248731,
+                "support": 90
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 0.9,
+                "recall": 0.84375,
+                "f1": 0.8709677419354839,
+                "support": 96
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 0.868421052631579,
+                "recall": 0.7857142857142857,
+                "f1": 0.825,
+                "support": 126
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 0.9473684210526315,
+                "recall": 0.9642857142857143,
+                "f1": 0.9557522123893806,
+                "support": 56
+              }
+            }
+          },
+          "event_metrics": {
+            "accuracy": 0.9714285714285714,
+            "balanced_accuracy": 0.975,
+            "macro_f1": 0.9736842105263157,
+            "weighted_f1": 0.9714285714285714,
+            "confusion_matrix": [
+              [
+                9,
+                0,
+                1,
+                0
+              ],
+              [
+                0,
+                8,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                9,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                8
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 1.0,
+                "recall": 0.9,
+                "f1": 0.9473684210526315,
+                "support": 10
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 8
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 0.9,
+                "recall": 1.0,
+                "f1": 0.9473684210526315,
+                "support": 9
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 8
+              }
+            },
+            "event_count": 35
+          }
+        },
+        "Holdout_Driver-2": {
+          "holdout_driver": "Driver-2",
+          "train_rows": 751,
+          "train_events": 74,
+          "test_rows": 363,
+          "test_events": 35,
+          "sample_metrics": {
+            "accuracy": 0.8457300275482094,
+            "balanced_accuracy": 0.8609126984126985,
+            "macro_f1": 0.8589569638389113,
+            "weighted_f1": 0.8458983824899862,
+            "confusion_matrix": [
+              [
+                71,
+                6,
+                12,
+                1
+              ],
+              [
+                4,
+                73,
+                7,
+                0
+              ],
+              [
+                18,
+                7,
+                101,
+                0
+              ],
+              [
+                1,
+                0,
+                0,
+                62
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 0.7553191489361702,
+                "recall": 0.7888888888888889,
+                "f1": 0.7717391304347826,
+                "support": 90
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 0.8488372093023255,
+                "recall": 0.8690476190476191,
+                "f1": 0.8588235294117647,
+                "support": 84
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 0.8416666666666667,
+                "recall": 0.8015873015873016,
+                "f1": 0.8211382113821138,
+                "support": 126
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 0.9841269841269841,
+                "recall": 0.9841269841269841,
+                "f1": 0.9841269841269841,
+                "support": 63
+              }
+            }
+          },
+          "event_metrics": {
+            "accuracy": 1.0,
+            "balanced_accuracy": 1.0,
+            "macro_f1": 1.0,
+            "weighted_f1": 1.0,
+            "confusion_matrix": [
+              [
+                10,
+                0,
+                0,
+                0
+              ],
+              [
+                0,
+                7,
+                0,
+                0
+              ],
+              [
+                0,
+                0,
+                9,
+                0
+              ],
+              [
+                0,
+                0,
+                0,
+                9
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 10
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 7
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 9
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 1.0,
+                "recall": 1.0,
+                "f1": 1.0,
+                "support": 9
+              }
+            },
+            "event_count": 35
+          }
+        },
+        "Holdout_Driver-3": {
+          "holdout_driver": "Driver-3",
+          "train_rows": 731,
+          "train_events": 70,
+          "test_rows": 383,
+          "test_events": 39,
+          "sample_metrics": {
+            "accuracy": 0.6292428198433421,
+            "balanced_accuracy": 0.6347222222222222,
+            "macro_f1": 0.6318124901965103,
+            "weighted_f1": 0.6459414024279496,
+            "confusion_matrix": [
+              [
+                52,
+                2,
+                6,
+                12
+              ],
+              [
+                20,
+                63,
+                25,
+                0
+              ],
+              [
+                40,
+                9,
+                49,
+                0
+              ],
+              [
+                28,
+                0,
+                0,
+                77
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 0.37142857142857144,
+                "recall": 0.7222222222222222,
+                "f1": 0.49056603773584906,
+                "support": 72
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 0.8513513513513513,
+                "recall": 0.5833333333333334,
+                "f1": 0.6923076923076923,
+                "support": 108
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 0.6125,
+                "recall": 0.5,
+                "f1": 0.550561797752809,
+                "support": 98
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 0.8651685393258427,
+                "recall": 0.7333333333333333,
+                "f1": 0.7938144329896907,
+                "support": 105
+              }
+            }
+          },
+          "event_metrics": {
+            "accuracy": 0.8205128205128205,
+            "balanced_accuracy": 0.8004960317460318,
+            "macro_f1": 0.80791689716639,
+            "weighted_f1": 0.8293104236309105,
+            "confusion_matrix": [
+              [
+                7,
+                0,
+                0,
+                1
+              ],
+              [
+                1,
+                8,
+                0,
+                0
+              ],
+              [
+                3,
+                0,
+                4,
+                0
+              ],
+              [
+                2,
+                0,
+                0,
+                13
+              ]
+            ],
+            "per_class": {
+              "SA": {
+                "class_id": 1,
+                "label_name": "Sudden Acceleration",
+                "precision": 0.5384615384615384,
+                "recall": 0.875,
+                "f1": 0.6666666666666666,
+                "support": 8
+              },
+              "SD": {
+                "class_id": 2,
+                "label_name": "Sudden Deceleration",
+                "precision": 1.0,
+                "recall": 0.8888888888888888,
+                "f1": 0.9411764705882353,
+                "support": 9
+              },
+              "SRT": {
+                "class_id": 3,
+                "label_name": "Sudden Right Turn",
+                "precision": 1.0,
+                "recall": 0.5714285714285714,
+                "f1": 0.7272727272727273,
+                "support": 7
+              },
+              "SLT": {
+                "class_id": 4,
+                "label_name": "Sudden Left Turn",
+                "precision": 0.9285714285714286,
+                "recall": 0.8666666666666667,
+                "f1": 0.896551724137931,
+                "support": 15
+              }
+            },
+            "event_count": 39
+          }
+        }
+      },
+      "aggregate_sample_metrics": {
+        "mean_accuracy": 0.7733605143479085,
+        "std_accuracy": 0.10190691476478228,
+        "mean_macro_f1": 0.7830436382326186,
+        "std_macro_f1": 0.10693684665336452
+      },
+      "aggregate_event_metrics": {
+        "mean_accuracy": 0.9306471306471306,
+        "std_accuracy": 0.07874539704737613,
+        "mean_macro_f1": 0.9272003692309019,
+        "std_macro_f1": 0.0850276042421115
+      }
+    }
+  }
+}

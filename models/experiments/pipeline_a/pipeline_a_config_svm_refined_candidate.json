@@ -1,0 +1,212 @@
+{
+  "candidate_id": "pipeline_a_svm_refined",
+  "description": "Refined RBF Support Vector Machine on strict 47 production features",
+  "model_architecture": "SVC",
+  "requires_scaler": true,
+  "feature_count": 47,
+  "feature_names": [
+    "Acc X",
+    "Acc Y",
+    "Acc Z",
+    "gyro_x",
+    "gyro_y",
+    "gyro_z",
+    "acc_mag",
+    "gyro_mag",
+    "acc_horiz",
+    "acc_jerk",
+    "gyro_jerk",
+    "acc_mag_mean_1s",
+    "acc_mag_std_1s",
+    "acc_mag_max_1s",
+    "acc_mag_min_1s",
+    "acc_mag_range_1s",
+    "gyro_mag_mean_1s",
+    "gyro_mag_std_1s",
+    "gyro_mag_max_1s",
+    "acc_horiz_mean_1s",
+    "acc_horiz_std_1s",
+    "gyro_z_std_1s",
+    "gyro_z_max_1s",
+    "acc_mag_mean_2s",
+    "acc_mag_std_2s",
+    "acc_mag_max_2s",
+    "acc_mag_min_2s",
+    "acc_mag_range_2s",
+    "gyro_mag_mean_2s",
+    "gyro_mag_std_2s",
+    "gyro_mag_max_2s",
+    "acc_horiz_mean_2s",
+    "acc_horiz_std_2s",
+    "gyro_z_std_2s",
+    "gyro_z_max_2s",
+    "acc_mag_mean_3s",
+    "acc_mag_std_3s",
+    "acc_mag_max_3s",
+    "acc_mag_min_3s",
+    "acc_mag_range_3s",
+    "gyro_mag_mean_3s",
+    "gyro_mag_std_3s",
+    "gyro_mag_max_3s",
+    "acc_horiz_mean_3s",
+    "acc_horiz_std_3s",
+    "gyro_z_std_3s",
+    "gyro_z_max_3s"
+  ],
+  "calibrated_threshold": 0.84,
+  "hyperparameters": {
+    "C": 1.5,
+    "kernel": "rbf",
+    "gamma": "scale",
+    "class_weight": "balanced",
+    "probability": true,
+    "random_state": 42
+  },
+  "performance_summary": {
+    "fit_time_sec": 7.681059300000015,
+    "latency_benchmarks": {
+      "p50_ms": 0.264450000031502,
+      "p95_ms": 0.48507999977118726,
+      "p99_ms": 0.6186449994493157,
+      "mean_ms": 0.2979722000181937
+    },
+    "tuned_tau": 0.84,
+    "test_metrics_default_50": {
+      "accuracy": 0.6552853133769878,
+      "balanced_accuracy": 0.670138812581478,
+      "macro_f1": 0.6443437968282458,
+      "precision_normal": 0.8247588424437299,
+      "recall_normal": 0.44960560911481157,
+      "f1_normal": 0.5819625638116847,
+      "precision_aggressive": 0.5857519788918206,
+      "recall_aggressive": 0.8906720160481444,
+      "f1_aggressive": 0.706725029844807,
+      "fpr": 0.5503943908851884,
+      "fnr": 0.10932798395185557,
+      "roc_auc": 0.6916129633422616,
+      "pr_auc": 0.556625980652413,
+      "brier_score": 0.29847242732771717,
+      "ece": 0.28857515586106053,
+      "confusion_matrix": [
+        [
+          513,
+          628
+        ],
+        [
+          109,
+          888
+        ]
+      ],
+      "cm_counts": {
+        "TN": 513,
+        "FP": 628,
+        "FN": 109,
+        "TP": 888
+      }
+    },
+    "test_metrics_tuned_tau": {
+      "accuracy": 0.6922357343311506,
+      "balanced_accuracy": 0.7015929471147887,
+      "macro_f1": 0.6896272978942901,
+      "precision_normal": 0.8014981273408239,
+      "recall_normal": 0.5626643295354952,
+      "f1_normal": 0.6611740473738414,
+      "precision_aggressive": 0.6267763649962603,
+      "recall_aggressive": 0.8405215646940822,
+      "f1_aggressive": 0.7180805484147387,
+      "fpr": 0.43733567046450483,
+      "fnr": 0.15947843530591777,
+      "roc_auc": 0.6916129633422616,
+      "pr_auc": 0.556625980652413,
+      "brier_score": 0.29847242732771717,
+      "ece": 0.28857515586106053,
+      "confusion_matrix": [
+        [
+          642,
+          499
+        ],
+        [
+          159,
+          838
+        ]
+      ],
+      "cm_counts": {
+        "TN": 642,
+        "FP": 499,
+        "FN": 159,
+        "TP": 838
+      }
+    },
+    "lodo_s1_to_s2": {
+      "accuracy": 0.8753299177146406,
+      "balanced_accuracy": 0.9021204116530661,
+      "macro_f1": 0.8687515506399517,
+      "precision_normal": 0.7330538085255066,
+      "recall_normal": 0.9817501169864296,
+      "f1_normal": 0.839367873574715,
+      "precision_aggressive": 0.989103101424979,
+      "recall_aggressive": 0.8224907063197026,
+      "f1_aggressive": 0.8981352277051884,
+      "fpr": 0.018249883013570427,
+      "fnr": 0.1775092936802974,
+      "roc_auc": 0.970715067591193,
+      "pr_auc": 0.9861673274927907,
+      "brier_score": 0.09878219326330297,
+      "ece": 0.14906041705342343,
+      "confusion_matrix": [
+        [
+          2098,
+          39
+        ],
+        [
+          764,
+          3540
+        ]
+      ],
+      "cm_counts": {
+        "TN": 2098,
+        "FP": 39,
+        "FN": 764,
+        "TP": 3540
+      }
+    },
+    "lodo_s2_to_s1": {
+      "accuracy": 0.7668603865387215,
+      "balanced_accuracy": 0.7589673673665471,
+      "macro_f1": 0.7523670478052069,
+      "precision_normal": 0.9491691104594331,
+      "recall_normal": 0.5450463092899243,
+      "f1_normal": 0.69245854876092,
+      "precision_aggressive": 0.6971791518774519,
+      "recall_aggressive": 0.97288842544317,
+      "f1_aggressive": 0.812275546849494,
+      "fpr": 0.4549536907100758,
+      "fnr": 0.027111574556830033,
+      "roc_auc": 0.7986437774168936,
+      "pr_auc": 0.7062891293596054,
+      "brier_score": 0.2071993612005844,
+      "ece": 0.21396677275292894,
+      "confusion_matrix": [
+        [
+          1942,
+          1621
+        ],
+        [
+          104,
+          3732
+        ]
+      ],
+      "cm_counts": {
+        "TN": 1942,
+        "FP": 1621,
+        "FN": 104,
+        "TP": 3732
+      }
+    },
+    "lodo_mean": {
+      "accuracy": 0.821095152126681,
+      "macro_f1": 0.8105592992225793,
+      "balanced_accuracy": 0.8305438895098066
+    }
+  }
+}

@@ -60,6 +60,10 @@ class PredictionValidator:
         self.config = config
         self._last_valid_timestamp: Optional[float] = None
 
+    def reset(self):
+        """Reset validator timestamp state."""
+        self._last_valid_timestamp = None
+
     def validate(
         self,
         raw_input: RawPredictionInput,
@@ -109,12 +113,22 @@ class PredictionValidator:
 
         if raw_input.pipeline_a_health is not None:
             pipeline_a_health = raw_input.pipeline_a_health
-            if style_pred is not None and isinstance(style_pred, numbers.Integral) and not isinstance(style_pred, bool):
-                style_pred = int(style_pred)
-            if style_conf is not None and isinstance(style_conf, numbers.Real) and not isinstance(style_conf, bool) and math.isfinite(style_conf):
-                style_conf = max(0.0, min(1.0, float(style_conf)))
+            if pipeline_a_health == "QUIESCENT_BYPASS":
+                if style_pred is None:
+                    style_pred = DrivingStyle.NORMAL.value
+                elif isinstance(style_pred, numbers.Integral) and not isinstance(style_pred, bool):
+                    style_pred = int(style_pred)
+                if style_conf is None or not math.isfinite(style_conf):
+                    style_conf = 1.0
+                else:
+                    style_conf = max(0.0, min(1.0, float(style_conf)))
             else:
-                style_conf = 0.0
+                if style_pred is not None and isinstance(style_pred, numbers.Integral) and not isinstance(style_pred, bool):
+                    style_pred = int(style_pred)
+                if style_conf is not None and isinstance(style_conf, numbers.Real) and not isinstance(style_conf, bool) and math.isfinite(style_conf):
+                    style_conf = max(0.0, min(1.0, float(style_conf)))
+                else:
+                    style_conf = 0.0
         elif style_pred is None:
             pipeline_a_health = "MISSING"
             style_conf = 0.0
@@ -213,11 +227,16 @@ class PredictionValidator:
         all_errors = layer1_errors + style_errors + maneuver_errors
 
         # Check for Complete Data Absence
-        raw_is_missing = (raw_input.style_prediction is None and raw_input.maneuver_prediction is None and pipeline_b_health != "QUIESCENT_BYPASS")
+        raw_is_missing = (
+            raw_input.style_prediction is None and
+            raw_input.maneuver_prediction is None and
+            pipeline_b_health != "QUIESCENT_BYPASS" and
+            pipeline_a_health != "QUIESCENT_BYPASS"
+        )
         if raw_is_missing:
             all_errors.append("Missing prediction: Neither Driving Style nor Maneuver prediction was provided or valid.")
 
-        has_usable_style = (pipeline_a_health == "HEALTHY")
+        has_usable_style = (pipeline_a_health in ("HEALTHY", "QUIESCENT_BYPASS"))
         has_usable_maneuver = (pipeline_b_health in ("HEALTHY", "QUIESCENT_BYPASS"))
 
         # Determine Data Quality Status and is_valid
@@ -236,7 +255,7 @@ class PredictionValidator:
         else:
             is_valid = True
             self._last_valid_timestamp = ts
-            if pipeline_a_health == "HEALTHY" and pipeline_b_health in ("HEALTHY", "QUIESCENT_BYPASS"):
+            if pipeline_a_health in ("HEALTHY", "QUIESCENT_BYPASS") and pipeline_b_health in ("HEALTHY", "QUIESCENT_BYPASS"):
                 data_quality = "VALID"
             elif pipeline_a_health == "DEGRADED" or pipeline_b_health == "DEGRADED":
                 data_quality = "DEGRADED"

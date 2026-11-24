@@ -69,12 +69,14 @@ class DeterministicRiskEngine:
         self._last_alert_timestamps: Dict[Tuple[AlertCategory, Optional[int]], float] = {}
         self._last_alert_severities: Dict[Tuple[AlertCategory, Optional[int]], AlertSeverity] = {}
         self._alert_counter: int = 0
+        self._last_safety_state: SafetyState = SafetyState.NORMAL
 
     def reset(self):
         """Reset internal alert cooldown timers and counters."""
         self._last_alert_timestamps.clear()
         self._last_alert_severities.clear()
         self._alert_counter = 0
+        self._last_safety_state = SafetyState.NORMAL
 
     @staticmethod
     def calculate_residual_risk(
@@ -221,6 +223,28 @@ class DeterministicRiskEngine:
         self._last_alert_timestamps[key] = alert.timestamp
         self._last_alert_severities[key] = alert.severity
 
+    def _map_score_to_state(self, final_score: float) -> SafetyState:
+        """Map a numeric risk score to SafetyState with optional high-risk hysteresis."""
+        enter_thresh = getattr(self.config, "high_risk_enter_threshold", self.config.score_threshold_high_risk)
+        exit_thresh = getattr(self.config, "high_risk_exit_threshold", enter_thresh)
+
+        if self._last_safety_state == SafetyState.HIGH_RISK:
+            is_high_risk = final_score >= exit_thresh
+        else:
+            is_high_risk = final_score >= enter_thresh
+
+        if is_high_risk:
+            state = SafetyState.HIGH_RISK
+        elif final_score >= self.config.score_threshold_warning:
+            state = SafetyState.WARNING
+        elif final_score >= self.config.score_threshold_caution:
+            state = SafetyState.CAUTION
+        else:
+            state = SafetyState.NORMAL
+
+        self._last_safety_state = state
+        return state
+
     def evaluate(self, ctx: SmoothedContext) -> RuleEvaluationResult:
         """
         Evaluate smoothed context against deterministic safety rules and D-13 fail-safe table.
@@ -304,9 +328,9 @@ class DeterministicRiskEngine:
                 self._record_alert(dq_alert)
 
         # -------------------------------------------------------------
-        # Condition 1: Dual Pipeline Impairment (Rows 7, 8, 9, 12, 13, 14, 17, 18, 19)
+        # Condition 1: Dual Pipeline Impairment (Rows 7, 8, 9, 12, 13, 14, 17, 18, 19, 22, 23, 24)
         # -------------------------------------------------------------
-        if h_a in ("DEGRADED", "MISSING", "INVALID") and h_b in ("DEGRADED", "MISSING", "INVALID"):
+        if h_a in ("DEGRADED", "MISSING", "INVALID", "QUIESCENT_BYPASS") and h_b in ("DEGRADED", "MISSING", "INVALID"):
             explanation = (
                 f"Dual pipeline failure: Driving style is {h_a} and maneuver detection is {h_b}. "
                 "System cannot certify driving safety."
@@ -370,7 +394,7 @@ class DeterministicRiskEngine:
         # D-10: Independent Modality Confidence Scaling
         phi_style = (
             self.calculate_confidence_scaling(ctx.current_style_confidence)
-            if h_a == "HEALTHY" else 0.0
+            if h_a in ("HEALTHY", "QUIESCENT_BYPASS") else 0.0
         )
         phi_maneuver = (
             self.calculate_confidence_scaling(ctx.active_maneuver_confidence)
@@ -424,114 +448,249 @@ class DeterministicRiskEngine:
 
         # Maneuver Rules (only if Pipeline B is HEALTHY or QUIESCENT_BYPASS)
         if h_b in ("HEALTHY", "QUIESCENT_BYPASS"):
-            # Rule 4: SUDDEN_ACCELERATION_MANEUVER
-            if ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_ACCELERATION.value and phi_maneuver > 0.0:
-                raw_score += self.config.weight_sudden_acceleration * phi_maneuver
-                triggered_rules.append("SUDDEN_ACCELERATION_MANEUVER")
-                expl = f"Sudden acceleration maneuver detected (Confidence: {ctx.active_maneuver_confidence:.0%})."
-                rule_explanations.append(expl)
+            if getattr(ctx, "active_contributions", None):
+                # D-06 & D-02: Multi-channel continuous residual risk decay with orthogonal summation
+                longitudinal_risk = 0.0
+                lateral_risk = 0.0
 
-                if not self._should_suppress_alert(
-                    AlertCategory.MANEUVER,
-                    AlertSeverity.MEDIUM,
-                    ts,
-                    self.config.alert_cooldown_maneuver,
-                    maneuver_class=ctx.active_maneuver
-                ):
-                    self._alert_counter += 1
-                    alert = SafetyAlert(
-                        alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
-                        timestamp=ts,
-                        severity=AlertSeverity.MEDIUM,
-                        category=AlertCategory.MANEUVER,
-                        title="Sudden Acceleration Detected",
-                        triggering_condition="active_maneuver == SUDDEN_ACCELERATION",
-                        explanation=expl,
-                        related_predictions={
-                            "maneuver": "Sudden Acceleration",
-                            "maneuver_class": ctx.active_maneuver,
-                            "confidence": ctx.active_maneuver_confidence
-                        },
-                        safe_driving_advisory="Ease off the throttle to prevent abrupt forward weight transfer."
+                for m_class, contrib in ctx.active_contributions.items():
+                    if contrib.is_excited:
+                        dt_decay = 0.0
+                    else:
+                        dt_decay = max(0.0, ts - (contrib.excitation_end_timestamp or ts))
+
+                    r_decay = self.calculate_residual_risk(
+                        initial_weight=contrib.initial_weight,
+                        elapsed_seconds=dt_decay,
+                        plateau_seconds=getattr(self.config, "residual_plateau_seconds", 1.00),
+                        half_life_seconds=getattr(self.config, "residual_half_life_seconds", 0.75),
+                        retirement_threshold=getattr(self.config, "residual_retirement_threshold", 2.50)
                     )
-                    alerts.append(alert)
-                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
+                    phi_m = self.calculate_confidence_scaling(contrib.confidence)
+                    r_scaled = r_decay * phi_m
 
-            # Rule 5: SUDDEN_DECELERATION_MANEUVER (Harsh Braking)
-            elif ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_DECELERATION.value and phi_maneuver > 0.0:
-                raw_score += self.config.weight_sudden_deceleration * phi_maneuver
-                triggered_rules.append("SUDDEN_DECELERATION_MANEUVER")
-                expl = (
-                    f"Sudden deceleration / harsh braking detected (Confidence: {ctx.active_maneuver_confidence:.0%}), "
-                    "posing rear-end collision and passenger destabilization hazards."
-                )
-                rule_explanations.append(expl)
+                    if r_scaled > 0.0:
+                        if m_class == ManeuverClass.SUDDEN_ACCELERATION.value:
+                            longitudinal_risk = max(longitudinal_risk, r_scaled)
+                            if "SUDDEN_ACCELERATION_MANEUVER" not in triggered_rules:
+                                triggered_rules.append("SUDDEN_ACCELERATION_MANEUVER")
+                                expl = f"Sudden acceleration maneuver detected (Confidence: {contrib.confidence:.0%}, Decay dt: {dt_decay:.2f}s)."
+                                rule_explanations.append(expl)
+                            if contrib.is_excited and not self._should_suppress_alert(
+                                AlertCategory.MANEUVER,
+                                AlertSeverity.MEDIUM,
+                                ts,
+                                self.config.alert_cooldown_maneuver,
+                                maneuver_class=m_class
+                            ):
+                                self._alert_counter += 1
+                                alert = SafetyAlert(
+                                    alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                                    timestamp=ts,
+                                    severity=AlertSeverity.MEDIUM,
+                                    category=AlertCategory.MANEUVER,
+                                    title="Sudden Acceleration Detected",
+                                    triggering_condition="active_maneuver == SUDDEN_ACCELERATION",
+                                    explanation=f"Sudden acceleration maneuver detected (Confidence: {contrib.confidence:.0%}).",
+                                    related_predictions={
+                                        "maneuver": "Sudden Acceleration",
+                                        "maneuver_class": m_class,
+                                        "confidence": contrib.confidence
+                                    },
+                                    safe_driving_advisory="Ease off the throttle to prevent abrupt forward weight transfer."
+                                )
+                                alerts.append(alert)
+                                self._record_alert(alert, maneuver_class=m_class)
 
-                if not self._should_suppress_alert(
-                    AlertCategory.MANEUVER,
-                    AlertSeverity.HIGH,
-                    ts,
-                    self.config.alert_cooldown_maneuver,
-                    maneuver_class=ctx.active_maneuver
-                ):
-                    self._alert_counter += 1
-                    alert = SafetyAlert(
-                        alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
-                        timestamp=ts,
-                        severity=AlertSeverity.HIGH,
-                        category=AlertCategory.MANEUVER,
-                        title="Harsh Braking Detected",
-                        triggering_condition="active_maneuver == SUDDEN_DECELERATION",
-                        explanation=expl,
-                        related_predictions={
-                            "maneuver": "Sudden Deceleration",
-                            "maneuver_class": ctx.active_maneuver,
-                            "confidence": ctx.active_maneuver_confidence
-                        },
-                        safe_driving_advisory="Increase following distance to allow progressive, controlled braking."
+                        elif m_class == ManeuverClass.SUDDEN_DECELERATION.value:
+                            longitudinal_risk = max(longitudinal_risk, r_scaled)
+                            if "SUDDEN_DECELERATION_MANEUVER" not in triggered_rules:
+                                triggered_rules.append("SUDDEN_DECELERATION_MANEUVER")
+                                expl = (
+                                    f"Sudden deceleration / harsh braking detected (Confidence: {contrib.confidence:.0%}, Decay dt: {dt_decay:.2f}s), "
+                                    "posing rear-end collision and passenger destabilization hazards."
+                                )
+                                rule_explanations.append(expl)
+                            if contrib.is_excited and not self._should_suppress_alert(
+                                AlertCategory.MANEUVER,
+                                AlertSeverity.HIGH,
+                                ts,
+                                self.config.alert_cooldown_maneuver,
+                                maneuver_class=m_class
+                            ):
+                                self._alert_counter += 1
+                                alert = SafetyAlert(
+                                    alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                                    timestamp=ts,
+                                    severity=AlertSeverity.HIGH,
+                                    category=AlertCategory.MANEUVER,
+                                    title="Harsh Braking Detected",
+                                    triggering_condition="active_maneuver == SUDDEN_DECELERATION",
+                                    explanation=(
+                                        f"Sudden deceleration / harsh braking detected (Confidence: {contrib.confidence:.0%}), "
+                                        "posing rear-end collision and passenger destabilization hazards."
+                                    ),
+                                    related_predictions={
+                                        "maneuver": "Sudden Deceleration",
+                                        "maneuver_class": m_class,
+                                        "confidence": contrib.confidence
+                                    },
+                                    safe_driving_advisory="Increase following distance to allow progressive, controlled braking."
+                                )
+                                alerts.append(alert)
+                                self._record_alert(alert, maneuver_class=m_class)
+
+                        elif m_class in (
+                            ManeuverClass.SUDDEN_RIGHT_TURN.value,
+                            ManeuverClass.SUDDEN_LEFT_TURN.value
+                        ):
+                            lateral_risk = max(lateral_risk, r_scaled)
+                            if "SUDDEN_TURN_MANEUVER" not in triggered_rules:
+                                triggered_rules.append("SUDDEN_TURN_MANEUVER")
+                                m_name = MANEUVER_LABEL_NAMES.get(m_class, "Sudden Turn")
+                                expl = (
+                                    f"Abrupt lateral steering maneuver detected ({m_name}, Confidence: {contrib.confidence:.0%}, Decay dt: {dt_decay:.2f}s), "
+                                    "elevating vehicle rollover and lateral skid risks."
+                                )
+                                rule_explanations.append(expl)
+                            if contrib.is_excited and not self._should_suppress_alert(
+                                AlertCategory.MANEUVER,
+                                AlertSeverity.HIGH,
+                                ts,
+                                self.config.alert_cooldown_maneuver,
+                                maneuver_class=m_class
+                            ):
+                                self._alert_counter += 1
+                                m_name = MANEUVER_LABEL_NAMES.get(m_class, "Sudden Turn")
+                                alert = SafetyAlert(
+                                    alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                                    timestamp=ts,
+                                    severity=AlertSeverity.HIGH,
+                                    category=AlertCategory.MANEUVER,
+                                    title=f"Abrupt Lateral Turn ({m_name})",
+                                    triggering_condition="active_maneuver in (SUDDEN_RIGHT_TURN, SUDDEN_LEFT_TURN)",
+                                    explanation=expl,
+                                    related_predictions={
+                                        "maneuver": m_name,
+                                        "maneuver_class": m_class,
+                                        "confidence": contrib.confidence
+                                    },
+                                    safe_driving_advisory="Smooth out steering inputs before cornering to maintain tire traction."
+                                )
+                                alerts.append(alert)
+                                self._record_alert(alert, maneuver_class=m_class)
+
+                raw_score += (longitudinal_risk + lateral_risk)
+            else:
+                # Direct scalar maneuver calculation (preserves legacy unit tests)
+                # Rule 4: SUDDEN_ACCELERATION_MANEUVER
+                if ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_ACCELERATION.value and phi_maneuver > 0.0:
+                    raw_score += self.config.weight_sudden_acceleration * phi_maneuver
+                    triggered_rules.append("SUDDEN_ACCELERATION_MANEUVER")
+                    expl = f"Sudden acceleration maneuver detected (Confidence: {ctx.active_maneuver_confidence:.0%})."
+                    rule_explanations.append(expl)
+
+                    if not self._should_suppress_alert(
+                        AlertCategory.MANEUVER,
+                        AlertSeverity.MEDIUM,
+                        ts,
+                        self.config.alert_cooldown_maneuver,
+                        maneuver_class=ctx.active_maneuver
+                    ):
+                        self._alert_counter += 1
+                        alert = SafetyAlert(
+                            alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                            timestamp=ts,
+                            severity=AlertSeverity.MEDIUM,
+                            category=AlertCategory.MANEUVER,
+                            title="Sudden Acceleration Detected",
+                            triggering_condition="active_maneuver == SUDDEN_ACCELERATION",
+                            explanation=expl,
+                            related_predictions={
+                                "maneuver": "Sudden Acceleration",
+                                "maneuver_class": ctx.active_maneuver,
+                                "confidence": ctx.active_maneuver_confidence
+                            },
+                            safe_driving_advisory="Ease off the throttle to prevent abrupt forward weight transfer."
+                        )
+                        alerts.append(alert)
+                        self._record_alert(alert, maneuver_class=ctx.active_maneuver)
+
+                # Rule 5: SUDDEN_DECELERATION_MANEUVER (Harsh Braking)
+                elif ctx.is_maneuver_active and ctx.active_maneuver == ManeuverClass.SUDDEN_DECELERATION.value and phi_maneuver > 0.0:
+                    raw_score += self.config.weight_sudden_deceleration * phi_maneuver
+                    triggered_rules.append("SUDDEN_DECELERATION_MANEUVER")
+                    expl = (
+                        f"Sudden deceleration / harsh braking detected (Confidence: {ctx.active_maneuver_confidence:.0%}), "
+                        "posing rear-end collision and passenger destabilization hazards."
                     )
-                    alerts.append(alert)
-                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
+                    rule_explanations.append(expl)
 
-            # Rule 6: SUDDEN_TURN_MANEUVER (Left or Right)
-            elif ctx.is_maneuver_active and ctx.active_maneuver in [
-                ManeuverClass.SUDDEN_RIGHT_TURN.value,
-                ManeuverClass.SUDDEN_LEFT_TURN.value
-            ] and phi_maneuver > 0.0:
-                raw_score += self.config.weight_sudden_turn * phi_maneuver
-                m_name = MANEUVER_LABEL_NAMES.get(ctx.active_maneuver, "Sudden Turn")
-                triggered_rules.append("SUDDEN_TURN_MANEUVER")
-                expl = (
-                    f"Abrupt lateral steering maneuver detected ({m_name}, Confidence: {ctx.active_maneuver_confidence:.0%}), "
-                    "elevating vehicle rollover and lateral skid risks."
-                )
-                rule_explanations.append(expl)
+                    if not self._should_suppress_alert(
+                        AlertCategory.MANEUVER,
+                        AlertSeverity.HIGH,
+                        ts,
+                        self.config.alert_cooldown_maneuver,
+                        maneuver_class=ctx.active_maneuver
+                    ):
+                        self._alert_counter += 1
+                        alert = SafetyAlert(
+                            alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                            timestamp=ts,
+                            severity=AlertSeverity.HIGH,
+                            category=AlertCategory.MANEUVER,
+                            title="Harsh Braking Detected",
+                            triggering_condition="active_maneuver == SUDDEN_DECELERATION",
+                            explanation=expl,
+                            related_predictions={
+                                "maneuver": "Sudden Deceleration",
+                                "maneuver_class": ctx.active_maneuver,
+                                "confidence": ctx.active_maneuver_confidence
+                            },
+                            safe_driving_advisory="Increase following distance to allow progressive, controlled braking."
+                        )
+                        alerts.append(alert)
+                        self._record_alert(alert, maneuver_class=ctx.active_maneuver)
 
-                if not self._should_suppress_alert(
-                    AlertCategory.MANEUVER,
-                    AlertSeverity.HIGH,
-                    ts,
-                    self.config.alert_cooldown_maneuver,
-                    maneuver_class=ctx.active_maneuver
-                ):
-                    self._alert_counter += 1
-                    alert = SafetyAlert(
-                        alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
-                        timestamp=ts,
-                        severity=AlertSeverity.HIGH,
-                        category=AlertCategory.MANEUVER,
-                        title=f"Abrupt Lateral Turn ({m_name})",
-                        triggering_condition="active_maneuver in (SUDDEN_RIGHT_TURN, SUDDEN_LEFT_TURN)",
-                        explanation=expl,
-                        related_predictions={
-                            "maneuver": m_name,
-                            "maneuver_class": ctx.active_maneuver,
-                            "confidence": ctx.active_maneuver_confidence
-                        },
-                        safe_driving_advisory="Smooth out steering inputs before cornering to maintain tire traction."
+                # Rule 6: SUDDEN_TURN_MANEUVER (Left or Right)
+                elif ctx.is_maneuver_active and ctx.active_maneuver in [
+                    ManeuverClass.SUDDEN_RIGHT_TURN.value,
+                    ManeuverClass.SUDDEN_LEFT_TURN.value
+                ] and phi_maneuver > 0.0:
+                    raw_score += self.config.weight_sudden_turn * phi_maneuver
+                    m_name = MANEUVER_LABEL_NAMES.get(ctx.active_maneuver, "Sudden Turn")
+                    triggered_rules.append("SUDDEN_TURN_MANEUVER")
+                    expl = (
+                        f"Abrupt lateral steering maneuver detected ({m_name}, Confidence: {ctx.active_maneuver_confidence:.0%}), "
+                        "elevating vehicle rollover and lateral skid risks."
                     )
-                    alerts.append(alert)
-                    self._record_alert(alert, maneuver_class=ctx.active_maneuver)
+                    rule_explanations.append(expl)
+
+                    if not self._should_suppress_alert(
+                        AlertCategory.MANEUVER,
+                        AlertSeverity.HIGH,
+                        ts,
+                        self.config.alert_cooldown_maneuver,
+                        maneuver_class=ctx.active_maneuver
+                    ):
+                        self._alert_counter += 1
+                        alert = SafetyAlert(
+                            alert_id=f"ALT-MAN-{int(ts * 1000)}-{self._alert_counter:04d}",
+                            timestamp=ts,
+                            severity=AlertSeverity.HIGH,
+                            category=AlertCategory.MANEUVER,
+                            title=f"Abrupt Lateral Turn ({m_name})",
+                            triggering_condition="active_maneuver in (SUDDEN_RIGHT_TURN, SUDDEN_LEFT_TURN)",
+                            explanation=expl,
+                            related_predictions={
+                                "maneuver": m_name,
+                                "maneuver_class": ctx.active_maneuver,
+                                "confidence": ctx.active_maneuver_confidence
+                            },
+                            safe_driving_advisory="Smooth out steering inputs before cornering to maintain tire traction."
+                        )
+                        alerts.append(alert)
+                        self._record_alert(alert, maneuver_class=ctx.active_maneuver)
 
             # Rule 8: REPEATED_ERRATIC_MANEUVERS
             if ctx.recent_maneuver_count >= 2:
@@ -544,7 +703,7 @@ class DeterministicRiskEngine:
         # Gated Compound Bonus (D-10 Authoritative Requirement):
         # Applies if and only if both modality scaling factors are strictly positive.
         if (
-            h_a == "HEALTHY" and
+            h_a in ("HEALTHY", "QUIESCENT_BYPASS") and
             h_b in ("HEALTHY", "QUIESCENT_BYPASS") and
             ctx.is_maneuver_active and
             (ctx.is_sustained_aggressive or ctx.is_transient_aggressive) and
@@ -588,25 +747,17 @@ class DeterministicRiskEngine:
         confidence_factor = 1.0
         final_score = min(100.0, max(0.0, float(raw_score)))
 
-        # Behavioral State Mapping
-        if final_score >= self.config.score_threshold_high_risk:
-            state = SafetyState.HIGH_RISK
-        elif final_score >= self.config.score_threshold_warning:
-            state = SafetyState.WARNING
-        elif final_score >= self.config.score_threshold_caution:
-            state = SafetyState.CAUTION
-        else:
-            state = SafetyState.NORMAL
+        # Behavioral State Mapping with Optional Hysteresis (Phase 3A: Opt-in)
+        state = self._map_score_to_state(final_score)
 
         # -------------------------------------------------------------
         # Fail-Safe State Arbitration & Diagnostic Alerts
         # -------------------------------------------------------------
-        # Condition 3: Active Maneuver during Pipeline A Outage (Rows 6, 11, 16 with M != 0) - Policy 1A-Clamped
+        # Condition 3: Active Maneuver during Pipeline A Outage (Rows 6, 11, 16 with M != 0) - Option 1A-Pure
         if h_a in ("DEGRADED", "MISSING", "INVALID") and h_b == "HEALTHY" and ctx.is_maneuver_active:
-            if state == SafetyState.NORMAL:
-                state = SafetyState.CAUTION
+            # Option 1A-Pure: Preserve ordinary calculated behavioral state without artificial CAUTION floor
             sev = AlertSeverity.INFO if h_a == "MISSING" else AlertSeverity.MEDIUM
-            expl_dq = f"Driving style pipeline is {h_a}. Active maneuver evaluated under fail-safe safety floor."
+            expl_dq = f"Driving style pipeline is {h_a}. Active maneuver evaluated under ordinary behavioral score."
             _emit_dq_alert(
                 title=f"Driving Style Telemetry {h_a.capitalize()}",
                 condition=f"pipeline_a_health == '{h_a}' and is_maneuver_active",

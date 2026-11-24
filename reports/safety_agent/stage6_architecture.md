@@ -1,16 +1,22 @@
 # Stage 6 Architecture Specification: Intelligent Safety Monitoring Agent
 
+> **Canonical Specification Notice:** This historical subsystem design note is superseded by [DESIGN.md](../../DESIGN.md) for canonical numerical parameters, thresholds, and health states. All values below have been reconciled with source code truth.
+
 **Project:** Intelligent Driver Activity Monitoring & Safety Agent  
 **Module:** `ml/agent`  
 **Stage:** Stage 6 — Intelligent Safety Monitoring Agent  
 **Status:** Completed & Validated  
-**Version:** 1.0.0  
+**Version:** 1.1.0 (Reconciled)  
 
 ---
 
 ## 1. Executive Summary
 
-The **Intelligent Safety Monitoring Agent** serves as the top-level cognitive supervisory layer of the Intelligent Driver Activity Monitoring & Safety system. Positioned downstream of two independently trained machine learning inference pipelines—**Pipeline A (Dataset C: Support Vector Machine Driving Style Classifier)** and **Pipeline B (Dataset B: Extra Trees 4-Class Maneuver Classifier)**—the agent synthesizes high-frequency continuous style estimates (~10 Hz) and lower-frequency discrete maneuver events (~1.55 Hz) into a unified, deterministic, and explainable driving safety assessment.
+The **Intelligent Safety Monitoring Agent** serves as the cognitive supervisory layer of the Intelligent Driver Activity Monitoring & Safety system. Positioned downstream of two independently trained machine learning inference pipelines—**Pipeline A (Dataset C: Support Vector Machine Driving Style Classifier)** and **Pipeline B (Dataset B: Extra Trees 4-Class Maneuver Classifier)**—the agent synthesizes continuous style estimates (~10 Hz) and discrete maneuver events (~1.55 Hz) into an explainable driving safety assessment.
+
+> [!IMPORTANT]
+> **Research System Disclaimer & Continuous Deployment Note:**  
+> IDAMS is an academic research demonstration platform and supervisory monitor. It is **not** an ISO 26262 ASIL-certified safety-critical control system. Pipeline B was trained on segmented kinematic event windows (~1.55 Hz); deploying it continuously over high-rate streams incurs distribution shift risk and unmeasured false-alarm rates per operating hour. Physical hardware telemetry is designated **`NOT_VERIFIED`** until on-vehicle road smoke tests pass.
 
 ### Core Architectural Mandates
 1. **Deterministic Risk Scoring:** No opaque "black-box" meta-models. Risk scores (0–100) and safety states are derived exclusively via an auditable, deterministic rule engine.
@@ -33,7 +39,7 @@ flowchart TD
     end
 
     subgraph INFERENCE ["Machine Learning Inference Layer"]
-        PA["Pipeline A: Driving Style Classifier\n(SVM RBF, tau=0.84, C=2.0)"]
+        PA["Pipeline A: Driving Style Classifier\n(SVM RBF, decision_threshold=0.84, C=2.0)"]
         PB["Pipeline B: Maneuver Classifier\n(Extra Trees, 200 trees, depth 10)"]
     end
 
@@ -135,9 +141,9 @@ Evaluates the `SmoothedContext` against Rules 1–9.
   $$\text{Penalty}_{\text{effective}} = \text{Penalty}_{\text{base}} \cdot \left(\frac{C}{C_{\text{discount}}}\right)$$
 - **Score Clamping:** Bounded strictly to $[0.0, 100.0]$.
 - **State Partitioning:**
-  - $0.0 \le \text{Score} < 30.0 \implies \mathbf{NORMAL}$
-  - $30.0 \le \text{Score} < 55.0 \implies \mathbf{CAUTION}$
-  - $55.0 \le \text{Score} < 75.0 \implies \mathbf{WARNING}$
+  - $0.0 \le \text{Score} < 25.0 \implies \mathbf{NORMAL}$
+  - $25.0 \le \text{Score} < 50.0 \implies \mathbf{CAUTION}$
+  - $50.0 \le \text{Score} < 75.0 \implies \mathbf{WARNING}$
   - $75.0 \le \text{Score} \le 100.0 \implies \mathbf{HIGH\_RISK}$
 - **Alert Deduplication:** Category-specific cooldown timers suppress duplicate alerts within 3–5 seconds, unless a higher severity occurs (immediate escalation bypass).
 
@@ -155,26 +161,26 @@ The facade exposing the unified API:
 stateDiagram-v2
     [*] --> INSUFFICIENT_DATA: Initial State
 
-    INSUFFICIENT_DATA --> NORMAL: Valid Telemetry Received (Score < 30)
-    INSUFFICIENT_DATA --> CAUTION: Score in [30, 55)
-    INSUFFICIENT_DATA --> WARNING: Score in [55, 75)
+    INSUFFICIENT_DATA --> NORMAL: Valid Telemetry Received (Score < 25)
+    INSUFFICIENT_DATA --> CAUTION: Score in [25, 50)
+    INSUFFICIENT_DATA --> WARNING: Score in [50, 75)
     INSUFFICIENT_DATA --> HIGH_RISK: Score >= 75
 
-    NORMAL --> CAUTION: Aggressive Style OR Sudden Accel (Score 30-54)
-    NORMAL --> WARNING: Sudden Decel OR Sudden Turn (Score 55-74)
+    NORMAL --> CAUTION: Aggressive Style OR Sudden Accel (Score 25-49)
+    NORMAL --> WARNING: Sudden Decel OR Sudden Turn (Score 50-74)
     NORMAL --> HIGH_RISK: Compound Hazard (Score >= 75)
 
-    CAUTION --> NORMAL: Hazards Expire & Style Normalizes (Score < 30)
-    CAUTION --> WARNING: Harsh Maneuver Occurs (Score 55-74)
+    CAUTION --> NORMAL: Hazards Expire & Style Normalizes (Score < 25)
+    CAUTION --> WARNING: Harsh Maneuver Occurs (Score 50-74)
     CAUTION --> HIGH_RISK: Maneuver During Aggressive Driving (Score >= 75)
 
-    WARNING --> CAUTION: Maneuver Decays to Aggressive Baseline (Score 30-54)
-    WARNING --> NORMAL: All Hazards Resolved (Score < 30)
+    WARNING --> CAUTION: Maneuver Decays to Aggressive Baseline (Score 25-49)
+    WARNING --> NORMAL: All Hazards Resolved (Score < 25)
     WARNING --> HIGH_RISK: Secondary Hazard / Compound Escalation (Score >= 75)
 
-    HIGH_RISK --> WARNING: Compound Maneuver Expires (Score 55-74)
-    HIGH_RISK --> CAUTION: Progressive Recovery (Score 30-54)
-    HIGH_RISK --> NORMAL: Full Recovery (Score < 30)
+    HIGH_RISK --> WARNING: Compound Maneuver Expires (Score 50-74)
+    HIGH_RISK --> CAUTION: Progressive Recovery (Score 25-49)
+    HIGH_RISK --> NORMAL: Full Recovery (Score < 25)
 
     NORMAL --> INSUFFICIENT_DATA: Missing or Stale Telemetry (>3.0s)
     CAUTION --> INSUFFICIENT_DATA: Missing or Stale Telemetry (>3.0s)

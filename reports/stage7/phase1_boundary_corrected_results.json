@@ -1,0 +1,335 @@
+{
+  "audit_metadata": {
+    "title": "Stage 7 Phase 1 Boundary Correction and Performance Weakness Audit",
+    "stage": "Stage 7 - Phase 1",
+    "branch": "stage6-phase1",
+    "head_commit": "f746291",
+    "audit_nature": "Empirical Diagnostic & Testbed Correction"
+  },
+  "historical_vs_corrected_comparison": {
+    "pipeline_b_streaming": {
+      "historical_clean_combined": {
+        "total_gt": 109,
+        "total_pred": 101,
+        "true_positives": 96,
+        "false_positives": 5,
+        "false_negatives": 13,
+        "detection_precision": 0.9505,
+        "detection_recall": 0.8807,
+        "detection_f1": 0.9143,
+        "matched_classification_accuracy": 0.9896,
+        "streaming_macro_f1": 0.9094,
+        "false_events_per_minute": 0.9276,
+        "stream_duration_seconds": 323.4
+      },
+      "historical_pooled_artifact": {
+        "total_gt": 109,
+        "total_pred": 102,
+        "true_positives": 96,
+        "false_positives": 6,
+        "false_negatives": 13,
+        "detection_precision": 0.9412,
+        "detection_recall": 0.8807,
+        "detection_f1": 0.91,
+        "matched_classification_accuracy": 0.9896,
+        "streaming_macro_f1": 0.906,
+        "false_events_per_minute": 1.0996,
+        "stream_duration_seconds": 327.4
+      },
+      "corrected_driver_wise_combined": {
+        "total_gt": 109,
+        "total_pred": 97,
+        "true_positives": 96,
+        "false_positives": 1,
+        "false_negatives": 13,
+        "detection_precision": 0.9897,
+        "detection_recall": 0.8807,
+        "detection_f1": 0.932,
+        "matched_classification_accuracy": 0.9896,
+        "streaming_macro_f1": 0.9245,
+        "false_events_per_minute": 0.1855,
+        "stream_duration_seconds": 323.4
+      },
+      "corrected_pooled_continuous": {
+        "total_gt": 109,
+        "total_pred": 97,
+        "true_positives": 96,
+        "false_positives": 1,
+        "false_negatives": 13,
+        "detection_precision": 0.9897,
+        "detection_recall": 0.8807,
+        "detection_f1": 0.932,
+        "matched_classification_accuracy": 0.9896,
+        "streaming_macro_f1": 0.9245,
+        "false_events_per_minute": 0.1833,
+        "stream_duration_seconds": 327.4
+      }
+    },
+    "per_class_corrected_metrics": {
+      "SA": {
+        "class_id": 1,
+        "name": "Sudden Acceleration",
+        "gt": 28,
+        "tp": 26,
+        "fp": 1,
+        "fn": 2,
+        "precision": 0.963,
+        "recall": 0.9286,
+        "f1_score": 0.9455
+      },
+      "SD": {
+        "class_id": 2,
+        "name": "Sudden Deceleration",
+        "gt": 24,
+        "tp": 23,
+        "fp": 0,
+        "fn": 1,
+        "precision": 1.0,
+        "recall": 0.9583,
+        "f1_score": 0.9787
+      },
+      "SRT": {
+        "class_id": 3,
+        "name": "Sudden Right Turn",
+        "gt": 25,
+        "tp": 22,
+        "fp": 1,
+        "fn": 3,
+        "precision": 0.9565,
+        "recall": 0.88,
+        "f1_score": 0.9167
+      },
+      "SLT": {
+        "class_id": 4,
+        "name": "Sudden Left Turn",
+        "gt": 32,
+        "tp": 24,
+        "fp": 0,
+        "fn": 8,
+        "precision": 1.0,
+        "recall": 0.75,
+        "f1_score": 0.8571
+      }
+    }
+  },
+  "performance_weakness_audit": {
+    "weakness_1_pipeline_a_generalization": {
+      "model_type": "RBF Support Vector Machine",
+      "dataset": "Dataset C",
+      "task": "Normal vs Aggressive Driving Binary Classification",
+      "test_sample_count": 2138,
+      "session_distribution": {
+        "session_1_normal": 1141,
+        "session_1_aggressive": 0,
+        "session_2_normal": 0,
+        "session_2_aggressive": 997,
+        "confounding_status": "100% PERFECTLY CONFOUNDED"
+      },
+      "mount_orientation_shift": {
+        "session_1_mean_acc_xyz": [
+          -0.0479,
+          0.1769,
+          -0.031
+        ],
+        "session_2_mean_acc_xyz": [
+          0.0545,
+          0.1832,
+          -0.0279
+        ],
+        "angular_difference_degrees": 31.36
+      },
+      "historical_metrics_th_0_84": {
+        "decision_threshold": 0.84,
+        "test_accuracy": 0.6993,
+        "balanced_accuracy": 0.7083,
+        "macro_f1": 0.697,
+        "aggressive_recall": 0.8425,
+        "normal_precision": 0.8067,
+        "false_positive_rate": 0.4259,
+        "false_negative_rate": 0.1575,
+        "confusion_matrix": {
+          "TN": 655,
+          "FP": 486,
+          "FN": 157,
+          "TP": 840
+        }
+      },
+      "default_metrics_th_0_50": {
+        "decision_threshold": 0.5,
+        "test_accuracy": 0.6515,
+        "balanced_accuracy": 0.6664,
+        "macro_f1": 0.6404,
+        "aggressive_recall": 0.8877,
+        "normal_precision": 0.8194,
+        "false_positive_rate": 0.5548,
+        "false_negative_rate": 0.1123,
+        "confusion_matrix": {
+          "TN": 508,
+          "FP": 633,
+          "FN": 112,
+          "TP": 885
+        }
+      },
+      "conclusion": "The test score reflects session discrimination and phone tilt rather than genuine driving behavior. Additional multi-driver, multi-session data with controlled orientation is required."
+    },
+    "weakness_2_pipeline_b_natural_driving_limitations": {
+      "model_type": "Extra Trees Classifier",
+      "dataset": "Dataset B",
+      "total_maneuver_samples": 1114,
+      "total_maneuver_events": 109,
+      "natural_ordinary_driving_samples": 0,
+      "synthetic_gap_generation": "Constant 1g vertical acceleration (9.80665 m/s^2), 0.0 angular rate across 20-sample (2.0s) blocks",
+      "untested_disturbances": [
+        "Ordinary road vibrations and pavement roughness",
+        "Potholes, ruts, and railway crossings",
+        "Speed humps and traffic calming devices",
+        "Device handling, vibrations, and mount slips",
+        "Mild highway curves and gradual lane changes"
+      ],
+      "conclusion": "High maneuver accuracy does not establish road-ready robustness. Real-world ordinary driving negative data is completely missing."
+    },
+    "weakness_3_sudden_left_turn_weakness": {
+      "class_name": "Sudden Left Turn (SLT)",
+      "total_gt_events": 32,
+      "matched_correct_events": 24,
+      "missed_events": 8,
+      "missed_event_ids": [
+        79,
+        80,
+        81,
+        82,
+        85,
+        86,
+        87,
+        92
+      ],
+      "recall": 0.75,
+      "kinematic_comparison": {
+        "matched_slt": {
+          "count": 24,
+          "mean_duration_s": 0.7,
+          "mean_peak_abs_gyro_z_rads": 0.0534,
+          "mean_peak_acc_horiz_ms2": 6.7515
+        },
+        "missed_slt": {
+          "count": 8,
+          "mean_duration_s": 0.7,
+          "mean_peak_abs_gyro_z_rads": 0.0313,
+          "mean_peak_acc_horiz_ms2": 4.3415
+        },
+        "kinematic_deficit": {
+          "peak_yaw_reduction_pct": -41.4,
+          "peak_horiz_acc_reduction_pct": -35.7
+        }
+      },
+      "root_cause": "Missed left turns have identical durations (0.7s) but significantly weaker lateral acceleration and yaw rate, failing the kinematic excitation gate.",
+      "recommended_experiments": [
+        "Investigate directional gyroscope features on train+val (92 events)",
+        "Evaluate sensitive lateral thresholds for left turns specifically",
+        "Collect additional representative left turn examples"
+      ]
+    },
+    "weakness_4_false_event_rate_analysis": {
+      "target": "<= 0.50 false events / minute",
+      "historical_clean_rate": 0.9276,
+      "corrected_rate": 0.1855,
+      "target_compliance": "PASSES (0.1855 <= 0.50)",
+      "historical_fps_investigated": [
+        {
+          "pred_id": 16,
+          "driver": "Driver-1",
+          "duration": 0.1,
+          "samples": 2,
+          "cause": "Sub-threshold stub in decay tail of missed GT 32",
+          "status": "Eliminated by active_len duration filter"
+        },
+        {
+          "pred_id": 29,
+          "driver": "Driver-1",
+          "duration": 0.1,
+          "samples": 2,
+          "cause": "Sub-threshold fragment during missed GT 80",
+          "status": "Eliminated by active_len duration filter"
+        },
+        {
+          "pred_id": 27,
+          "driver": "Driver-2",
+          "duration": 0.2,
+          "samples": 3,
+          "cause": "Sub-threshold fragment during missed GT 86",
+          "status": "Eliminated by active_len duration filter"
+        },
+        {
+          "pred_id": 28,
+          "driver": "Driver-2",
+          "duration": 0.2,
+          "samples": 3,
+          "cause": "Sub-threshold fragment during missed GT 87",
+          "status": "Eliminated by active_len duration filter"
+        },
+        {
+          "pred_id": 79,
+          "driver": "Pooled",
+          "duration": 0.1,
+          "samples": 2,
+          "cause": "Boundary edge artifact between Driver-1 and Driver-2",
+          "status": "Eliminated by active_len duration filter"
+        },
+        {
+          "pred_id": 5,
+          "driver": "Driver-3",
+          "duration": 0.7,
+          "samples": 8,
+          "cause": "Genuine maneuver false alarm: delayed onset on GT 23 (onset_diff=0.60s > 0.50s tolerance)",
+          "status": "Persists as sole true false positive"
+        }
+      ],
+      "conclusion": "Correcting the minimum duration filter to check active_len eliminates 4 sub-threshold fragments. Only 1 genuine false positive remains."
+    }
+  },
+  "future_improvement_roadmap": {
+    "pipeline_a_data_collection": {
+      "volunteers": "6-8 drivers",
+      "trips_per_volunteer": ">= 2 trips",
+      "driving_modes": "Calm and safely controlled aggressive-style maneuver blocks",
+      "sampling_rate": "20 Hz IMU with GPS speed",
+      "mount_rigidity": "Fixed orientation phone cradle"
+    },
+    "pipeline_b_data_collection": {
+      "ordinary_driving_types": [
+        "Highway cruising",
+        "City stop-and-go",
+        "Gentle braking and acceleration",
+        "Potholes, speed bumps, railway tracks",
+        "Phone handling and mount adjustments"
+      ]
+    },
+    "ranked_improvements": [
+      {
+        "rank": 1,
+        "task": "Multi-driver Dataset C data collection to eliminate session confounding in Pipeline A"
+      },
+      {
+        "rank": 2,
+        "task": "Natural ordinary driving data collection for Pipeline B negative validation"
+      },
+      {
+        "rank": 3,
+        "task": "Tune directional yaw thresholds on train+val (92 events) to raise SLT recall >= 85%"
+      },
+      {
+        "rank": 4,
+        "task": "Evaluate adaptive onset matching tolerance on train+val to resolve delayed-onset turns"
+      }
+    ],
+    "future_performance_targets": {
+      "detection_precision": ">= 95.0%",
+      "detection_recall": ">= 92.0%",
+      "detection_f1": ">= 93.0%",
+      "event_macro_f1": ">= 92.0%",
+      "slt_recall": ">= 85.0%",
+      "false_events_per_minute": "<= 0.50",
+      "pipeline_a_macro_f1": ">= 80.0%"
+    }
+  }
+}

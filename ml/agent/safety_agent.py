@@ -280,6 +280,7 @@ class IntelligentSafetyAgent:
 
     def reset(self):
         """Reset internal history, smoothing buffers, and alert timers."""
+        self.validator.reset()
         self.smoother.reset()
         self.risk_engine.reset()
 

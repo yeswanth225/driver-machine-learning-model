@@ -1,0 +1,2434 @@
+{
+  "event_predictions": [
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 1,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.20517666870619408,
+      "mean_prob_sd": 0.19410887602969112,
+      "mean_prob_srt": 0.5558110794091496,
+      "mean_prob_slt": 0.04490337585496533
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 2,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.16622962325773874,
+      "mean_prob_sd": 0.18983301199451022,
+      "mean_prob_srt": 0.6200012756209808,
+      "mean_prob_slt": 0.023936089126770237
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 3,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.17066508542726622,
+      "mean_prob_sd": 0.1754349695188482,
+      "mean_prob_srt": 0.622320639968809,
+      "mean_prob_slt": 0.031579305085076524
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 4,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.2267115692807736,
+      "mean_prob_sd": 0.21825624418297088,
+      "mean_prob_srt": 0.5075684364500989,
+      "mean_prob_slt": 0.04746375008615665
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 5,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.18881771591099245,
+      "mean_prob_sd": 0.2532837988269892,
+      "mean_prob_srt": 0.5280064402819733,
+      "mean_prob_slt": 0.029892044980044948
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 6,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.19626987748345912,
+      "mean_prob_sd": 0.24617358832719852,
+      "mean_prob_srt": 0.5271082247017594,
+      "mean_prob_slt": 0.03044830948758278
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 7,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1693457201973508,
+      "mean_prob_sd": 0.20067771635667225,
+      "mean_prob_srt": 0.5959688579100958,
+      "mean_prob_slt": 0.03400770553588101
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 8,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.22993082732194647,
+      "mean_prob_sd": 0.16784743167820615,
+      "mean_prob_srt": 0.5606752055712586,
+      "mean_prob_slt": 0.04154653542858875
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 9,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.14483680173092198,
+      "mean_prob_sd": 0.17969756511292267,
+      "mean_prob_srt": 0.6475306282999128,
+      "mean_prob_slt": 0.02793500485624269
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 26,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": false,
+      "mean_prob_sa": 0.3624619422385095,
+      "mean_prob_sd": 0.2145974595462721,
+      "mean_prob_srt": 0.36334474824467244,
+      "mean_prob_slt": 0.059595849970546025
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 27,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.45813189359551143,
+      "mean_prob_sd": 0.15761782895367732,
+      "mean_prob_srt": 0.2756279634618303,
+      "mean_prob_slt": 0.10862231398898073
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 28,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.489658253256093,
+      "mean_prob_sd": 0.11962262264564567,
+      "mean_prob_srt": 0.20329490293002359,
+      "mean_prob_slt": 0.18742422116823765
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 29,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4845435373061851,
+      "mean_prob_sd": 0.15573168178392116,
+      "mean_prob_srt": 0.26118841409044546,
+      "mean_prob_slt": 0.0985363668194482
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 30,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4988373981639934,
+      "mean_prob_sd": 0.15825477956167994,
+      "mean_prob_srt": 0.25498412224237565,
+      "mean_prob_slt": 0.08792370003195087
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 31,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4865470683208619,
+      "mean_prob_sd": 0.11548947445539137,
+      "mean_prob_srt": 0.193363812453299,
+      "mean_prob_slt": 0.20459964477044756
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 32,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.5154858132132635,
+      "mean_prob_sd": 0.14601994094136014,
+      "mean_prob_srt": 0.24093466924969265,
+      "mean_prob_slt": 0.09755957659568372
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 33,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4730761550119833,
+      "mean_prob_sd": 0.1979949627940808,
+      "mean_prob_srt": 0.25854463763529656,
+      "mean_prob_slt": 0.07038424455863931
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 34,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4896385436537371,
+      "mean_prob_sd": 0.18248773790723158,
+      "mean_prob_srt": 0.17370551795247868,
+      "mean_prob_slt": 0.1541682004865525
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 35,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.42106703599024065,
+      "mean_prob_sd": 0.12272171840630075,
+      "mean_prob_srt": 0.19030911149519847,
+      "mean_prob_slt": 0.26590213410825997
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 54,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.1441225576563001,
+      "mean_prob_sd": 0.6423393404356462,
+      "mean_prob_srt": 0.1785978511811025,
+      "mean_prob_slt": 0.03494025072695107
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 55,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.12511158669421754,
+      "mean_prob_sd": 0.6839591774049903,
+      "mean_prob_srt": 0.1619824354126462,
+      "mean_prob_slt": 0.028946800488145668
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 56,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.1343836573824214,
+      "mean_prob_sd": 0.6405729880173803,
+      "mean_prob_srt": 0.19943904569687876,
+      "mean_prob_slt": 0.025604308903319467
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 57,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.23127099021862077,
+      "mean_prob_sd": 0.5335011375553743,
+      "mean_prob_srt": 0.17953841783584015,
+      "mean_prob_slt": 0.05568945439016463
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 58,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.11619321666272832,
+      "mean_prob_sd": 0.6651418194848778,
+      "mean_prob_srt": 0.19340285517409617,
+      "mean_prob_slt": 0.025262108678297562
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 59,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.1335413362927371,
+      "mean_prob_sd": 0.64846218611768,
+      "mean_prob_srt": 0.19388925457957618,
+      "mean_prob_slt": 0.02410722301000656
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 60,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.12696847005873996,
+      "mean_prob_sd": 0.676508770105359,
+      "mean_prob_srt": 0.17473827769541064,
+      "mean_prob_slt": 0.02178448214049045
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 61,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.11487420765305623,
+      "mean_prob_sd": 0.6900778026928673,
+      "mean_prob_srt": 0.1723552661827857,
+      "mean_prob_slt": 0.02269272347129068
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 78,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.06876677192962491,
+      "mean_prob_sd": 0.02956798942716376,
+      "mean_prob_srt": 0.03322682488526287,
+      "mean_prob_slt": 0.8684384137579484
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 79,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.0816880557811059,
+      "mean_prob_sd": 0.02161547058274874,
+      "mean_prob_srt": 0.03630416868456339,
+      "mean_prob_slt": 0.8603923049515821
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 80,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.06195912845093683,
+      "mean_prob_sd": 0.026091588473422914,
+      "mean_prob_srt": 0.031045335257393475,
+      "mean_prob_slt": 0.8809039478182468
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 81,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.12088361049885803,
+      "mean_prob_sd": 0.07577310676916629,
+      "mean_prob_srt": 0.10203488300590961,
+      "mean_prob_slt": 0.701308399726066
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 82,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.05047252892020134,
+      "mean_prob_sd": 0.016411305672652747,
+      "mean_prob_srt": 0.02002071615981004,
+      "mean_prob_slt": 0.9130954492473359
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 83,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.13456065431850514,
+      "mean_prob_sd": 0.061511451961563206,
+      "mean_prob_srt": 0.061769807229380504,
+      "mean_prob_slt": 0.7421580864905513
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 84,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.09693448170679435,
+      "mean_prob_sd": 0.056221957280516745,
+      "mean_prob_srt": 0.055431976312881055,
+      "mean_prob_slt": 0.7914115846998077
+    },
+    {
+      "holdout_driver": "Driver-1",
+      "event_id": 85,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.08127576099346666,
+      "mean_prob_sd": 0.024833555349781388,
+      "mean_prob_srt": 0.03177632813972991,
+      "mean_prob_slt": 0.862114355517022
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 10,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.13866049192785268,
+      "mean_prob_sd": 0.18690070731169986,
+      "mean_prob_srt": 0.6427392066623704,
+      "mean_prob_slt": 0.03169959409807731
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 11,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.18075630293672082,
+      "mean_prob_sd": 0.18981019455854803,
+      "mean_prob_srt": 0.5936966937101843,
+      "mean_prob_slt": 0.03573680879454695
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 12,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.13245531630494997,
+      "mean_prob_sd": 0.18185698370450837,
+      "mean_prob_srt": 0.6400210050346679,
+      "mean_prob_slt": 0.045666694955874054
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 13,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.21974696326043394,
+      "mean_prob_sd": 0.11843990831846365,
+      "mean_prob_srt": 0.5989411507856449,
+      "mean_prob_slt": 0.06287197763545763
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 14,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1662572343651194,
+      "mean_prob_sd": 0.16583628450832646,
+      "mean_prob_srt": 0.6319732447532355,
+      "mean_prob_slt": 0.03593323637331896
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 15,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.15616082906482023,
+      "mean_prob_sd": 0.15399956381648267,
+      "mean_prob_srt": 0.6546339508169883,
+      "mean_prob_slt": 0.03520565630170906
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 16,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.16644469732118702,
+      "mean_prob_sd": 0.16466239565058258,
+      "mean_prob_srt": 0.6281642902924943,
+      "mean_prob_slt": 0.04072861673573602
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 17,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1426385456355506,
+      "mean_prob_sd": 0.22364030643773702,
+      "mean_prob_srt": 0.6103789411960656,
+      "mean_prob_slt": 0.023342206730646995
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 18,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1979041152908383,
+      "mean_prob_sd": 0.17478097076820265,
+      "mean_prob_srt": 0.5807666271488855,
+      "mean_prob_slt": 0.04654828679207375
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 36,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4207686644421154,
+      "mean_prob_sd": 0.17216697195608102,
+      "mean_prob_srt": 0.22951958200953948,
+      "mean_prob_slt": 0.17754478159226428
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 37,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.44389702570440487,
+      "mean_prob_sd": 0.17414970742393154,
+      "mean_prob_srt": 0.25733202656871285,
+      "mean_prob_slt": 0.1246212403029508
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 38,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.48913670696211636,
+      "mean_prob_sd": 0.1772711049827716,
+      "mean_prob_srt": 0.23943479930925213,
+      "mean_prob_slt": 0.0941573887458602
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 39,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.49067615989872354,
+      "mean_prob_sd": 0.154021282721493,
+      "mean_prob_srt": 0.2410852111098612,
+      "mean_prob_slt": 0.11421734626992233
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 40,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.5131228088058428,
+      "mean_prob_sd": 0.13545139795580116,
+      "mean_prob_srt": 0.19690978708663157,
+      "mean_prob_slt": 0.15451600615172462
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 41,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.3640656779817225,
+      "mean_prob_sd": 0.25701746588952773,
+      "mean_prob_srt": 0.2755980259911841,
+      "mean_prob_slt": 0.10331883013756586
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 42,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4929090133199662,
+      "mean_prob_sd": 0.17690274355562793,
+      "mean_prob_srt": 0.23566982645205284,
+      "mean_prob_slt": 0.09451841667235325
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 43,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4199492871649975,
+      "mean_prob_sd": 0.18291050858036673,
+      "mean_prob_srt": 0.27362947974876917,
+      "mean_prob_slt": 0.12351072450586671
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 44,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4404761547534162,
+      "mean_prob_sd": 0.20668244792082038,
+      "mean_prob_srt": 0.2931769782872163,
+      "mean_prob_slt": 0.05966441903854731
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 45,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.47672744419483265,
+      "mean_prob_sd": 0.17335225574499735,
+      "mean_prob_srt": 0.2750395933730749,
+      "mean_prob_slt": 0.07488070668709533
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 62,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.1553271940253895,
+      "mean_prob_sd": 0.615229066814997,
+      "mean_prob_srt": 0.1667381222145734,
+      "mean_prob_slt": 0.06270561694504032
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 63,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.12133864890194297,
+      "mean_prob_sd": 0.6783862866880842,
+      "mean_prob_srt": 0.15962604469645594,
+      "mean_prob_slt": 0.04064901971351699
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 64,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.13517846796773506,
+      "mean_prob_sd": 0.6626746118144479,
+      "mean_prob_srt": 0.16828961773500825,
+      "mean_prob_slt": 0.03385730248280908
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 65,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.08766005469871713,
+      "mean_prob_sd": 0.6953518572982187,
+      "mean_prob_srt": 0.19200597726411425,
+      "mean_prob_slt": 0.024982110738949997
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 66,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.08853640529970443,
+      "mean_prob_sd": 0.7349963170020812,
+      "mean_prob_srt": 0.1417696311082744,
+      "mean_prob_slt": 0.03469764658994024
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 67,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.08855065574583211,
+      "mean_prob_sd": 0.7204872282686746,
+      "mean_prob_srt": 0.16630185705310674,
+      "mean_prob_slt": 0.024660258932386714
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 68,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.12439464645152704,
+      "mean_prob_sd": 0.6134582208246488,
+      "mean_prob_srt": 0.23313323824828136,
+      "mean_prob_slt": 0.02901389447554294
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 86,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.08307871812106236,
+      "mean_prob_sd": 0.013647629531527107,
+      "mean_prob_srt": 0.020684931009077184,
+      "mean_prob_slt": 0.8825887213383334
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 87,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.12234335732433148,
+      "mean_prob_sd": 0.02154207172779649,
+      "mean_prob_srt": 0.04640994169461541,
+      "mean_prob_slt": 0.8097046292532567
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 88,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.11113095727693578,
+      "mean_prob_sd": 0.022332864491249143,
+      "mean_prob_srt": 0.020498861022871875,
+      "mean_prob_slt": 0.8460373172089434
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 89,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.11038248562977312,
+      "mean_prob_sd": 0.035457140705651556,
+      "mean_prob_srt": 0.039646913792958934,
+      "mean_prob_slt": 0.8145134598716167
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 90,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.16302375134200284,
+      "mean_prob_sd": 0.037785339235487894,
+      "mean_prob_srt": 0.043760857029641276,
+      "mean_prob_slt": 0.755430052392868
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 91,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1252783519497683,
+      "mean_prob_sd": 0.021257359304385097,
+      "mean_prob_srt": 0.030054954553993617,
+      "mean_prob_slt": 0.8234093341918529
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 92,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.220605969021099,
+      "mean_prob_sd": 0.08202713016186729,
+      "mean_prob_srt": 0.09356114016309125,
+      "mean_prob_slt": 0.6038057606539423
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 93,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.12503510382698863,
+      "mean_prob_sd": 0.022904841809509933,
+      "mean_prob_srt": 0.04508171312135791,
+      "mean_prob_slt": 0.8069783412421437
+    },
+    {
+      "holdout_driver": "Driver-2",
+      "event_id": 94,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.10619381323590052,
+      "mean_prob_sd": 0.00782859991814855,
+      "mean_prob_srt": 0.027162560891134425,
+      "mean_prob_slt": 0.8588150259548167
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 19,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.13431228729135353,
+      "mean_prob_sd": 0.19213967561741918,
+      "mean_prob_srt": 0.6584918222142138,
+      "mean_prob_slt": 0.015056214877013484
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 20,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.2705801854191018,
+      "mean_prob_sd": 0.13937045133326678,
+      "mean_prob_srt": 0.559993971021835,
+      "mean_prob_slt": 0.03005539222579621
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 21,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.22904887428923532,
+      "mean_prob_sd": 0.3355941296437965,
+      "mean_prob_srt": 0.41418841695502556,
+      "mean_prob_slt": 0.02116857911194229
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 22,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.455737805667462,
+      "mean_prob_sd": 0.19438784222862,
+      "mean_prob_srt": 0.3096609484086147,
+      "mean_prob_slt": 0.040213403695303254
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 23,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 3,
+      "pred_name": "SRT",
+      "is_correct": true,
+      "mean_prob_sa": 0.33057269030597836,
+      "mean_prob_sd": 0.21865028497175545,
+      "mean_prob_srt": 0.4066480735627388,
+      "mean_prob_slt": 0.0441289511595271
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 24,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.4899418425441459,
+      "mean_prob_sd": 0.20481794582004734,
+      "mean_prob_srt": 0.2187079483931929,
+      "mean_prob_slt": 0.08653226324261375
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 25,
+      "sample_count": 14,
+      "true_class": 3,
+      "true_name": "SRT",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.4684017916498671,
+      "mean_prob_sd": 0.1634172693154848,
+      "mean_prob_srt": 0.3394187531275395,
+      "mean_prob_slt": 0.02876218590710836
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 46,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4863430511171953,
+      "mean_prob_sd": 0.11373623889597138,
+      "mean_prob_srt": 0.32112980135517105,
+      "mean_prob_slt": 0.07879090863166222
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 47,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.4896255597044873,
+      "mean_prob_sd": 0.17355337394457093,
+      "mean_prob_srt": 0.2253013928512886,
+      "mean_prob_slt": 0.11151967349965299
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 48,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.35261448420621005,
+      "mean_prob_sd": 0.16253223312244244,
+      "mean_prob_srt": 0.3043460089424278,
+      "mean_prob_slt": 0.18050727372891961
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 49,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": false,
+      "mean_prob_sa": 0.15842797760815797,
+      "mean_prob_sd": 0.1966760900105645,
+      "mean_prob_srt": 0.14888944726120304,
+      "mean_prob_slt": 0.49600648512007456
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 50,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.5982328148305015,
+      "mean_prob_sd": 0.11391144451921134,
+      "mean_prob_srt": 0.22165156344384018,
+      "mean_prob_slt": 0.06620417720644682
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 51,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.6397634787968115,
+      "mean_prob_sd": 0.09084469117871186,
+      "mean_prob_srt": 0.2163873519913011,
+      "mean_prob_slt": 0.05300447803317543
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 52,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.479796258837224,
+      "mean_prob_sd": 0.17556460595438803,
+      "mean_prob_srt": 0.16870199934540053,
+      "mean_prob_slt": 0.17593713586298743
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 53,
+      "sample_count": 9,
+      "true_class": 1,
+      "true_name": "SA",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": true,
+      "mean_prob_sa": 0.6723699335228788,
+      "mean_prob_sd": 0.0823572449847637,
+      "mean_prob_srt": 0.14228542355399773,
+      "mean_prob_slt": 0.10298739793835993
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 69,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.1508321859105777,
+      "mean_prob_sd": 0.6125362324778828,
+      "mean_prob_srt": 0.21637612247222474,
+      "mean_prob_slt": 0.020255459139314716
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 70,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.10529497036570006,
+      "mean_prob_sd": 0.669018549749015,
+      "mean_prob_srt": 0.20617359891422338,
+      "mean_prob_slt": 0.019512880971061467
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 71,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.12570295881819968,
+      "mean_prob_sd": 0.6797514713600813,
+      "mean_prob_srt": 0.17733676631326664,
+      "mean_prob_slt": 0.017208803508452285
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 72,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.22892283885139975,
+      "mean_prob_sd": 0.5076878074701671,
+      "mean_prob_srt": 0.2202786389119686,
+      "mean_prob_slt": 0.04311071476646452
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 73,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.18841051697348277,
+      "mean_prob_sd": 0.5066897363043134,
+      "mean_prob_srt": 0.2718152621886268,
+      "mean_prob_slt": 0.03308448453357682
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 74,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.23376157744602688,
+      "mean_prob_sd": 0.3769594736617435,
+      "mean_prob_srt": 0.35515057450532656,
+      "mean_prob_slt": 0.034128374386902846
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 75,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.18349212246201904,
+      "mean_prob_sd": 0.46958470604144625,
+      "mean_prob_srt": 0.2781733249247157,
+      "mean_prob_slt": 0.06874984657181893
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 76,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 2,
+      "pred_name": "SD",
+      "is_correct": true,
+      "mean_prob_sa": 0.18043564441509075,
+      "mean_prob_sd": 0.5797866644444908,
+      "mean_prob_srt": 0.2124752816726444,
+      "mean_prob_slt": 0.027302409467774087
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 77,
+      "sample_count": 12,
+      "true_class": 2,
+      "true_name": "SD",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.49775513672136756,
+      "mean_prob_sd": 0.2057895271875425,
+      "mean_prob_srt": 0.2550963573509249,
+      "mean_prob_slt": 0.04135897874016495
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 95,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.13617133211352092,
+      "mean_prob_sd": 0.015949750211540346,
+      "mean_prob_srt": 0.0491821280132542,
+      "mean_prob_slt": 0.7986967896616844
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 96,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.1955615158182371,
+      "mean_prob_sd": 0.019686754166967683,
+      "mean_prob_srt": 0.037899773647739665,
+      "mean_prob_slt": 0.7468519563670555
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 97,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.14721297943293696,
+      "mean_prob_sd": 0.013446855582433095,
+      "mean_prob_srt": 0.041175991497278276,
+      "mean_prob_slt": 0.7981641734873516
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 98,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.38301697748990776,
+      "mean_prob_sd": 0.1439095970030752,
+      "mean_prob_srt": 0.14924685208764593,
+      "mean_prob_slt": 0.32382657341937104
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 99,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.19799027331297672,
+      "mean_prob_sd": 0.017799991175360446,
+      "mean_prob_srt": 0.04426617786667385,
+      "mean_prob_slt": 0.739943557644989
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 100,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.3233945945352063,
+      "mean_prob_sd": 0.0473975138612928,
+      "mean_prob_srt": 0.050576381473473306,
+      "mean_prob_slt": 0.5786315101300274
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 101,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.17817624627356637,
+      "mean_prob_sd": 0.045534805773007676,
+      "mean_prob_srt": 0.0335601130228517,
+      "mean_prob_slt": 0.7427288349305742
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 102,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.3778100666077805,
+      "mean_prob_sd": 0.03939825306196636,
+      "mean_prob_srt": 0.10000043182712849,
+      "mean_prob_slt": 0.48279124850312455
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 103,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.3294343238873423,
+      "mean_prob_sd": 0.06564428933536595,
+      "mean_prob_srt": 0.12780592055776924,
+      "mean_prob_slt": 0.47711546621952244
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 104,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.19979021152827756,
+      "mean_prob_sd": 0.011271997076227572,
+      "mean_prob_srt": 0.05089144612127033,
+      "mean_prob_slt": 0.7380463452742244
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 105,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.2338759880928817,
+      "mean_prob_sd": 0.01611631265559236,
+      "mean_prob_srt": 0.05082061734696282,
+      "mean_prob_slt": 0.699187081904563
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 106,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.30189778585898613,
+      "mean_prob_sd": 0.026691659417976982,
+      "mean_prob_srt": 0.057299996859437936,
+      "mean_prob_slt": 0.614110557863599
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 107,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.27634215139379475,
+      "mean_prob_sd": 0.06483643108009687,
+      "mean_prob_srt": 0.044724789991047086,
+      "mean_prob_slt": 0.6140966275350612
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 108,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 4,
+      "pred_name": "SLT",
+      "is_correct": true,
+      "mean_prob_sa": 0.2057258776785674,
+      "mean_prob_sd": 0.030626877544642626,
+      "mean_prob_srt": 0.07787163224708313,
+      "mean_prob_slt": 0.6857756125297069
+    },
+    {
+      "holdout_driver": "Driver-3",
+      "event_id": 109,
+      "sample_count": 7,
+      "true_class": 4,
+      "true_name": "SLT",
+      "pred_class": 1,
+      "pred_name": "SA",
+      "is_correct": false,
+      "mean_prob_sa": 0.3650698152951554,
+      "mean_prob_sd": 0.2341695905485995,
+      "mean_prob_srt": 0.1693713576704141,
+      "mean_prob_slt": 0.2313892364858309
+    }
+  ],
+  "re_et_folds": {
+    "Driver-1": {
+      "sample_metrics": {
+        "accuracy": 0.845108695652174,
+        "balanced_accuracy": 0.8623263888888889,
+        "macro_f1": 0.8583614606624345,
+        "weighted_f1": 0.8463053181218759,
+        "confusion_matrix": [
+          [
+            77,
+            1,
+            9,
+            3
+          ],
+          [
+            10,
+            81,
+            5,
+            0
+          ],
+          [
+            19,
+            8,
+            99,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            54
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.719626168224299,
+            "recall": 0.8555555555555555,
+            "f1": 0.7817258883248731,
+            "support": 90
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.9,
+            "recall": 0.84375,
+            "f1": 0.8709677419354839,
+            "support": 96
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.868421052631579,
+            "recall": 0.7857142857142857,
+            "f1": 0.825,
+            "support": 126
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9473684210526315,
+            "recall": 0.9642857142857143,
+            "f1": 0.9557522123893806,
+            "support": 56
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 0.9714285714285714,
+        "balanced_accuracy": 0.975,
+        "macro_f1": 0.9736842105263157,
+        "weighted_f1": 0.9714285714285714,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            8
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9473684210526315,
+            "support": 10
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.9,
+            "recall": 1.0,
+            "f1": 0.9473684210526315,
+            "support": 9
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          }
+        }
+      },
+      "cm": [
+        [
+          9,
+          0,
+          1,
+          0
+        ],
+        [
+          0,
+          8,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          8
+        ]
+      ]
+    },
+    "Driver-2": {
+      "sample_metrics": {
+        "accuracy": 0.8457300275482094,
+        "balanced_accuracy": 0.8609126984126985,
+        "macro_f1": 0.8589569638389113,
+        "weighted_f1": 0.8458983824899862,
+        "confusion_matrix": [
+          [
+            71,
+            6,
+            12,
+            1
+          ],
+          [
+            4,
+            73,
+            7,
+            0
+          ],
+          [
+            18,
+            7,
+            101,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            62
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.7553191489361702,
+            "recall": 0.7888888888888889,
+            "f1": 0.7717391304347826,
+            "support": 90
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.8488372093023255,
+            "recall": 0.8690476190476191,
+            "f1": 0.8588235294117647,
+            "support": 84
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.8416666666666667,
+            "recall": 0.8015873015873016,
+            "f1": 0.8211382113821138,
+            "support": 126
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9841269841269841,
+            "recall": 0.9841269841269841,
+            "f1": 0.9841269841269841,
+            "support": 63
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "macro_f1": 1.0,
+        "weighted_f1": 1.0,
+        "confusion_matrix": [
+          [
+            10,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            7,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            9
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 10
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 7
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 9
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 9
+          }
+        }
+      },
+      "cm": [
+        [
+          10,
+          0,
+          0,
+          0
+        ],
+        [
+          0,
+          7,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          9,
+          0
+        ],
+        [
+          0,
+          0,
+          0,
+          9
+        ]
+      ]
+    },
+    "Driver-3": {
+      "sample_metrics": {
+        "accuracy": 0.6292428198433421,
+        "balanced_accuracy": 0.6347222222222222,
+        "macro_f1": 0.6318124901965103,
+        "weighted_f1": 0.6459414024279496,
+        "confusion_matrix": [
+          [
+            52,
+            2,
+            6,
+            12
+          ],
+          [
+            20,
+            63,
+            25,
+            0
+          ],
+          [
+            40,
+            9,
+            49,
+            0
+          ],
+          [
+            28,
+            0,
+            0,
+            77
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.37142857142857144,
+            "recall": 0.7222222222222222,
+            "f1": 0.49056603773584906,
+            "support": 72
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.8513513513513513,
+            "recall": 0.5833333333333334,
+            "f1": 0.6923076923076923,
+            "support": 108
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.6125,
+            "recall": 0.5,
+            "f1": 0.550561797752809,
+            "support": 98
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.8651685393258427,
+            "recall": 0.7333333333333333,
+            "f1": 0.7938144329896907,
+            "support": 105
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 0.8205128205128205,
+        "balanced_accuracy": 0.8004960317460318,
+        "macro_f1": 0.80791689716639,
+        "weighted_f1": 0.8293104236309105,
+        "confusion_matrix": [
+          [
+            7,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            8,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            4,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            13
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.5384615384615384,
+            "recall": 0.875,
+            "f1": 0.6666666666666666,
+            "support": 8
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 0.8888888888888888,
+            "f1": 0.9411764705882353,
+            "support": 9
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 1.0,
+            "recall": 0.5714285714285714,
+            "f1": 0.7272727272727273,
+            "support": 7
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9285714285714286,
+            "recall": 0.8666666666666667,
+            "f1": 0.896551724137931,
+            "support": 15
+          }
+        }
+      },
+      "cm": [
+        [
+          7,
+          0,
+          0,
+          1
+        ],
+        [
+          1,
+          8,
+          0,
+          0
+        ],
+        [
+          3,
+          0,
+          4,
+          0
+        ],
+        [
+          2,
+          0,
+          0,
+          13
+        ]
+      ]
+    }
+  },
+  "saved_et_folds": {
+    "Holdout_Driver-1": {
+      "holdout_driver": "Driver-1",
+      "train_rows": 746,
+      "train_events": 74,
+      "test_rows": 368,
+      "test_events": 35,
+      "sample_metrics": {
+        "accuracy": 0.845108695652174,
+        "balanced_accuracy": 0.8623263888888889,
+        "macro_f1": 0.8583614606624345,
+        "weighted_f1": 0.8463053181218759,
+        "confusion_matrix": [
+          [
+            77,
+            1,
+            9,
+            3
+          ],
+          [
+            10,
+            81,
+            5,
+            0
+          ],
+          [
+            19,
+            8,
+            99,
+            0
+          ],
+          [
+            1,
+            0,
+            1,
+            54
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.719626168224299,
+            "recall": 0.8555555555555555,
+            "f1": 0.7817258883248731,
+            "support": 90
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.9,
+            "recall": 0.84375,
+            "f1": 0.8709677419354839,
+            "support": 96
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.868421052631579,
+            "recall": 0.7857142857142857,
+            "f1": 0.825,
+            "support": 126
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9473684210526315,
+            "recall": 0.9642857142857143,
+            "f1": 0.9557522123893806,
+            "support": 56
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 0.9714285714285714,
+        "balanced_accuracy": 0.975,
+        "macro_f1": 0.9736842105263157,
+        "weighted_f1": 0.9714285714285714,
+        "confusion_matrix": [
+          [
+            9,
+            0,
+            1,
+            0
+          ],
+          [
+            0,
+            8,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            8
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 1.0,
+            "recall": 0.9,
+            "f1": 0.9473684210526315,
+            "support": 10
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.9,
+            "recall": 1.0,
+            "f1": 0.9473684210526315,
+            "support": 9
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 8
+          }
+        },
+        "event_count": 35
+      }
+    },
+    "Holdout_Driver-2": {
+      "holdout_driver": "Driver-2",
+      "train_rows": 751,
+      "train_events": 74,
+      "test_rows": 363,
+      "test_events": 35,
+      "sample_metrics": {
+        "accuracy": 0.8457300275482094,
+        "balanced_accuracy": 0.8609126984126985,
+        "macro_f1": 0.8589569638389113,
+        "weighted_f1": 0.8458983824899862,
+        "confusion_matrix": [
+          [
+            71,
+            6,
+            12,
+            1
+          ],
+          [
+            4,
+            73,
+            7,
+            0
+          ],
+          [
+            18,
+            7,
+            101,
+            0
+          ],
+          [
+            1,
+            0,
+            0,
+            62
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.7553191489361702,
+            "recall": 0.7888888888888889,
+            "f1": 0.7717391304347826,
+            "support": 90
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.8488372093023255,
+            "recall": 0.8690476190476191,
+            "f1": 0.8588235294117647,
+            "support": 84
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.8416666666666667,
+            "recall": 0.8015873015873016,
+            "f1": 0.8211382113821138,
+            "support": 126
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9841269841269841,
+            "recall": 0.9841269841269841,
+            "f1": 0.9841269841269841,
+            "support": 63
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 1.0,
+        "balanced_accuracy": 1.0,
+        "macro_f1": 1.0,
+        "weighted_f1": 1.0,
+        "confusion_matrix": [
+          [
+            10,
+            0,
+            0,
+            0
+          ],
+          [
+            0,
+            7,
+            0,
+            0
+          ],
+          [
+            0,
+            0,
+            9,
+            0
+          ],
+          [
+            0,
+            0,
+            0,
+            9
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 10
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 7
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 9
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 1.0,
+            "recall": 1.0,
+            "f1": 1.0,
+            "support": 9
+          }
+        },
+        "event_count": 35
+      }
+    },
+    "Holdout_Driver-3": {
+      "holdout_driver": "Driver-3",
+      "train_rows": 731,
+      "train_events": 70,
+      "test_rows": 383,
+      "test_events": 39,
+      "sample_metrics": {
+        "accuracy": 0.6292428198433421,
+        "balanced_accuracy": 0.6347222222222222,
+        "macro_f1": 0.6318124901965103,
+        "weighted_f1": 0.6459414024279496,
+        "confusion_matrix": [
+          [
+            52,
+            2,
+            6,
+            12
+          ],
+          [
+            20,
+            63,
+            25,
+            0
+          ],
+          [
+            40,
+            9,
+            49,
+            0
+          ],
+          [
+            28,
+            0,
+            0,
+            77
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.37142857142857144,
+            "recall": 0.7222222222222222,
+            "f1": 0.49056603773584906,
+            "support": 72
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 0.8513513513513513,
+            "recall": 0.5833333333333334,
+            "f1": 0.6923076923076923,
+            "support": 108
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 0.6125,
+            "recall": 0.5,
+            "f1": 0.550561797752809,
+            "support": 98
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.8651685393258427,
+            "recall": 0.7333333333333333,
+            "f1": 0.7938144329896907,
+            "support": 105
+          }
+        }
+      },
+      "event_metrics": {
+        "accuracy": 0.8205128205128205,
+        "balanced_accuracy": 0.8004960317460318,
+        "macro_f1": 0.80791689716639,
+        "weighted_f1": 0.8293104236309105,
+        "confusion_matrix": [
+          [
+            7,
+            0,
+            0,
+            1
+          ],
+          [
+            1,
+            8,
+            0,
+            0
+          ],
+          [
+            3,
+            0,
+            4,
+            0
+          ],
+          [
+            2,
+            0,
+            0,
+            13
+          ]
+        ],
+        "per_class": {
+          "SA": {
+            "class_id": 1,
+            "label_name": "Sudden Acceleration",
+            "precision": 0.5384615384615384,
+            "recall": 0.875,
+            "f1": 0.6666666666666666,
+            "support": 8
+          },
+          "SD": {
+            "class_id": 2,
+            "label_name": "Sudden Deceleration",
+            "precision": 1.0,
+            "recall": 0.8888888888888888,
+            "f1": 0.9411764705882353,
+            "support": 9
+          },
+          "SRT": {
+            "class_id": 3,
+            "label_name": "Sudden Right Turn",
+            "precision": 1.0,
+            "recall": 0.5714285714285714,
+            "f1": 0.7272727272727273,
+            "support": 7
+          },
+          "SLT": {
+            "class_id": 4,
+            "label_name": "Sudden Left Turn",
+            "precision": 0.9285714285714286,
+            "recall": 0.8666666666666667,
+            "f1": 0.896551724137931,
+            "support": 15
+          }
+        },
+        "event_count": 39
+      }
+    }
+  }
+}

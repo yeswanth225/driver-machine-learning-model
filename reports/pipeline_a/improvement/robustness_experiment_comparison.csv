@@ -1,0 +1,8 @@
+Experiment,Features_Count,Tau_Forward,Tau_Reverse,Forward_Acc,Forward_Bal_Acc,Forward_Macro_F1,Forward_FPR,Forward_FNR,Forward_AUC,Reverse_Acc,Reverse_Bal_Acc,Reverse_Macro_F1,Reverse_FPR,Reverse_FNR,Reverse_AUC,Mean_Cross_Session_Acc,Mean_Cross_Session_F1,Pooled_Sample_Acc,Description
+Candidate_V2_ExtraTrees_Default,102,0.5,0.5,91.43,92.93,90.77,2.62,11.52,0.9834,75.48,74.6,73.62,49.2,1.59,0.8772,83.46,82.19,82.9,Baseline candidate V2 102 causal features with default tau=0.50
+Candidate_V2_ExtraTrees_Calibrated,102,0.88,0.7,57.21,67.91,56.87,0.28,63.89,0.9834,77.12,76.36,75.8,44.2,3.08,0.8772,67.17,66.33,67.85,Candidate V2 with threshold tuned strictly on training-internal fold
+Gravity_Decoupled_ExtraTrees,137,0.5,0.5,89.92,91.82,89.24,2.53,13.82,0.9814,75.16,74.27,73.24,49.79,1.67,0.8797,82.54,81.24,82.03,Dynamic acceleration decoupled from low-pass gravity (alpha=0.03)
+Orientation_Invariant_3D_ExtraTrees,88,0.5,0.5,89.19,91.07,88.47,3.37,14.5,0.9782,75.23,74.34,73.29,49.82,1.51,0.8726,82.21,80.88,81.73,"Strictly 3D magnitude, jerk, and planar features invariant to mounting angle"
+RobustScaled_ExtraTrees,102,0.5,0.5,91.43,92.93,90.77,2.62,11.52,0.9834,75.48,74.6,73.62,49.2,1.59,0.8772,83.46,82.19,82.9,Features scaled via median/IQR strictly on training session
+Strict_Training_PSI_ExtraTrees,24,0.5,0.5,89.83,91.95,89.17,1.73,14.36,0.9813,71.29,70.73,70.35,44.54,14.0,0.763,80.56,79.76,79.92,Feature stability selection using training-internal split only (PSI < 0.25)
+Robust_SoftVoting_Ensemble,102,0.5,0.5,90.41,92.23,89.73,2.34,13.2,0.9815,76.06,75.21,74.36,47.82,1.75,0.8691,83.23,82.04,82.74,"Soft voting ensemble of ExtraTrees, RandomForest, and calibrated SVM"

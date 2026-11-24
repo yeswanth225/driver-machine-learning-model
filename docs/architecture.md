@@ -1,5 +1,7 @@
 # System Architecture: Intelligent Driver Activity Monitoring & Safety Agent
 
+> **Canonical Specification Notice:** This high-level overview document is governed by [DESIGN.md](DESIGN.md) as the authoritative canonical design specification. Numerical parameters, thresholds, and health states are defined in `DESIGN.md`.
+
 ## 1. Overview
 The **Intelligent Driver Activity Monitoring & Safety Agent** is an end-to-end AI safety system. It ingests driver sensor telemetry and/or visual facial features, classifies driver states (e.g., attentive, drowsy, texting, phone usage, distracted), evaluates risk levels in real time, and triggers automated safety interventions.
 

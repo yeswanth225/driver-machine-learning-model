@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp"
+    android:background="#0F172A">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="DRIVER SENSOR LOGGER"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:textColor="#38BDF8"
+            android:layout_gravity="center"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Status Card -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:background="#1E293B"
+            android:padding="16dp"
+            android:layout_marginBottom="16dp">
+
+            <TextView
+                android:id="@+id/tvStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="STANDBY"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:textColor="#4ADE80"
+                android:layout_marginBottom="8dp" />
+
+            <TextView
+                android:id="@+id/tvDuration"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Duration: 00:00"
+                android:textColor="#E2E8F0"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvSamplingRate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Target: 20.0 Hz"
+                android:textColor="#94A3B8"
+                android:textSize="14sp" />
+
+            <TextView
+                android:id="@+id/tvGpsStatus"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="GPS: Ready (20Hz loop)"
+                android:textColor="#94A3B8"
+                android:textSize="14sp" />
+        </LinearLayout>
+
+        <!-- Driver Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Assigned Driver Token:"
+            android:textColor="#94A3B8"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spinnerDriver"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#1E293B"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Driving Segment Selection -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Active Driving Regime (S0 - S6):"
+            android:textColor="#94A3B8"
+            android:layout_marginBottom="4dp" />
+
+        <Spinner
+            android:id="@+id/spinnerSegment"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:background="#1E293B"
+            android:layout_marginBottom="16dp" />
+
+        <!-- Backend Ingestion URL -->
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Backend Ingest Endpoint:"
+            android:textColor="#94A3B8"
+            android:layout_marginBottom="4dp" />
+
+        <EditText
+            android:id="@+id/etBackendUrl"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="http://192.168.1.100:8000"
+            android:textColor="#FFFFFF"
+            android:background="#1E293B"
+            android:padding="8dp"
+            android:layout_marginBottom="24dp" />
+
+        <!-- Control Buttons -->
+        <Button
+            android:id="@+id/btnStart"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="START 20Hz RECORDING"
+            android:backgroundTint="#22C55E"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnStop"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="STOP RECORDING"
+            android:backgroundTint="#EF4444"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnUpload"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:text="UPLOAD TELEMETRY TO BACKEND"
+            android:backgroundTint="#3B82F6"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold" />
+
+    </LinearLayout>
+</ScrollView>

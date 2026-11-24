@@ -1,0 +1,366 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  /* Surface Tokens (Light Mode - Aerospace Minimal) */
+  --bg-page: #f8f9fa;
+  --bg-surface: #ffffff;
+  --bg-surface-elevated: #ffffff;
+  --bg-surface-subtle: #f1f3f5;
+  --bg-subtle-hover: #e9ecef;
+
+  /* Text Tokens */
+  --text-primary: #000000;
+  --text-secondary: #495057;
+  --text-muted: #6c757d;
+  --text-inverse: #ffffff;
+
+  /* Border Tokens */
+  --border-hairline: rgba(0, 0, 0, 0.08);
+  --border-strong: rgba(0, 0, 0, 0.3);
+
+  /* Typography */
+  --font-display: "D-DIN", "Arial Narrow", "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-body: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+}
+
+html.dark {
+  /* Surface Tokens (Dark Mode - Pure Black Aerospace Canvas) */
+  --bg-page: #000000;
+  --bg-surface: #0a0a0c;
+  --bg-surface-elevated: #111114;
+  --bg-surface-subtle: #18181c;
+  --bg-subtle-hover: #222228;
+
+  /* Text Tokens */
+  --text-primary: #ffffff;
+  --text-secondary: #a1a1aa;
+  --text-muted: #71717a;
+  --text-inverse: #000000;
+
+  /* Border Tokens */
+  --border-hairline: rgba(255, 255, 255, 0.08);
+  --border-strong: rgba(255, 255, 255, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  background-color: var(--bg-page);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+/* SpaceX Typography Tokens */
+.font-display {
+  font-family: var(--font-display);
+}
+
+.tracking-spacex {
+  letter-spacing: 1.2px;
+}
+
+.tracking-spacex-wide {
+  letter-spacing: 1.6px;
+}
+
+.tracking-spacex-tight {
+  letter-spacing: 0.8px;
+}
+
+/* SpaceX Surfaces & Panels - Smooth Non-Boxy Modern Radius */
+.spacex-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.spacex-panel-subtle {
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  border-radius: 10px;
+  padding: 1rem;
+}
+
+/* Backward-compatible legacy classes mapped to SpaceX design tokens */
+.apple-card {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.apple-card-parchment {
+  background-color: var(--bg-surface-subtle);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  border-radius: 12px;
+  padding: 1.25rem;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.apple-frosted {
+  background-color: var(--bg-surface);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+/* SpaceX Buttons (Ghost-Outlined & Inverted Solids) */
+.btn-spacex-ghost {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-spacex-ghost:hover:not(:disabled) {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.btn-spacex-ghost:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-spacex-ghost:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-spacex-solid {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
+  border-radius: 9999px;
+  padding: 0.5rem 1.25rem;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.2px;
+  transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.btn-spacex-solid:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btn-spacex-solid:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.btn-spacex-solid:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.btn-spacex-subtle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  border-radius: 9999px;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-spacex-subtle:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.btn-spacex-subtle:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+/* Button legacy mappings */
+.btn-apple-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+  border: 1px solid var(--text-primary);
+  border-radius: 9999px;
+  padding: 0.45rem 1.15rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-apple-primary:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.btn-apple-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: transparent;
+  color: var(--text-primary);
+  border: 1px solid var(--border-strong);
+  border-radius: 9999px;
+  padding: 0.45rem 1.15rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1.1px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-apple-secondary:hover:not(:disabled) {
+  background-color: var(--text-primary);
+  color: var(--text-inverse);
+}
+
+.btn-apple-pearl {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  border-radius: 9999px;
+  padding: 0.45rem 1rem;
+  font-family: var(--font-display);
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s ease;
+  cursor: pointer;
+}
+
+.btn-apple-pearl:hover:not(:disabled) {
+  border-color: var(--border-strong);
+}
+
+.btn-apple-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 9999px;
+  background-color: var(--bg-surface-subtle);
+  color: var(--text-primary);
+  border: 1px solid var(--border-hairline);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.btn-apple-icon:hover {
+  border-color: var(--border-strong);
+}
+
+/* SpaceX Form Inputs & Selects */
+select,
+input[type="text"],
+input[type="number"] {
+  background-color: var(--bg-surface);
+  border: 1px solid var(--border-hairline);
+  color: var(--text-primary);
+  border-radius: 4px;
+  padding: 0.5rem 0.75rem;
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+select:focus,
+input[type="text"]:focus,
+input[type="number"]:focus {
+  border-color: var(--border-strong);
+}
+
+option {
+  background-color: var(--bg-surface);
+  color: var(--text-primary);
+}
+
+/* View Transition Styles */
+html[data-theme-reveal]::view-transition-old(root),
+html[data-theme-reveal]::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* Minimal Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border-hairline);
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

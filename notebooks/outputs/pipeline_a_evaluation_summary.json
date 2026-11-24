@@ -1,0 +1,15 @@
+{
+  "pipeline": "Pipeline A - Driving Behaviour Classification",
+  "production_model": "Support Vector Machine (RBF, C=2.0)",
+  "chronological_test_accuracy": 0.6992516370439663,
+  "chronological_test_f1": 0.6969828419427797,
+  "bidirectional_lodo": {
+    "forward_s1_to_s2_accuracy": 0.7222480981214097,
+    "forward_s1_to_s2_f1": 0.721277963729015,
+    "reverse_s2_to_s1_accuracy": 0.7471279902689553,
+    "reverse_s2_to_s1_f1": 0.7279603277045892,
+    "arithmetic_mean_accuracy": 0.8081137950912898,
+    "pooled_sample_accuracy": 0.7355491329479769
+  },
+  "dataset_notes": "Dataset C contains 1 driver across 2 trips (17 episodes, N_eff approx 707)."
+}

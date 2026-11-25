@@ -218,15 +218,15 @@ export default function App() {
         </main>
 
         {/* Aerospace Minimal Footer */}
-        <footer className="border-t border-[#dee2e6] dark:border-[#27272a] bg-white dark:bg-[#070709] py-3 px-6 text-[11px] text-neutral-500 dark:text-neutral-400 font-display uppercase tracking-spacex flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0">
+        <footer className="border-t border-[#dee2e6] dark:border-[#27272a] bg-white dark:bg-[#070709] py-3 px-6 text-xs text-neutral-500 dark:text-neutral-400 flex flex-col sm:flex-row items-center justify-between gap-2 shrink-0 transition-colors">
           <div className="flex items-center gap-2">
-            <span className="text-black dark:text-white font-bold">IDAMS // Autonomous Safety System</span>
-            <span className="text-neutral-400 dark:text-neutral-600">|</span>
+            <span className="text-black dark:text-white font-medium">IDAMS Autonomous Safety Platform</span>
+            <span className="text-neutral-300 dark:text-neutral-700">·</span>
             <span>Deterministic D-13 Guardrail Engine</span>
           </div>
-          <div className="flex items-center gap-4 text-[10px] font-mono">
+          <div className="flex items-center gap-4 text-xs font-mono">
             <span>6-DOF IMU Kinematics &amp; Telemetry</span>
-            <span className="text-black dark:text-white font-bold">Models Verified [4/4]</span>
+            <span className="text-black dark:text-white font-medium">Models Verified [4/4]</span>
           </div>
         </footer>
       </div>

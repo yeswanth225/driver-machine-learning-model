@@ -102,26 +102,26 @@ export function Sidebar({
       {/* Top Header & Navigation Items */}
       <div className="flex-1 overflow-y-auto overflow-x-hidden">
         {/* Brand / Logo Header */}
-        <div className="h-12 px-4 flex items-center justify-between border-b border-[#dee2e6] dark:border-[#27272a] bg-[#f8f9fa] dark:bg-[#0d0d10]">
+        <div className="h-14 px-4 flex items-center justify-between border-b border-[#dee2e6] dark:border-[#27272a] bg-white dark:bg-[#070709] transition-colors">
           {!isCollapsed && (
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-6 h-6 rounded-md bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shrink-0">
-                <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-3 min-w-0">
+              <div className="w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shrink-0 shadow-xs">
+                <ShieldCheck className="w-4 h-4" />
               </div>
               <div className="min-w-0">
-                <span className="text-[11px] font-display font-bold uppercase tracking-spacex text-black dark:text-white truncate block leading-none">
-                  IDAMS // SAFETY
+                <span className="text-sm font-semibold tracking-tight text-black dark:text-white truncate block leading-tight">
+                  IDAMS
                 </span>
-                <span className="text-[9px] font-mono uppercase text-neutral-500 dark:text-neutral-400 tracking-wider">
-                  Edge Agent
+                <span className="text-[11px] font-medium text-neutral-500 dark:text-neutral-400 truncate block leading-none">
+                  Autonomous Safety
                 </span>
               </div>
             </div>
           )}
 
           {isCollapsed && (
-            <div className="mx-auto w-6 h-6 rounded-md bg-black dark:bg-white text-white dark:text-black flex items-center justify-center">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="mx-auto w-8 h-8 rounded-lg bg-black dark:bg-white text-white dark:text-black flex items-center justify-center shrink-0 shadow-xs">
+              <ShieldCheck className="w-4 h-4" />
             </div>
           )}
 
@@ -129,11 +129,11 @@ export function Sidebar({
             variant="outline"
             size="icon"
             onClick={onToggleCollapse}
-            className="hidden lg:inline-flex h-7 w-7 rounded-md"
+            className="hidden lg:inline-flex h-8 w-8 rounded-lg text-neutral-500 hover:text-black dark:hover:text-white border-[#dee2e6] dark:border-[#27272a]"
             aria-label={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
             title={isCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           >
-            {isCollapsed ? <ChevronRight className="w-3.5 h-3.5" /> : <ChevronLeft className="w-3.5 h-3.5" />}
+            {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
           </Button>
         </div>
 
@@ -174,7 +174,7 @@ export function Sidebar({
           {!isCollapsed && (
             <div className="flex items-center justify-between px-3 mb-2">
               <span className="text-[10px] font-display font-bold uppercase tracking-spacex text-neutral-500 dark:text-neutral-400">
-                Profiles // Simulation
+                Simulation Profiles
               </span>
             </div>
           )}

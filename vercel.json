@@ -1,14 +1,12 @@
 {
+  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "functions": {
+    "api/**/*.py": {
+      "excludeFiles": "{dataset/raw/**,dataset/experiments/**,dataset/derived/**,dataset/metadata/**,frontend/**,notebooks/**,reports/**,scripts/**,tests/**,mobile/**,docs/**}"
+    },
     "api/index.py": {
-      "includeFiles": [
-        "backend/**",
-        "ml/**",
-        "models/experiments/dataset_b/**",
-        "models/experiments/dataset_c/**",
-        "dataset/processed/dataset_b_test.csv"
-      ]
+      "excludeFiles": "{dataset/raw/**,dataset/experiments/**,dataset/derived/**,dataset/metadata/**,frontend/**,notebooks/**,reports/**,scripts/**,tests/**,mobile/**,docs/**}"
     }
   },
   "rewrites": [

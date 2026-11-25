@@ -125,3 +125,8 @@ desktop.ini
 dataset/annotations/sess_annot_test_*.json
 *_results*.txt
 
+
+# Vite cache
+.vite/
+frontend/.vite/
+

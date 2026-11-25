@@ -57,14 +57,17 @@ class SensorStorageService:
         return cls._instance
 
     def __init__(self):
-        BASE_RAW_DIR.mkdir(parents=True, exist_ok=True)
-        BASE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
-        METADATA_DIR.mkdir(parents=True, exist_ok=True)
-        ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
+        try:
+            BASE_RAW_DIR.mkdir(parents=True, exist_ok=True)
+            BASE_DERIVED_DIR.mkdir(parents=True, exist_ok=True)
+            METADATA_DIR.mkdir(parents=True, exist_ok=True)
+            ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
 
-        for drv in DEVELOPMENT_DRIVERS:
-            (BASE_RAW_DIR / drv).mkdir(exist_ok=True)
-            (BASE_DERIVED_DIR / drv).mkdir(exist_ok=True)
+            for drv in DEVELOPMENT_DRIVERS:
+                (BASE_RAW_DIR / drv).mkdir(exist_ok=True)
+                (BASE_DERIVED_DIR / drv).mkdir(exist_ok=True)
+        except OSError:
+            pass
 
     @staticmethod
     def compute_sha256(content: bytes) -> str:

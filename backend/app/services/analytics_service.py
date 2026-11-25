@@ -11,7 +11,19 @@ from pathlib import Path
 from typing import Dict, Any, List, Optional
 from datetime import datetime
 
-ROOT_DIR = Path(__file__).resolve().parents[3]
+def _find_repo_root() -> Path:
+    _cur = Path(__file__).resolve()
+    for p in [
+        _cur.parents[3] if len(_cur.parents) > 3 else None,
+        _cur.parents[2] if len(_cur.parents) > 2 else None,
+        Path.cwd(),
+        _cur.parent,
+    ]:
+        if p and ((p / "models" / "experiments").exists() or (p / "backend").exists()):
+            return p
+    return _cur.parents[3] if len(_cur.parents) > 3 else Path.cwd()
+
+ROOT_DIR = _find_repo_root()
 AUDIT_METRICS_PATH = ROOT_DIR / "reports" / "model_performance_audit" / "audit_metrics_recomputed.json"
 STREAMING_RESULTS_PATH = ROOT_DIR / "reports" / "stage7" / "streaming_evaluation_results.json"
 PIPELINE_A_EXP_PATH = ROOT_DIR / "reports" / "pipeline_a" / "pipeline_a_improved_experiments.json"

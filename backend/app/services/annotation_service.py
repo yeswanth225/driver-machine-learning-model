@@ -60,7 +60,10 @@ class AnnotationService:
         return cls._instance
 
     def __init__(self):
-        ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
+        try:
+            ANNOTATIONS_DIR.mkdir(parents=True, exist_ok=True)
+        except OSError:
+            pass
 
     def _get_session_annotations_path(self, session_id: str) -> Path:
         return ANNOTATIONS_DIR / f"{session_id}_annotations.json"

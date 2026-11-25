@@ -28,7 +28,19 @@ from backend.app.schemas.telemetry import (
     ScenarioPreset,
 )
 
-ROOT_DIR = Path(__file__).resolve().parents[3]
+def _find_repo_root() -> Path:
+    _cur = Path(__file__).resolve()
+    for p in [
+        _cur.parents[3] if len(_cur.parents) > 3 else None,
+        _cur.parents[2] if len(_cur.parents) > 2 else None,
+        Path.cwd(),
+        _cur.parent,
+    ]:
+        if p and ((p / "models" / "experiments").exists() or (p / "backend").exists()):
+            return p
+    return _cur.parents[3] if len(_cur.parents) > 3 else Path.cwd()
+
+ROOT_DIR = _find_repo_root()
 
 FROZEN_ARTIFACTS = [
     {

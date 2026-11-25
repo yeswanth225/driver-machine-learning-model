@@ -9,7 +9,7 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 
 from backend.app.api.endpoints import router as api_router
 from backend.app.api.sensor_endpoints import sensor_router
@@ -20,7 +20,7 @@ app = FastAPI(
     version="1.0.0",
 )
 
-# Configure CORS for local development and demonstration
+# Configure CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -33,22 +33,21 @@ app.add_middleware(
 app.include_router(api_router, prefix="/api")
 app.include_router(sensor_router, prefix="/api")
 
-STATIC_DIR = Path(__file__).parent / "static"
-if not STATIC_DIR.exists():
-    STATIC_DIR.mkdir(parents=True, exist_ok=True)
+STATIC_DIR = Path(__file__).resolve().parent / "static"
 
-app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+if STATIC_DIR.exists() and (STATIC_DIR / "index.html").exists():
+    ASSETS_DIR = STATIC_DIR / "assets"
+    if ASSETS_DIR.exists():
+        app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
+    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-ASSETS_DIR = STATIC_DIR / "assets"
-if ASSETS_DIR.exists():
-    app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
-
-# Mount Mobile Web Sensor Logger for local Wi-Fi acquisition
+# Mount Mobile Web Sensor Logger for local Wi-Fi acquisition if available
 MOBILE_LOGGER_DIR = Path(__file__).resolve().parent.parent.parent / "mobile" / "web-logger"
 if MOBILE_LOGGER_DIR.exists():
-    app.mount("/sensor-logger", StaticFiles(directory=str(MOBILE_LOGGER_DIR), html=True), name="sensor-logger")
-
-
+    try:
+        app.mount("/sensor-logger", StaticFiles(directory=str(MOBILE_LOGGER_DIR), html=True), name="sensor-logger")
+    except Exception:
+        pass
 
 
 @app.get("/", include_in_schema=False)
@@ -59,6 +58,29 @@ def serve_dashboard():
         return FileResponse(str(index_file))
     return {
         "service": "Intelligent Driver Activity Monitoring & Safety Agent",
+        "status": "healthy",
+        "docs_url": "/docs",
+        "api_health": "/api/health",
+    }
+
+
+@app.get("/{full_path:path}", include_in_schema=False)
+def serve_spa(full_path: str):
+    """Fallback router for client-side React SPA navigation."""
+    if full_path.startswith("api") or full_path.startswith("docs") or full_path.startswith("openapi"):
+        return JSONResponse(status_code=404, content={"detail": "Not Found"})
+
+    file_path = STATIC_DIR / full_path
+    if file_path.is_file():
+        return FileResponse(str(file_path))
+
+    index_file = STATIC_DIR / "index.html"
+    if index_file.exists():
+        return FileResponse(str(index_file))
+
+    return {
+        "service": "Intelligent Driver Activity Monitoring & Safety Agent",
+        "status": "healthy",
         "docs_url": "/docs",
         "api_health": "/api/health",
     }

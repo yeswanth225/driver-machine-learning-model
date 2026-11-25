@@ -1,5 +1,16 @@
 {
   "version": 2,
+  "functions": {
+    "api/index.py": {
+      "includeFiles": [
+        "backend/**",
+        "ml/**",
+        "models/experiments/dataset_b/**",
+        "models/experiments/dataset_c/**",
+        "dataset/processed/dataset_b_test.csv"
+      ]
+    }
+  },
   "rewrites": [
     {
       "source": "/(.*)",

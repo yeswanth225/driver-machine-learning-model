@@ -1,0 +1,46 @@
+# Raw datasets (multi-gigabyte training data)
+dataset/raw/
+dataset/raw/**
+dataset/experiments/
+dataset/experiments/**
+dataset/derived/
+dataset/derived/**
+dataset/metadata/
+dataset/metadata/**
+*.zip
+*.rar
+*.tar.gz
+
+# Frontend source and node_modules (built production bundle is already in backend/app/static)
+frontend/src/
+frontend/src/**
+frontend/node_modules/
+frontend/node_modules/**
+frontend/.vite/
+frontend/.vite/**
+
+# Research models and intermediate artifacts (not needed for production inference)
+models/experiments/pipeline_a/
+models/experiments/pipeline_a/**
+
+# Offline research, notebooks, reports, scripts, tests, mobile app
+notebooks/
+notebooks/**
+reports/
+reports/**
+scripts/
+scripts/**
+tests/
+tests/**
+mobile/
+mobile/**
+docs/
+docs/**
+
+# Cache, virtual environments, and test artifacts
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.coverage
+venv/
+.venv/

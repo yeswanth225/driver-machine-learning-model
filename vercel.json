@@ -1,18 +1,22 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "functions": {
-    "api/**/*.py": {
-      "excludeFiles": "{dataset/raw/**,dataset/experiments/**,dataset/derived/**,dataset/metadata/**,frontend/**,notebooks/**,reports/**,scripts/**,tests/**,mobile/**,docs/**}"
-    },
-    "api/index.py": {
-      "excludeFiles": "{dataset/raw/**,dataset/experiments/**,dataset/derived/**,dataset/metadata/**,frontend/**,notebooks/**,reports/**,scripts/**,tests/**,mobile/**,docs/**}"
-    }
-  },
   "rewrites": [
     {
-      "source": "/(.*)",
+      "source": "/api/:path*",
       "destination": "/api/index.py"
+    },
+    {
+      "source": "/docs",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/openapi.json",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/((?!api/|docs|openapi.json).*)",
+      "destination": "/index.html"
     }
   ]
 }

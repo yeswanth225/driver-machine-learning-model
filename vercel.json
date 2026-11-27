@@ -2,29 +2,15 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
   "functions": {
-    "api/**/*.py": {
-      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,ml/saved_models/**}"
-    },
     "main.py": {
-      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,ml/saved_models/**}"
+      "includeFiles": [
+        "backend/**",
+        "ml/**",
+        "models/experiments/dataset_b/**",
+        "models/experiments/dataset_c/**",
+        "ml/saved_models/**",
+        "public/**"
+      ]
     }
-  },
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/docs",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/openapi.json",
-      "destination": "/api/index"
-    },
-    {
-      "source": "/((?!api/|docs|openapi.json).*)",
-      "destination": "/index.html"
-    }
-  ]
+  }
 }

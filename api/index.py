@@ -2,10 +2,12 @@
 Vercel Serverless Function Entrypoint
 ====================================
 Exposes the single unified FastAPI application instance `app`.
+Gracefully captures and returns any cold-start / import-time errors.
 """
 
 import sys
 import os
+import traceback
 from pathlib import Path
 
 # Add repository root and backend directory to sys.path
@@ -19,7 +21,27 @@ for p in [
     if p and p not in sys.path:
         sys.path.insert(0, p)
 
-from backend.app.main import app
+try:
+    from backend.app.main import app
+except Exception:
+    from fastapi import FastAPI
+    from fastapi.responses import JSONResponse
 
-# NOTE: Do NOT assign `handler = app`!
-# Vercel's Python runtime requires `app` to detect and invoke FastAPI natively via ASGI.
+    _err = traceback.format_exc()
+    print("FATAL IMPORT ERROR IN BACKEND.APP.MAIN:\n", _err, flush=True)
+
+    app = FastAPI(title="IDAMS Diagnostics")
+
+    @app.api_route("/{full_path:path}", methods=["GET", "POST", "PUT", "DELETE"])
+    def catch_startup_error(full_path: str):
+        return JSONResponse(
+            status_code=500,
+            content={
+                "status": "FATAL_STARTUP_ERROR",
+                "message": "FastAPI failed to import backend.app.main at startup.",
+                "traceback": _err,
+                "cwd": os.getcwd(),
+                "sys_path": sys.path[:10],
+                "files_in_cwd": os.listdir(".") if os.path.exists(".") else [],
+            },
+        )

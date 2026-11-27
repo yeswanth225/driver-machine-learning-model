@@ -71,8 +71,14 @@ STATIC_DIR = _find_static_dir()
 if STATIC_DIR and STATIC_DIR.exists() and (STATIC_DIR / "index.html").exists():
     ASSETS_DIR = STATIC_DIR / "assets"
     if ASSETS_DIR.exists():
-        app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
-    app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+        try:
+            app.mount("/assets", StaticFiles(directory=str(ASSETS_DIR)), name="assets")
+        except Exception:
+            pass
+    try:
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
+    except Exception:
+        pass
 
 # Mount Mobile Web Sensor Logger for local Wi-Fi acquisition if available
 MOBILE_LOGGER_DIR = Path(__file__).resolve().parent.parent.parent / "mobile" / "web-logger"

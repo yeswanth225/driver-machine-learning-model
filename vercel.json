@@ -1,16 +1,15 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "functions": {
-    "main.py": {
-      "includeFiles": [
-        "backend/**",
-        "ml/**",
-        "models/experiments/dataset_b/**",
-        "models/experiments/dataset_c/**",
-        "ml/saved_models/**",
-        "public/**"
-      ]
+  "builds": [
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
-  }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "api/index.py"
+    }
+  ]
 }

@@ -31,9 +31,11 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Register API routes under /api
+# Register API routes under /api and root alias for flexible Vercel routing
 app.include_router(api_router, prefix="/api")
 app.include_router(sensor_router, prefix="/api")
+app.include_router(api_router)
+app.include_router(sensor_router)
 
 
 def _find_static_dir() -> Optional[Path]:

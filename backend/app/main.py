@@ -4,9 +4,22 @@ Main FastAPI Application Entrypoint
 Project: Intelligent Driver Activity Monitoring & Safety Agent
 """
 
+import sys
 import os
 from pathlib import Path
 from typing import Optional
+
+# Add repository root and backend directory to sys.path
+_current = Path(__file__).resolve()
+for _p in [
+    _current.parent.parent.parent,  # Repo root
+    _current.parent.parent,         # backend/
+    Path.cwd(),
+    Path.cwd() / "backend",
+]:
+    if _p and str(_p) not in sys.path:
+        sys.path.insert(0, str(_p))
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles

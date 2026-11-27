@@ -10,7 +10,7 @@ from typing import Optional
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse, JSONResponse, HTMLResponse
+from fastapi.responses import FileResponse, JSONResponse, HTMLResponse, Response
 
 from backend.app.api.endpoints import router as api_router
 from backend.app.api.sensor_endpoints import sensor_router
@@ -98,7 +98,12 @@ def serve_spa(full_path: str):
     if STATIC_DIR and STATIC_DIR.exists():
         file_path = STATIC_DIR / full_path
         if file_path.is_file():
-            return FileResponse(str(file_path))
+            try:
+                import mimetypes
+                mime_type, _ = mimetypes.guess_type(str(file_path))
+                return Response(content=file_path.read_bytes(), media_type=mime_type or "application/octet-stream")
+            except Exception:
+                return FileResponse(str(file_path))
 
         index_file = STATIC_DIR / "index.html"
         if index_file.exists():

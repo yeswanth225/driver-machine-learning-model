@@ -1,34 +1,38 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
-  "functions": {
-    "api/**/*.py": {
-      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,public/**}"
+  "builds": [
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
     },
-    "main.py": {
-      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,public/**}"
+    {
+      "src": "api/index.py",
+      "use": "@vercel/python"
     }
-  },
-  "rewrites": [
+  ],
+  "routes": [
     {
-      "source": "/api",
-      "destination": "/api/index"
+      "src": "/api/(.*)",
+      "dest": "/api/index.py"
     },
     {
-      "source": "/api/(.*)",
-      "destination": "/api/index"
+      "src": "/docs",
+      "dest": "/api/index.py"
     },
     {
-      "source": "/docs",
-      "destination": "/api/index"
+      "src": "/openapi.json",
+      "dest": "/api/index.py"
     },
     {
-      "source": "/openapi.json",
-      "destination": "/api/index"
+      "src": "/assets/(.*)",
+      "dest": "/public/assets/$1"
     },
     {
-      "source": "/((?!api/|docs|openapi.json|assets/).*)",
-      "destination": "/index.html"
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/public/index.html"
     }
   ]
 }

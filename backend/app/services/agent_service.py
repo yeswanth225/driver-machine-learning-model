@@ -85,7 +85,11 @@ class AgentService:
     _instance: Optional["AgentService"] = None
 
     def __init__(self):
-        self.agent = IntelligentSafetyAgent(config=DEFAULT_CONFIG, auto_load_classifiers=True)
+        try:
+            self.agent = IntelligentSafetyAgent(config=DEFAULT_CONFIG, auto_load_classifiers=True)
+        except Exception:
+            # Fallback gracefully for serverless cold-start resiliency
+            self.agent = IntelligentSafetyAgent(config=DEFAULT_CONFIG, auto_load_classifiers=False)
 
     @classmethod
     def get_instance(cls) -> "AgentService":

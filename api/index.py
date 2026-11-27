@@ -5,12 +5,9 @@ from pathlib import Path
 
 # Add repository root and backend to sys.path
 REPO_ROOT = Path(__file__).resolve().parent.parent
-if str(REPO_ROOT) not in sys.path:
-    sys.path.insert(0, str(REPO_ROOT))
-
-backend_dir = REPO_ROOT / "backend"
-if backend_dir.exists() and str(backend_dir) not in sys.path:
-    sys.path.insert(0, str(backend_dir))
+for p in [str(REPO_ROOT), str(REPO_ROOT / "backend"), os.getcwd(), os.path.join(os.getcwd(), "backend")]:
+    if p not in sys.path:
+        sys.path.insert(0, p)
 
 try:
     from backend.app.main import app

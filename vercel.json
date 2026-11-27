@@ -1,6 +1,14 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "version": 2,
+  "functions": {
+    "api/**/*.py": {
+      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,ml/saved_models/**}"
+    },
+    "main.py": {
+      "includeFiles": "{backend/**,ml/**,models/experiments/dataset_b/**,models/experiments/dataset_c/**,ml/saved_models/**}"
+    }
+  },
   "rewrites": [
     {
       "source": "/api/(.*)",
